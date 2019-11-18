@@ -3,7 +3,9 @@ package profile
 import (
 	"net"
 
+	adapters "github.com/Dreamacro/clash/adapters/outbound"
 	"github.com/Dreamacro/clash/component/auth"
+	trie "github.com/Dreamacro/clash/component/domain-trie"
 	"github.com/Dreamacro/clash/config"
 	"github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/dns"
@@ -12,6 +14,7 @@ import (
 	"github.com/Dreamacro/clash/tunnel"
 )
 
+// LoadDefault - load default configure
 func LoadDefault() {
 	defaultC := &config.Config{
 		General: &config.General{
@@ -43,21 +46,28 @@ func LoadDefault() {
 		Experimental: &config.Experimental{
 			IgnoreResolveFail: false,
 		},
-		Hosts:   nil,
+		Hosts:   trie.New(),
 		Rules:   []constant.Rule{},
 		Users:   []auth.AuthUser{},
 		Proxies: map[string]constant.Proxy{},
 	}
 
+	global, _ := adapters.NewSelector("GLOBAL", make([]constant.Proxy, 0))
+
+	defaultC.Proxies["DIRECT"] = adapters.NewProxy(adapters.NewDirect())
+	defaultC.Proxies["REJECT"] = adapters.NewProxy(adapters.NewReject())
+	defaultC.Proxies["GLOBAL"] = adapters.NewProxy(global)
+
 	executor.ApplyConfig(defaultC, true)
 }
 
+// LoadFromFile - load file
 func LoadFromFile(path string) error {
-	cfg, err := config.Parse(path)
+	cfg, err := executor.ParseWithPath(path)
 	if err != nil {
 		return err
 	}
-
+	
 	executor.ApplyConfig(cfg, true)
 	return nil
 }

@@ -28,7 +28,7 @@ open class GolangBuildTask : Exec() {
         environment.put("CC", toolchainRoot.resolve(compilerPrefix + "-clang".exe()).absolutePath)
         environment.put("LD", toolchainRoot.resolve(linkerPrefix + "ld".exe()).absolutePath)
 
-        commandLine = listOf("go".exe(), "build", "-buildmode", "c-shared", "-o", options.outputDir.resolve("$abi/libclash.so").absolutePath)
+        commandLine = listOf("go".exe(), "build", "-o", options.outputDir.resolve("$abi/libclash.so").absolutePath)
 
         super.exec()
     }

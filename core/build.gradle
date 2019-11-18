@@ -22,7 +22,7 @@ android {
 
     sourceSets {
         main {
-            jniLibs.srcDirs = ["$buildDir/intermediates/native_output"]
+            jniLibs.srcDirs += ["$buildDir/intermediates/native_output"]
         }
     }
 }
@@ -37,7 +37,7 @@ afterEvaluate {
     def options = new GolangBuildOptions(file("src/main/golang"), file("$buildDir/intermediates/native_output"), "23")
 
     def ts = compileArch.stream().map { abi ->
-        tasks.register("golangBuildFor" + abi.replace("-", ""), GolangBuildTask.class) {
+        tasks.register("golangBuildFor" + abi.replace("-", "").replace("_", ""), GolangBuildTask.class) {
             setOptions options, abi
         }
     }.toArray()
