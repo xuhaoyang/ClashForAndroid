@@ -11,13 +11,13 @@ import (
 	"github.com/Dreamacro/clash/log"
 )
 
-type TunDevice struct {
+type tunDevice struct {
 	mtu       int
 	fd        int
 	linkCache *stack.LinkEndpoint
 }
 
-func OpenTunDevice(fd int, mtu int) (*TunDevice, error) {
+func openTunDevice(fd int, mtu int) (*tunDevice, error) {
 	var ifr struct {
 		name  [16]byte
 		flags uint16
@@ -35,13 +35,13 @@ func OpenTunDevice(fd int, mtu int) (*TunDevice, error) {
 
 	log.Infoln("Open tun fd = %d mtu = %d", fd, mtu)
 
-	return &TunDevice{
+	return &tunDevice{
 		fd:  fd,
 		mtu: mtu,
 	}, nil
 }
 
-func (t TunDevice) AsLinkEndpoint() (result stack.LinkEndpoint, err error) {
+func (t tunDevice) asLinkEndpoint() (result stack.LinkEndpoint, err error) {
 	if t.linkCache != nil {
 		return *t.linkCache, nil
 	}
@@ -61,6 +61,6 @@ func (t TunDevice) AsLinkEndpoint() (result stack.LinkEndpoint, err error) {
 	return result, nil
 }
 
-func (t TunDevice) Close() {
+func (t tunDevice) close() {
 	syscall.Close(t.fd)
 }

@@ -25,7 +25,7 @@ import (
 )
 
 type tun struct {
-	device  *TunDevice
+	device  *tunDevice
 	ipstack *stack.Stack
 }
 
@@ -56,7 +56,7 @@ func StopTunProxy() {
 }
 
 func newTunProxy(fd int, mtu int) (*tun, error) {
-	tundev, err := OpenTunDevice(fd, mtu)
+	tundev, err := openTunDevice(fd, mtu)
 	if err != nil {
 		return nil, fmt.Errorf("Can't open tun: %v", err)
 	}
@@ -66,7 +66,7 @@ func newTunProxy(fd int, mtu int) (*tun, error) {
 		TransportProtocols: []stack.TransportProtocol{tcp.NewProtocol(), udp.NewProtocol()},
 	})
 
-	linkEP, err := tundev.AsLinkEndpoint()
+	linkEP, err := tundev.asLinkEndpoint()
 	if err != nil {
 		return nil, fmt.Errorf("Unable to create virtual endpoint: %v", err)
 	}
@@ -120,14 +120,14 @@ func newTunProxy(fd int, mtu int) (*tun, error) {
 		ipstack: ipstack,
 	}
 
-	log.Infoln("Tun device opened")
+	log.Infoln("Tun Adapter ready", fd, mtu)
 
 	return tl, nil
 }
 
 // Close close the TunAdapter
 func (t *tun) close() {
-	t.device.Close()
+	t.device.close()
 	t.ipstack.Close()
 }
 
