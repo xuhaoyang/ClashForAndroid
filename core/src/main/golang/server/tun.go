@@ -1,36 +1,56 @@
 package server
 
 import (
+	"encoding/binary"
 	"net"
 
-	"golang.org/x/sys/unix"
-
 	"github.com/Dreamacro/clash/log"
-
 	"github.com/kr328/clash/tun"
+	"golang.org/x/sys/unix"
+)
+
+const (
+	tunCommandEnd = 0x243
 )
 
 func handleTunStart(client *net.UnixConn) {
-	buffer, err := readCommandPackage(client)
+	buffer := make([]byte, unix.CmsgLen(4*1))
+	data := make([]byte, 8)
+
+	_, noob, _, _, err := client.ReadMsgUnix(data, buffer)
 	if err != nil {
-		log.Warnln("Read packet from unix socket failure %s", err.Error())
+		log.Warnln("Read tun socket failure, %s", err.Error())
 		return
 	}
 
-	msg, err := unix.ParseSocketControlMessage(buffer)
+	msg, err := unix.ParseSocketControlMessage(buffer[:noob])
 	if err != nil || len(msg) != 1 {
-		log.Warnln("Parse control package failure %s", err.Error())
+		log.Warnln("Parse tun socket failure, %s", err.Error())
 		return
 	}
 
 	fds, err := unix.ParseUnixRights(&msg[0])
 	if err != nil {
-		log.Warnln("Parse control package failure %s", err.Error())
+		log.Warnln("Parse tun socket failure, %s", err.Error())
+		return
 	}
 
-	tun.NewTunProxy(fds[0])
+	mtu := binary.BigEndian.Uint32(data)
+
+	if binary.BigEndian.Uint32(data[4:]) != tunCommandEnd {
+		log.Warnln("Invalid tun command end")
+		return
+	}
+
+	tun.StartTunProxy(fds[0], int(mtu))
 }
 
 func handleTunStop(client *net.UnixConn) {
+	buf, _ := readCommandPacket(client)
 
+	if tunCommandEnd != binary.BigEndian.Uint32(buf) {
+		log.Warnln("Invalid tun command end")
+	}
+
+	tun.StopTunProxy()
 }

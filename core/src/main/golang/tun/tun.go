@@ -10,7 +10,7 @@ import (
 	"github.com/Dreamacro/clash/component/socks5"
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/log"
-	"github.com/Dreamacro/clash/tunnel"
+	T "github.com/Dreamacro/clash/tunnel"
 
 	"encoding/binary"
 
@@ -24,25 +24,44 @@ import (
 	"github.com/google/netstack/waiter"
 )
 
-var (
-	tun     = tunnel.Instance()
-	ipstack *stack.Stack
-)
-
-// TunAdapter tun device handler
-type TunAdapter struct {
+type tun struct {
 	device  *TunDevice
 	ipstack *stack.Stack
 }
 
-// NewTunProxy create TunProxy under Linux OS.
-func NewTunProxy(fd int, mtu int) (*TunAdapter, error) {
+var (
+	tunnel   = T.Instance()
+	instance *tun
+)
+
+// StartTunProxy - start
+func StartTunProxy(fd, mtu int) error {
+	if instance != nil {
+		instance.close()
+	}
+
+	var err error
+	instance, err = newTunProxy(fd, mtu)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// StopTunProxy - stop
+func StopTunProxy() {
+	instance.close()
+	instance = nil
+}
+
+func newTunProxy(fd int, mtu int) (*tun, error) {
 	tundev, err := OpenTunDevice(fd, mtu)
 	if err != nil {
 		return nil, fmt.Errorf("Can't open tun: %v", err)
 	}
 
-	ipstack = stack.New(stack.Options{
+	ipstack := stack.New(stack.Options{
 		NetworkProtocols:   []stack.NetworkProtocol{ipv4.NewProtocol(), ipv6.NewProtocol()},
 		TransportProtocols: []stack.TransportProtocol{tcp.NewProtocol(), udp.NewProtocol()},
 	})
@@ -76,7 +95,7 @@ func NewTunProxy(fd int, mtu int) (*TunAdapter, error) {
 
 		conn := gonet.NewConn(&wq, ep)
 		target := getAddr(ep.Info().(*tcp.EndpointInfo).ID)
-		tun.Add(adapters.NewSocket(target, conn, C.REDIR, C.TCP))
+		tunnel.Add(adapters.NewSocket(target, conn, C.REDIR, C.TCP))
 
 	})
 	ipstack.SetTransportProtocolHandler(tcp.ProtocolNumber, tcpFwd.HandlePacket)
@@ -91,26 +110,25 @@ func NewTunProxy(fd int, mtu int) (*TunAdapter, error) {
 
 		conn := gonet.NewConn(&wq, ep)
 		target := getAddr(ep.Info().(*stack.TransportEndpointInfo).ID)
-		tun.Add(adapters.NewSocket(target, conn, C.REDIR, C.UDP))
+		tunnel.Add(adapters.NewSocket(target, conn, C.REDIR, C.UDP))
 
 	})
 	ipstack.SetTransportProtocolHandler(udp.ProtocolNumber, udpFwd.HandlePacket)
 
-	tl := &TunAdapter{
+	tl := &tun{
 		device:  tundev,
 		ipstack: ipstack,
 	}
 
-	android.Info("Tun device opened")
 	log.Infoln("Tun device opened")
 
 	return tl, nil
 }
 
 // Close close the TunAdapter
-func (t *TunAdapter) Close() {
+func (t *tun) close() {
 	t.device.Close()
-	ipstack.Close()
+	t.ipstack.Close()
 }
 
 func getAddr(id stack.TransportEndpointID) socks5.Addr {
@@ -126,11 +144,11 @@ func getAddr(id stack.TransportEndpointID) socks5.Addr {
 		copy(addr[1:1+net.IPv4len], []byte(ipv4))
 		addr[1+net.IPv4len], addr[1+net.IPv4len+1] = port[0], port[1]
 		return addr
-	} else {
-		addr := make([]byte, 1+net.IPv6len+2)
-		addr[0] = socks5.AtypIPv6
-		copy(addr[1:1+net.IPv6len], []byte(id.LocalAddress))
-		addr[1+net.IPv6len], addr[1+net.IPv6len+1] = port[0], port[1]
-		return addr
 	}
+
+	addr := make([]byte, 1+net.IPv6len+2)
+	addr[0] = socks5.AtypIPv6
+	copy(addr[1:1+net.IPv6len], []byte(id.LocalAddress))
+	addr[1+net.IPv6len], addr[1+net.IPv6len+1] = port[0], port[1]
+	return addr
 }
