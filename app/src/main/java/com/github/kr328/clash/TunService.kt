@@ -18,7 +18,7 @@ class TunService : VpnService() {
         }
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            IClashService.Stub.asInterface(service)?.startTunDevice(fileDescriptor.fd, 1500) ?: stopSelf()
+            IClashService.Stub.asInterface(service)?.startTunDevice(fileDescriptor, 1500) ?: stopSelf()
         }
     }
 
@@ -35,7 +35,7 @@ class TunService : VpnService() {
 
         bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
 
-        return Service.START_STICKY
+        return Service.START_NOT_STICKY
     }
 
     override fun onDestroy() {

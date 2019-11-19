@@ -12,6 +12,8 @@ import (
 func handleProfileDefault(client *net.UnixConn) {
 	profile.LoadDefault()
 
+	log.Infoln("Profile default loaded")
+
 	client.Close()
 }
 
@@ -45,6 +47,8 @@ func handleProfileReload(client *net.UnixConn) {
 	} else {
 		binary.Write(client, binary.BigEndian, uint32(0))
 	}
+
+	log.Infoln("Profile " + payload.Path + " loaded")
 
 	client.Close()
 }

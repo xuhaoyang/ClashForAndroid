@@ -5,9 +5,9 @@ import android.util.Log
 import java.io.File
 import java.io.IOException
 
-abstract class ClashProcess(context: Context, clashDir: File, private val controllerPath: File) {
+abstract class ClashProcess(context: Context, clashDir: File, controllerPath: File) {
     companion object {
-        private const val TAG = "ClashForAndroid"
+        const val TAG = "ClashForAndroid"
         private const val CLASH_COMMAND = "\"{CLASH}\" \"{CONTROLLER}\" 2>&1"
         private val PID_PATTERN = Regex("PID=(\\d+)")
         private const val CONTROLLER_STATUS_PREFIX = "[CONTROLLER]"
@@ -57,6 +57,8 @@ abstract class ClashProcess(context: Context, clashDir: File, private val contro
 
                 if ( error != null )
                     throw IOException("Controller: $error")
+
+                break
             }
         }
 

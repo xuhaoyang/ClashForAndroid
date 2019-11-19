@@ -8,17 +8,21 @@ import (
 )
 
 const (
-	commandPing     = 0
-	commandTunStart = 1
-	commandTunStop  = 2
+	commandPing           = 0
+	commandTunStart       = 1
+	commandTunStop        = 2
+	commandProfileDefault = 3
+	commandProfileReload  = 4
 )
 
 var handlers map[int]func(*net.UnixConn) = make(map[int]func(*net.UnixConn))
 
 func init() {
-	handlers[commandPing] = handlePing         // ping.go
-	handlers[commandTunStart] = handleTunStart // tun.go
-	handlers[commandTunStop] = handleTunStop   // tun.go
+	handlers[commandPing] = handlePing                     // ping.go
+	handlers[commandTunStart] = handleTunStart             // tun.go
+	handlers[commandTunStop] = handleTunStop               // tun.go
+	handlers[commandProfileDefault] = handleProfileDefault // profile.go
+	handlers[commandProfileReload] = handleProfileReload   // profile.go
 }
 
 // Start local control server

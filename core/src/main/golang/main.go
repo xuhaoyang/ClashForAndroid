@@ -23,9 +23,9 @@ func main() {
 	} else {
 		return
 	}
-	
-	if err := server.Start(os.Args[1]) ; err != nil {
-		fmt.Println("[CONTROLLER] ERROR={"+ err.Error() +"}")
+
+	if err := server.Start(os.Args[1]); err != nil {
+		fmt.Println("[CONTROLLER] ERROR={" + err.Error() + "}")
 		return
 	}
 

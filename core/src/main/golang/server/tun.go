@@ -15,9 +15,8 @@ const (
 
 func handleTunStart(client *net.UnixConn) {
 	buffer := make([]byte, unix.CmsgLen(4*1))
-	data := make([]byte, 8)
 
-	_, noob, _, _, err := client.ReadMsgUnix(data, buffer)
+	_, noob, _, _, err := client.ReadMsgUnix(nil, buffer)
 	if err != nil {
 		log.Warnln("Read tun socket failure, %s", err.Error())
 		return
@@ -35,9 +34,13 @@ func handleTunStart(client *net.UnixConn) {
 		return
 	}
 
-	mtu := binary.BigEndian.Uint32(data)
+	var mtu uint32
+	var end uint32
 
-	if binary.BigEndian.Uint32(data[4:]) != tunCommandEnd {
+	binary.Read(client, binary.BigEndian, &mtu)
+	binary.Read(client, binary.BigEndian, &end)
+
+	if end != tunCommandEnd {
 		log.Warnln("Invalid tun command end")
 		return
 	}

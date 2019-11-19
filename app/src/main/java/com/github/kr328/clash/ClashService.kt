@@ -2,10 +2,14 @@ package com.github.kr328.clash
 
 import android.app.Service
 import android.content.Intent
+import android.net.Uri
 import android.os.IBinder
+import android.os.Parcel
+import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.ClashProcess
+import java.io.FileDescriptor
 import kotlin.concurrent.thread
 
 class ClashService : Service() {
@@ -15,12 +19,12 @@ class ClashService : Service() {
 
     private lateinit var clash: Clash
     private inner class ClashServiceImpl : IClashService.Stub() {
-        override fun loadProfile(path: String?) {
-
+        override fun loadProfile(url: String?) {
+            clash.loadProfile(Uri.parse(url))
         }
 
-        override fun startTunDevice(fd: Int, mtu: Int) {
-
+        override fun startTunDevice(fd: ParcelFileDescriptor, mtu: Int) {
+            clash.startTunDevice(fd.fileDescriptor, mtu)
         }
     }
 
@@ -31,6 +35,7 @@ class ClashService : Service() {
             filesDir.resolve("clash"),
             cacheDir.resolve("clash_controller"))
 
+        Log.d(TAG, "ping " + clash.ping())
 
         thread {
             clash.exec()
@@ -44,8 +49,6 @@ class ClashService : Service() {
     }
 
     override fun onDestroy() {
-
-
         super.onDestroy()
     }
 }

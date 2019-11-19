@@ -52,10 +52,12 @@ func LoadDefault() {
 		Proxies: map[string]constant.Proxy{},
 	}
 
-	global, _ := adapters.NewSelector("GLOBAL", make([]constant.Proxy, 0))
+	reject := adapters.NewProxy(adapters.NewReject())
+	direct := adapters.NewProxy(adapters.NewDirect())
+	global, _ := adapters.NewSelector("GLOBAL", []constant.Proxy{direct})
 
-	defaultC.Proxies["DIRECT"] = adapters.NewProxy(adapters.NewDirect())
-	defaultC.Proxies["REJECT"] = adapters.NewProxy(adapters.NewReject())
+	defaultC.Proxies["DIRECT"] = direct
+	defaultC.Proxies["REJECT"] = reject
 	defaultC.Proxies["GLOBAL"] = adapters.NewProxy(global)
 
 	executor.ApplyConfig(defaultC, true)
@@ -67,7 +69,7 @@ func LoadFromFile(path string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	executor.ApplyConfig(cfg, true)
 	return nil
 }

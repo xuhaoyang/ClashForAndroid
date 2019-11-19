@@ -8,13 +8,9 @@ import android.content.ServiceConnection
 import android.net.VpnService
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.FileOutputStream
-import java.lang.Exception
-import java.lang.RuntimeException
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         private const val VPN_REQUEST = 234
     }
 
-    private val connection = object: ServiceConnection {
+    private val connection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
             Toast.makeText(this@MainActivity, "Disconnected", Toast.LENGTH_LONG).show()
         }
@@ -34,11 +30,8 @@ class MainActivity : AppCompatActivity() {
 
                 clash.loadProfile(cacheDir.resolve("config.yaml").absolutePath)
 
-//                            VpnService.prepare(this@MainActivity)?.apply {
-//                                startActivityForResult(this, VPN_REQUEST)
-//                            } ?: startService(Intent(this@MainActivity, TunService::class.java))
-            }
-            catch (e: Exception) {
+
+            } catch (e: Exception) {
                 runOnUiThread {
                     Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_LONG).show()
                 }
@@ -57,23 +50,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if ( requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK ) {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Toast.makeText(this, intent?.dataString, Toast.LENGTH_LONG).show()
 
             thread {
-                FileOutputStream(cacheDir.resolve("config.yaml")).use {
-                    contentResolver.openInputStream(data?.data ?: throw RuntimeException())?.apply { copyTo(it) }?.close()
-                }
+                bindService(Intent(this, ClashService::class.java), object : ServiceConnection {
+                    override fun onServiceDisconnected(name: ComponentName?) {
+                        Toast.makeText(this@MainActivity, "Disconnected", Toast.LENGTH_LONG).show()
+                    }
 
-                //startService(Intent(this, ClashService::class.java))
+                    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                        IClashService.Stub.asInterface(service)?.loadProfile(data?.dataString)
 
-                bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
+                        VpnService.prepare(this@MainActivity)?.apply {
+                            startActivityForResult(this, VPN_REQUEST)
+                        } ?: startService(Intent(this@MainActivity, TunService::class.java))
+                    }
+
+                }, Context.BIND_AUTO_CREATE)
             }
-        }
-        else if ( requestCode == VPN_REQUEST && resultCode == Activity.RESULT_OK ) {
+        } else if (requestCode == VPN_REQUEST && resultCode == Activity.RESULT_OK) {
             startService(Intent(this, TunService::class.java))
-        }
-        else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
