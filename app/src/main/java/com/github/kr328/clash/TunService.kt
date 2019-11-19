@@ -8,6 +8,9 @@ import android.content.ServiceConnection
 import android.net.VpnService
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
+import com.github.kr328.clash.core.ClashProcess
+import com.github.kr328.clash.model.ClashStatus
+import java.lang.NullPointerException
 import java.lang.RuntimeException
 
 class TunService : VpnService() {
@@ -27,7 +30,20 @@ class TunService : VpnService() {
         }
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            IClashService.Stub.asInterface(service)?.startTunDevice(fileDescriptor, VPN_MTU) ?: stopSelf()
+            val clash = IClashService.Stub.asInterface(service) ?: throw NullPointerException()
+
+            clash.start()
+            clash.registerObserver("tun", object: IClashObserver.Stub() {
+                override fun onStatusChanged(status: ClashStatus?) {
+                    if ( status == null )
+                        return
+
+                    when ( status.status ) {
+                        ClashProcess.Status.STOPPED -> stopSelf()
+                        ClashProcess.Status.STARTED -> clash.startTunDevice(fileDescriptor, VPN_MTU)
+                    }
+                }
+            })
         }
     }
 
@@ -44,7 +60,7 @@ class TunService : VpnService() {
             .addRoute("::", 0)
             .setMtu(VPN_MTU)
             .setBlocking(false)
-            .establish() ?: throw RuntimeException("Unable to establish VPN")
+            .establish() ?: throw NullPointerException("Unable to establish VPN")
 
         bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
 
@@ -53,6 +69,7 @@ class TunService : VpnService() {
 
     override fun onDestroy() {
         fileDescriptor.close()
+
         unbindService(connection)
 
         super.onDestroy()

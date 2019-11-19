@@ -19,27 +19,6 @@ class MainActivity : AppCompatActivity() {
         private const val VPN_REQUEST = 234
     }
 
-    private val connection = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName?) {
-            Toast.makeText(this@MainActivity, "Disconnected", Toast.LENGTH_LONG).show()
-        }
-
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            try {
-                val clash = IClashService.Stub.asInterface(service)
-
-                clash.loadProfile(cacheDir.resolve("config.yaml").absolutePath)
-
-
-            } catch (e: Exception) {
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -60,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                        IClashService.Stub.asInterface(service)?.loadProfile(data?.dataString)
+                        IClashService.Stub.asInterface(service)?.loadProfile(data?.data)
 
                         VpnService.prepare(this@MainActivity)?.apply {
                             startActivityForResult(this, VPN_REQUEST)
