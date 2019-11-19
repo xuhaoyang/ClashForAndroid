@@ -11,6 +11,15 @@ import android.os.ParcelFileDescriptor
 import java.lang.RuntimeException
 
 class TunService : VpnService() {
+    companion object {
+        // from https://github.com/shadowsocks/shadowsocks-android/blob/master/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt
+        private const val VPN_MTU = 1500
+        private const val PRIVATE_VLAN4_CLIENT = "172.19.0.1"
+        private const val PRIVATE_VLAN4_ROUTER = "172.19.0.2"
+        private const val PRIVATE_VLAN6_CLIENT = "fdfe:dcba:9876::1"
+        private const val PRIVATE_VLAN6_ROUTER = "fdfe:dcba:9876::2"
+    }
+
     private lateinit var fileDescriptor: ParcelFileDescriptor
     private val connection = object: ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -18,7 +27,7 @@ class TunService : VpnService() {
         }
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            IClashService.Stub.asInterface(service)?.startTunDevice(fileDescriptor, 1500) ?: stopSelf()
+            IClashService.Stub.asInterface(service)?.startTunDevice(fileDescriptor, VPN_MTU) ?: stopSelf()
         }
     }
 
@@ -26,10 +35,14 @@ class TunService : VpnService() {
         super.onStartCommand(intent, flags, startId)
 
         fileDescriptor = Builder()
-            .addAddress("10.0.0.1", 24)
+            .addAddress(PRIVATE_VLAN4_CLIENT, 30)
+            .addDnsServer(PRIVATE_VLAN4_ROUTER)
+            .addAddress(PRIVATE_VLAN6_CLIENT, 126)
+            .addDnsServer(PRIVATE_VLAN6_ROUTER)
             .addDisallowedApplication(packageName)
             .addRoute("0.0.0.0", 0)
-            .setMtu(1500)
+            .addRoute("::", 0)
+            .setMtu(VPN_MTU)
             .setBlocking(false)
             .establish() ?: throw RuntimeException("Unable to establish VPN")
 

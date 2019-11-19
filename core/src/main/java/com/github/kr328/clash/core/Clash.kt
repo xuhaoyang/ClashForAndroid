@@ -9,8 +9,11 @@ import android.util.Log
 import org.json.JSONObject
 import java.io.*
 
-class Clash(private val context: Context, clashDir: File, private val controllerPath: File) :
-    ClashProcess(context, clashDir, controllerPath) {
+class Clash(private val context: Context,
+            clashDir: File,
+            private val controllerPath: File,
+            listener: (Status) -> Unit) :
+    ClashProcess(context, clashDir, controllerPath, listener) {
     companion object {
         const val COMMAND_PING = 0
         const val COMMAND_TUN_START = 1

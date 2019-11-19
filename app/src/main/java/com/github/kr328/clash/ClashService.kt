@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.IBinder
 import android.os.Parcel
 import android.os.ParcelFileDescriptor
+import android.os.RemoteException
 import android.util.Log
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.ClashProcess
@@ -19,8 +20,16 @@ class ClashService : Service() {
 
     private lateinit var clash: Clash
     private inner class ClashServiceImpl : IClashService.Stub() {
-        override fun loadProfile(url: String?) {
-            clash.loadProfile(Uri.parse(url))
+        override fun start() {
+            clash.start()
+        }
+
+        override fun stop() {
+            clash.stop()
+        }
+
+        override fun loadProfile(url: Uri?) {
+            clash.loadProfile(url ?: throw RemoteException())
         }
 
         override fun startTunDevice(fd: ParcelFileDescriptor, mtu: Int) {
@@ -33,14 +42,8 @@ class ClashService : Service() {
 
         clash = Clash(this,
             filesDir.resolve("clash"),
-            cacheDir.resolve("clash_controller"))
-
-        Log.d(TAG, "ping " + clash.ping())
-
-        thread {
-            clash.exec()
-
-            Log.i(TAG, "Clash exited")
+            cacheDir.resolve("clash_controller")) {
+            
         }
     }
 
@@ -49,6 +52,8 @@ class ClashService : Service() {
     }
 
     override fun onDestroy() {
+        clash.stop()
+
         super.onDestroy()
     }
 }

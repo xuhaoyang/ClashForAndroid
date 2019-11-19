@@ -30,8 +30,9 @@ type tun struct {
 }
 
 var (
-	tunnel   = T.Instance()
-	instance *tun
+	tunnel          = T.Instance()
+	instance        *tun
+	dnsRedirectAddr *socks5.Addr
 )
 
 // StartTunProxy - start
@@ -53,6 +54,11 @@ func StartTunProxy(fd, mtu int) error {
 func StopTunProxy() {
 	instance.close()
 	instance = nil
+}
+
+// SetDNSRedirect - set dns
+func SetDNSRedirect(addr *socks5.Addr) {
+	dnsRedirectAddr = addr
 }
 
 func newTunProxy(fd int, mtu int) (*tun, error) {
@@ -94,7 +100,7 @@ func newTunProxy(fd int, mtu int) (*tun, error) {
 		r.Complete(false)
 
 		conn := gonet.NewConn(&wq, ep)
-		target := getAddr(ep.Info().(*tcp.EndpointInfo).ID)
+		target := getAddr(ep.Info().(*tcp.EndpointInfo).ID, false)
 		tunnel.Add(adapters.NewSocket(target, conn, C.REDIR, C.TCP))
 
 	})
@@ -109,7 +115,7 @@ func newTunProxy(fd int, mtu int) (*tun, error) {
 		}
 
 		conn := gonet.NewConn(&wq, ep)
-		target := getAddr(ep.Info().(*stack.TransportEndpointInfo).ID)
+		target := getAddr(ep.Info().(*stack.TransportEndpointInfo).ID, true)
 		tunnel.Add(adapters.NewSocket(target, conn, C.REDIR, C.UDP))
 
 	})
@@ -131,8 +137,12 @@ func (t *tun) close() {
 	t.ipstack.Close()
 }
 
-func getAddr(id stack.TransportEndpointID) socks5.Addr {
+func getAddr(id stack.TransportEndpointID, dnsRedirect bool) socks5.Addr {
 	ipv4 := id.LocalAddress.To4()
+
+	if id.LocalPort == 53 && dnsRedirectAddr != nil && dnsRedirect {
+		return *dnsRedirectAddr
+	}
 
 	// get the big-endian binary represent of port
 	port := make([]byte, 2)

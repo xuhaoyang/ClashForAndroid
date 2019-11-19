@@ -1,30 +1,47 @@
 package com.github.kr328.clash.core
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.Log
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.concurrent.thread
 
-abstract class ClashProcess(context: Context, clashDir: File, controllerPath: File) {
+abstract class ClashProcess(private val context: Context,
+                            private val clashDir: File,
+                            private val controllerPath: File,
+                            private val listener: (Status) -> Unit) {
     companion object {
         const val TAG = "ClashForAndroid"
+
         private const val CLASH_COMMAND = "\"{CLASH}\" \"{CONTROLLER}\" 2>&1"
-        private val PID_PATTERN = Regex("PID=(\\d+)")
+
         private const val CONTROLLER_STATUS_PREFIX = "[CONTROLLER]"
+
+        private val PID_PATTERN = Regex("PID=(\\d+)")
         private val CONTROLLER_ERROR_PATTERN = Regex("\\[CONTROLLER] ERROR=\\{(.+)\\}")
     }
 
-    @set:Synchronized @get:Synchronized
-    var exited: Boolean = false
-    private val pid: Int
-    private val process: Process
+    enum class Status {
+        STARTED, STOPPED
+    }
 
-    init {
+    private var pid: Int = 0
+    private var process: Process? = null
+
+    @Synchronized
+    fun start() {
+        if ( pid > 0 )
+            return
+
+        extractMMDB()
+
         clashDir.mkdirs()
         controllerPath.parentFile?.mkdirs()
         controllerPath.delete()
 
-        process = ProcessBuilder().apply {
+        val p = ProcessBuilder().apply {
             command("sh")
             directory(clashDir)
         }.start()
@@ -36,22 +53,23 @@ abstract class ClashProcess(context: Context, clashDir: File, controllerPath: Fi
 
         Log.i(TAG, "Starting clash [$command]")
 
-        process.outputStream.write("echo PID=$$\n".toByteArray())
-        process.outputStream.write("exec $command\n".toByteArray())
-        process.outputStream.write("exit\n".toByteArray())
-        process.outputStream.flush()
+        p.outputStream.use {
+            it.write("echo PID=$$\n".toByteArray())
+            it.write("exec $command\n".toByteArray())
+            it.write("exit\n".toByteArray())
+            it.flush()
+        }
 
         var line = ""
 
         // Parse pid
         var currentPid = 0
-        while ( process.inputStream.bufferedReader().readLine()?.apply { line = this.trim() } != null ) {
+        while ( p.inputStream.bufferedReader().readLine()?.apply { line = this.trim() } != null ) {
             if ( PID_PATTERN.matchEntire(line)?.apply { currentPid = groups[1]!!.value.toInt() } != null  )
                 break
         }
-        pid = currentPid
 
-        while ( process.inputStream.bufferedReader().readLine()?.apply { line = this.trim() } != null ) {
+        while ( p.inputStream.bufferedReader().readLine()?.apply { line = this.trim() } != null ) {
             if ( line.startsWith(CONTROLLER_STATUS_PREFIX) ) {
                 val error = CONTROLLER_ERROR_PATTERN.matchEntire(line)?.groups?.get(1)?.value
 
@@ -62,24 +80,47 @@ abstract class ClashProcess(context: Context, clashDir: File, controllerPath: Fi
             }
         }
 
-        Log.i(TAG, "Clash started pid=$pid")
+        process = p
+        pid = currentPid
+
+        listener(Status.STARTED)
+
+        Log.i(TAG, "Clash started pid = $pid")
+
+        thread {
+            // Redirect stdout to log
+            while ( p.inputStream.bufferedReader().readLine()?.apply { line = this } != null ) {
+                Log.i(TAG, line.trim())
+            }
+
+            synchronized(this@ClashProcess) {
+                p.destroy()
+                process = null
+                pid = -1
+            }
+
+            listener(Status.STOPPED)
+        }
     }
 
-    @Throws(IOException::class)
-    fun exec() {
-        var line = ""
-
-        // Redirect stdout to log
-        while ( process.inputStream.bufferedReader().readLine()?.apply { line = this } != null ) {
-            Log.i(TAG, line.trim())
-        }
-
-        synchronized(this@ClashProcess) {
-            exited = true
-        }
+    @Synchronized
+    fun isRunning(): Boolean {
+        return pid > 0
     }
 
     fun stop() {
         android.os.Process.killProcess(pid)
+    }
+
+    private fun extractMMDB() {
+        if ( context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
+            < clashDir.resolve("Country.mmdb").lastModified() )
+            return
+
+        context.resources.assets.open("Country.mmdb").use { input ->
+            FileOutputStream(clashDir.resolve("Country.mmdb")).use { output ->
+                input.copyTo(output)
+            }
+        }
     }
 }

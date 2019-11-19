@@ -24,6 +24,7 @@ android {
 
     sourceSets {
         main {
+            assets.srcDirs += ["$buildDir/intermediates/dynamic_assets"]
             jniLibs.srcDirs += ["$buildDir/intermediates/native_output"]
         }
     }
@@ -33,7 +34,6 @@ dependencies {
     implementation "androidx.core:core-ktx:1.1.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-
 
 afterEvaluate {
     def compileArch = ["arm64-v8a", "x86_64"]
@@ -49,7 +49,41 @@ afterEvaluate {
         if ( task.name.contains("JniLib") )
             task.dependsOn(ts)
     }
+
+    def ds = tasks.register("downloadMMDB", MMDBDowloadTask.class) {
+        onlyIf {
+            System.currentTimeMillis() - file("$buildDir/intermediates/cache/Country.tar.gz").lastModified() > 30 * 24 * 3600L
+        }
+
+        output = "$buildDir/intermediates/cache/Country.tar.gz"
+    }
+
+    def es = tasks.register("extractMMDB", Copy.class) {
+        onlyIf {
+            file("$buildDir/intermediates/cache/Country.tar.gz").lastModified() > file("$buildDir/intermediates/dynamic_assets/Country.mmdb").lastModified()
+        }
+
+        from(tarTree("$buildDir/intermediates/cache/Country.tar.gz")) {
+            include "**/*.mmdb"
+        }
+        into "$buildDir/intermediates/cache/mmdb"
+
+        doLast {
+            fileTree("$buildDir/intermediates/cache/mmdb").visit { FileVisitDetails details ->
+                if ( details.path.endsWith("Country.mmdb") )
+                    details.file.renameTo(file("$buildDir/intermediates/dynamic_assets/Country.mmdb"))
+            }
+        }
+
+        dependsOn ds
+    }
+
+    for ( task in tasks ) {
+        if ( task.name.contains("generate") && task.name.contains("Assets") )
+            task.dependsOn(es)
+    }
 }
+
 repositories {
     mavenCentral()
 }

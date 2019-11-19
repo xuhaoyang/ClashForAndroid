@@ -2,16 +2,20 @@ package profile
 
 import (
 	"net"
+	"strings"
 
 	adapters "github.com/Dreamacro/clash/adapters/outbound"
 	"github.com/Dreamacro/clash/component/auth"
 	trie "github.com/Dreamacro/clash/component/domain-trie"
+	"github.com/Dreamacro/clash/component/socks5"
 	"github.com/Dreamacro/clash/config"
 	"github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/dns"
 	"github.com/Dreamacro/clash/hub/executor"
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/tunnel"
+
+	"github.com/kr328/clash/tun"
 )
 
 // LoadDefault - load default configure
@@ -60,6 +64,8 @@ func LoadDefault() {
 	defaultC.Proxies["REJECT"] = reject
 	defaultC.Proxies["GLOBAL"] = adapters.NewProxy(global)
 
+	tun.SetDNSRedirect(nil)
+
 	executor.ApplyConfig(defaultC, true)
 }
 
@@ -71,5 +77,19 @@ func LoadFromFile(path string) error {
 	}
 
 	executor.ApplyConfig(cfg, true)
+
+	if cfg.DNS != nil && cfg.DNS.Enable && dns.DefaultResolver != nil && dns.ReCreateServer(cfg.DNS.Listen, dns.DefaultResolver) == nil {
+		addr := cfg.DNS.Listen
+		addr = strings.ReplaceAll(addr, "0.0.0.0", "127.0.0.1")
+		addr = strings.ReplaceAll(addr, "::", "::1")
+
+		if err == nil {
+			listen := socks5.ParseAddr(addr)
+			tun.SetDNSRedirect(&listen)
+		}
+	} else {
+		tun.SetDNSRedirect(nil)
+	}
+
 	return nil
 }
