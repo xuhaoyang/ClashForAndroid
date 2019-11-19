@@ -18,17 +18,20 @@ func main() {
 		return
 	}
 
-	fmt.Println("[CLASH] PID =", int(os.Getpid()))
-
 	if cwd, err := os.Getwd(); err == nil {
 		constant.SetHomeDir(cwd)
 	} else {
 		return
 	}
+	
+	if err := server.Start(os.Args[1]) ; err != nil {
+		fmt.Println("[CONTROLLER] ERROR={"+ err.Error() +"}")
+		return
+	}
+
+	fmt.Println("[CONTROLLER] STARTED")
 
 	profile.LoadDefault()
-
-	server.Start(os.Args[1])
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)

@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	commandPing     = 0
 	commandTunStart = 1
 	commandTunStop  = 2
 )
@@ -15,6 +16,7 @@ const (
 var handlers map[int]func(*net.UnixConn) = make(map[int]func(*net.UnixConn))
 
 func init() {
+	handlers[commandPing] = handlePing         // ping.go
 	handlers[commandTunStart] = handleTunStart // tun.go
 	handlers[commandTunStop] = handleTunStop   // tun.go
 }

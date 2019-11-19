@@ -5,30 +5,38 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.github.kr328.clash.core.Clash
-import java.lang.Exception
+import com.github.kr328.clash.core.ClashProcess
 import kotlin.concurrent.thread
 
 class ClashService : Service() {
+    companion object {
+        private val TAG = "ClashForAndroid"
+    }
+
+    private lateinit var clash: Clash
     private inner class ClashServiceImpl : IClashService.Stub() {
         override fun loadProfile(path: String?) {
-            thread {
-                Clash.loadProfileFromPath(path)
-            }
+
         }
 
         override fun startTunDevice(fd: Int, mtu: Int) {
-            Clash.startTun(fd, mtu)
+
         }
     }
 
     override fun onCreate() {
         super.onCreate()
 
-        Clash.init(
-            applicationInfo.nativeLibraryDir + "/libclash.so",
-            filesDir.resolve("clash").absolutePath
-        )
-        Clash.loadDefault()
+        clash = Clash(this,
+            filesDir.resolve("clash"),
+            cacheDir.resolve("clash_controller"))
+
+
+        thread {
+            clash.exec()
+
+            Log.i(TAG, "Clash exited")
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -36,7 +44,7 @@ class ClashService : Service() {
     }
 
     override fun onDestroy() {
-        Clash.loadDefault()
+
 
         super.onDestroy()
     }

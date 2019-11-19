@@ -24,8 +24,8 @@ open class GolangBuildTask : Exec() {
         environment.put("GOOS", "android")
         environment.put("CGO_ENABLED", "1")
         environment.put("GOPATH", project.buildDir.resolve("intermediates/gopath").absolutePath)
-        environment.put("CXX", toolchainRoot.resolve(compilerPrefix + "-clang++".exe()).absolutePath)
-        environment.put("CC", toolchainRoot.resolve(compilerPrefix + "-clang".exe()).absolutePath)
+        environment.put("CXX", toolchainRoot.resolve(compilerPrefix + "-clang++".cmd()).absolutePath)
+        environment.put("CC", toolchainRoot.resolve(compilerPrefix + "-clang".cmd()).absolutePath)
         environment.put("LD", toolchainRoot.resolve(linkerPrefix + "ld".exe()).absolutePath)
 
         commandLine = listOf("go".exe(), "build", "-o", options.outputDir.resolve("$abi/libclash.so").absolutePath)
@@ -49,7 +49,7 @@ open class GolangBuildTask : Exec() {
 
     private fun detectOsType(): String {
         return when {
-            Os.isFamily(Os.FAMILY_WINDOWS) -> "linux-x86_64"
+            Os.isFamily(Os.FAMILY_WINDOWS) -> "windows-x86_64"
             Os.isFamily(Os.FAMILY_MAC) -> "darwin-x86_64"
             Os.isFamily(Os.FAMILY_UNIX) -> "linux-x86_64"
             else -> throw GradleException("Unsupported Build OS ${System.getenv("os.name")}")
@@ -79,6 +79,13 @@ open class GolangBuildTask : Exec() {
     private fun String.exe(): String {
         return if ( Os.isFamily(Os.FAMILY_WINDOWS) )
             "$this.exe"
+        else
+            this
+    }
+
+    private fun String.cmd(): String {
+        return if ( Os.isFamily(Os.FAMILY_WINDOWS) )
+            "$this.cmd"
         else
             this
     }
