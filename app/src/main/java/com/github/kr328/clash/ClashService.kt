@@ -31,13 +31,14 @@ class ClashService : Service() {
     private val observers = mutableMapOf<String, IClashObserver>()
 
     private inner class ClashServiceImpl : IClashService.Stub() {
-        override fun registerObserver(id: String?, observer: IClashObserver?) {
+        override fun registerObserver(id: String?, notifyCurrent: Boolean, observer: IClashObserver?) {
             if (id == null || observer == null)
                 throw RemoteException()
 
             observers[id] = observer
 
-            observer.onStatusChanged(ClashStatus(status))
+            if ( notifyCurrent )
+                observer.onStatusChanged(ClashStatus(status))
 
             observer.asBinder().linkToDeath({
                 observers.remove(id)

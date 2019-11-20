@@ -33,7 +33,7 @@ class TunService : VpnService() {
             val clash = IClashService.Stub.asInterface(service) ?: throw NullPointerException()
 
             clash.start()
-            clash.registerObserver("tun", object: IClashObserver.Stub() {
+            clash.registerObserver("tun", false, object: IClashObserver.Stub() {
                 override fun onStatusChanged(status: ClashStatus?) {
                     if ( status == null )
                         return
