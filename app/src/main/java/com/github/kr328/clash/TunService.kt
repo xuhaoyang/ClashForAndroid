@@ -8,10 +8,7 @@ import android.content.ServiceConnection
 import android.net.VpnService
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
-import com.github.kr328.clash.core.ClashProcess
 import com.github.kr328.clash.core.ClashProcessStatus
-import com.github.kr328.clash.core.ClashStatus
-import java.lang.NullPointerException
 
 class TunService : VpnService() {
     companion object {

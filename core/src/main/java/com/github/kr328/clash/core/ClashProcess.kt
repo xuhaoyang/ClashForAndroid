@@ -1,7 +1,6 @@
 package com.github.kr328.clash.core
 
 import android.content.Context
-import android.os.Parcelable
 import android.util.Log
 import java.io.File
 import java.io.FileOutputStream

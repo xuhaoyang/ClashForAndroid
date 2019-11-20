@@ -33,9 +33,5 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
-        <provider
-            android:authorities="${applicationId}.data"
-            android:name=".DataProvider"
-            android:exported="false"/>
     </application>
 </manifest>
