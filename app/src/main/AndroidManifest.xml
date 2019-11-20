@@ -19,19 +19,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".ClashService"
-            android:exported="false"
-            android:process=":clash" />
-        <service
-            android:name=".TunService"
-            android:exported="false"
-            android:process=":clash"
-            android:permission="android.permission.BIND_VPN_SERVICE">
-            <intent-filter>
-                <action android:name="android.net.VpnService" />
-            </intent-filter>
-        </service>
     </application>
 </manifest>

@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.kr328.clash.service">
+    <application>
+        <activity
+            android:name=".VpnRequestActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoDisplay" />
+        <service
+            android:name="ClashService"
+            android:exported="false"
+            android:process=":clash" />
+        <service
+            android:name="TunService"
+            android:exported="false"
+            android:process=":clash"
+            android:permission="android.permission.BIND_VPN_SERVICE">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
