@@ -8,6 +8,6 @@ interface IClashService {
     void stop();
     void registerObserver(String id, boolean notifyCurrent, in IClashObserver observer);
     void unregisterObserver(String id);
-    void loadProfile(in Uri path);
     void startTunDevice(in ParcelFileDescriptor fd, int mtu);
+    void stopTunDevice();
 }
