@@ -31,7 +31,7 @@ class TunService : VpnService() {
                 service
             ) ?: throw NullPointerException()
 
-            clash.start()
+
             clash.registerObserver("tun", false, object: IClashObserver.Stub() {
                 override fun onStatusChanged(status: ClashProcessStatus?) {
                     if ( status == null )
@@ -45,6 +45,7 @@ class TunService : VpnService() {
                     }
                 }
             })
+            clash.start()
         }
     }
 

@@ -40,7 +40,10 @@ class Clash(
 
     @Throws(IOException::class)
     @Synchronized
-    fun loadProfile(url: Uri) {
+    fun loadProfile(url: Uri?) {
+        if ( url == null || url.scheme != "content" )
+            return
+
         synchronized(cacheFile) {
             context.contentResolver.openInputStream(url)?.use {
                 it.copyTo(FileOutputStream(cacheFile))

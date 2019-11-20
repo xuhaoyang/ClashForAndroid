@@ -9,7 +9,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -24,13 +24,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
+    compileOptions {
+        targetCompatibility = 1.8
+        sourceCompatibility = 1.8
+    }
 }
 
 dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation project(":core")
+    implementation "androidx.lifecycle:lifecycle-livedata:2.1.0"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core-ktx:1.1.0"
     implementation "androidx.room:room-runtime:$room_version"
