@@ -11,7 +11,7 @@ import kotlin.concurrent.thread
 abstract class ClashProcess(private val context: Context,
                             private val clashDir: File,
                             private val controllerPath: File,
-                            private val listener: (Status) -> Unit) {
+                            private val listener: (ClashProcessStatus) -> Unit) {
     companion object {
         const val TAG = "ClashForAndroid"
 
@@ -21,10 +21,6 @@ abstract class ClashProcess(private val context: Context,
 
         private val PID_PATTERN = Regex("PID=(\\d+)")
         private val CONTROLLER_ERROR_PATTERN = Regex("\\[CONTROLLER] ERROR=\\{(.+)\\}")
-    }
-
-    enum class Status {
-        STARTED, STOPPED
     }
 
     private var pid: Int = 0
@@ -83,7 +79,7 @@ abstract class ClashProcess(private val context: Context,
         process = p
         pid = currentPid
 
-        listener(Status.STARTED)
+        listener(ClashProcessStatus(ClashProcessStatus.STATUS_STARTED))
 
         Log.i(TAG, "Clash started pid = $pid")
 
@@ -99,7 +95,7 @@ abstract class ClashProcess(private val context: Context,
                 pid = -1
             }
 
-            listener(Status.STOPPED)
+            listener(ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED))
         }
     }
 

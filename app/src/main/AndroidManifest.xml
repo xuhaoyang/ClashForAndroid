@@ -16,7 +16,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,5 +33,9 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
+        <provider
+            android:authorities="${applicationId}.data"
+            android:name=".DataProvider"
+            android:exported="false"/>
     </application>
 </manifest>

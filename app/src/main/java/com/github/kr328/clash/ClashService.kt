@@ -2,13 +2,11 @@ package com.github.kr328.clash
 
 import android.app.Service
 import android.content.Intent
-import android.net.Uri
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.RemoteException
 import com.github.kr328.clash.core.Clash
-import com.github.kr328.clash.core.ClashProcess
-import com.github.kr328.clash.model.ClashStatus
+import com.github.kr328.clash.core.ClashProcessStatus
 import java.io.IOException
 
 class ClashService : Service() {
@@ -18,13 +16,13 @@ class ClashService : Service() {
 
     private lateinit var clash: Clash
 
-    private var status = ClashProcess.Status.STOPPED
+    private var status = ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED)
         set(value) {
             field = value
 
             for (kv in observers) {
                 runCatching {
-                    kv.value.onStatusChanged(ClashStatus(status))
+                    kv.value.onStatusChanged(status)
                 }
             }
         }
@@ -37,7 +35,7 @@ class ClashService : Service() {
 
             observers[id] = observer
 
-            observer.onStatusChanged(ClashStatus(status))
+            observer.onStatusChanged(status)
 
             observer.asBinder().linkToDeath({
                 observers.remove(id)
@@ -51,6 +49,10 @@ class ClashService : Service() {
             observers.remove(id)
         }
 
+        override fun stopTunDevice() {
+            clash.stop()
+        }
+
         override fun start() {
             try {
                 clash.start()
@@ -61,14 +63,6 @@ class ClashService : Service() {
 
         override fun stop() {
             clash.stop()
-        }
-
-        override fun loadProfile(url: Uri?) {
-            try {
-                clash.loadProfile(url ?: throw RemoteException())
-            } catch (e: IOException) {
-                throw RemoteException(e.message)
-            }
         }
 
         override fun startTunDevice(fd: ParcelFileDescriptor, mtu: Int) {

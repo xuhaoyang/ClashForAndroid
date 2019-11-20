@@ -1,7 +1,7 @@
 package com.github.kr328.clash;
 
-import com.github.kr328.clash.model.ClashStatus;
+import com.github.kr328.clash.core.ClashProcessStatus;
 
 interface IClashObserver {
-    void onStatusChanged(in ClashStatus status);
+    void onStatusChanged(in ClashProcessStatus status);
 }
