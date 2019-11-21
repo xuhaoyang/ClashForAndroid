@@ -29,6 +29,7 @@ func main() {
 		return
 	}
 
+	fmt.Println("[PID]", os.Getpid())
 	fmt.Println("[CONTROLLER] STARTED")
 
 	profile.LoadDefault()

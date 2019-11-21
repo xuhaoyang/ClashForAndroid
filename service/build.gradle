@@ -36,7 +36,6 @@ dependencies {
     implementation project(":core")
     implementation "androidx.lifecycle:lifecycle-livedata:2.1.0"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.core:core-ktx:1.1.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "androidx.room:room-runtime:$room_version"
 }

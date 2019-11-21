@@ -20,7 +20,7 @@ class TunService : VpnService() {
         private const val PRIVATE_VLAN6_ROUTER = "fdfe:dcba:9876::2"
     }
 
-    private lateinit var fileDescriptor: ParcelFileDescriptor
+    private var fileDescriptor: ParcelFileDescriptor? = null
     private var clash: IClashService? = null
     private val connection = object: ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -40,9 +40,9 @@ class TunService : VpnService() {
                         return
 
                     when ( status.status ) {
-                        ClashProcessStatus.STATUS_STOPPED ->
+                        ClashProcessStatus.STATUS_STOPPED_INT ->
                             stopSelf()
-                        ClashProcessStatus.STATUS_STARTED ->
+                        ClashProcessStatus.STATUS_STARTED_INT ->
                             clash.startTunDevice(fileDescriptor, VPN_MTU)
                     }
                 }
@@ -57,7 +57,6 @@ class TunService : VpnService() {
         super.onCreate()
 
         if ( prepare(this) != null ) {
-            startActivity(Intent(this, VpnRequestActivity::class.java))
             stopSelf()
             return
         }
@@ -84,7 +83,7 @@ class TunService : VpnService() {
     }
 
     override fun onDestroy() {
-        fileDescriptor.close()
+        fileDescriptor?.close()
 
         clash?.stopTunDevice()
         clash?.stop()

@@ -28,11 +28,15 @@ android {
             jniLibs.srcDirs += ["$buildDir/intermediates/native_output"]
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 dependencies {
     implementation "androidx.core:core-ktx:1.1.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 afterEvaluate {
@@ -52,7 +56,7 @@ afterEvaluate {
 
     def ds = tasks.register("downloadMMDB", MMDBDowloadTask.class) {
         onlyIf {
-            System.currentTimeMillis() - file("$buildDir/intermediates/cache/Country.tar.gz").lastModified() > 30 * 24 * 3600L
+            System.currentTimeMillis() - file("$buildDir/intermediates/cache/Country.tar.gz").lastModified() > 24 * 3600L
         }
 
         output = "$buildDir/intermediates/cache/Country.tar.gz"
@@ -69,6 +73,7 @@ afterEvaluate {
         into "$buildDir/intermediates/cache/mmdb"
 
         doLast {
+            file("$buildDir/intermediates/dynamic_assets").mkdirs()
             fileTree("$buildDir/intermediates/cache/mmdb").visit { FileVisitDetails details ->
                 if ( details.path.endsWith("Country.mmdb") )
                     details.file.renameTo(file("$buildDir/intermediates/dynamic_assets/Country.mmdb"))

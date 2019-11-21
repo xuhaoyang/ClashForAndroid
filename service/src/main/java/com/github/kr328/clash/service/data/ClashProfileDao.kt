@@ -6,9 +6,9 @@ import androidx.room.Query
 
 @Dao
 interface ClashProfileDao {
-    @Query("UPDATE profiles SET `default` = CASE WHEN url = :url THEN 1 ELSE 0 END")
-    fun setDefaultProfile(url: String)
+    @Query("UPDATE profiles SET selected = CASE WHEN url = :url THEN 1 ELSE 0 END")
+    fun setSelectedProfile(url: String)
 
-    @Query("SELECT url FROM profiles WHERE `default` = 1 LIMIT 1")
+    @Query("SELECT url FROM profiles WHERE selected = 1 LIMIT 1")
     fun observeDefaultProfileUrl(): LiveData<String?>
 }

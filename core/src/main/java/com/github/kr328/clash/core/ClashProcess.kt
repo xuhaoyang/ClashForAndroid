@@ -5,6 +5,7 @@ import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Exception
 import kotlin.concurrent.thread
 
 abstract class ClashProcess(private val context: Context,
@@ -14,11 +15,9 @@ abstract class ClashProcess(private val context: Context,
     companion object {
         const val TAG = "ClashForAndroid"
 
-        private const val CLASH_COMMAND = "\"{CLASH}\" \"{CONTROLLER}\" 2>&1"
-
         private const val CONTROLLER_STATUS_PREFIX = "[CONTROLLER]"
 
-        private val PID_PATTERN = Regex("PID=(\\d+)")
+        private val PID_PATTERN = Regex("\\[PID]\\s*(\\d+)")
         private val CONTROLLER_ERROR_PATTERN = Regex("\\[CONTROLLER] ERROR=\\{(.+)\\}")
     }
 
@@ -30,71 +29,72 @@ abstract class ClashProcess(private val context: Context,
         if ( pid > 0 )
             return
 
-        extractMMDB()
+        try {
+            clashDir.mkdirs()
+            controllerPath.parentFile?.mkdirs()
+            controllerPath.delete()
 
-        clashDir.mkdirs()
-        controllerPath.parentFile?.mkdirs()
-        controllerPath.delete()
+            extractMMDB()
 
-        val p = ProcessBuilder().apply {
-            command("sh")
-            directory(clashDir)
-        }.start()
+            val clashPath = File(context.applicationInfo.nativeLibraryDir,"libclash.so").absolutePath
 
-        val clashPath = File(context.applicationInfo.nativeLibraryDir,"libclash.so").absolutePath
-        val command = CLASH_COMMAND
-            .replace("{CLASH}", clashPath)
-            .replace("{CONTROLLER}", controllerPath.absolutePath)
+            val p = ProcessBuilder().apply {
+                command(clashPath, controllerPath.absolutePath)
+                directory(clashDir)
+            }.start()
 
-        Log.i(TAG, "Starting clash [$command]")
+            Log.i(TAG, "Starting clash [$clashPath]")
 
-        p.outputStream.use {
-            it.write("echo PID=$$\n".toByteArray())
-            it.write("exec $command\n".toByteArray())
-            it.write("exit\n".toByteArray())
-            it.flush()
-        }
+            val reader = p.inputStream.bufferedReader()
+            var line = ""
 
-        var line = ""
+            // Parse pid
+            var currentPid = 0
+            while ( reader.readLine()?.apply { line = this.trim() } != null ) {
+                Log.d(TAG, line)
 
-        // Parse pid
-        var currentPid = 0
-        while ( p.inputStream.bufferedReader().readLine()?.apply { line = this.trim() } != null ) {
-            if ( PID_PATTERN.matchEntire(line)?.apply { currentPid = groups[1]!!.value.toInt() } != null  )
-                break
-        }
-
-        while ( p.inputStream.bufferedReader().readLine()?.apply { line = this.trim() } != null ) {
-            if ( line.startsWith(CONTROLLER_STATUS_PREFIX) ) {
-                val error = CONTROLLER_ERROR_PATTERN.matchEntire(line)?.groups?.get(1)?.value
-
-                if ( error != null )
-                    throw IOException("Controller: $error")
-
-                break
-            }
-        }
-
-        process = p
-        pid = currentPid
-
-        listener(ClashProcessStatus(ClashProcessStatus.STATUS_STARTED))
-
-        Log.i(TAG, "Clash started pid = $pid")
-
-        thread {
-            // Redirect stdout to log
-            while ( p.inputStream.bufferedReader().readLine()?.apply { line = this } != null ) {
-                Log.i(TAG, line.trim())
+                if ( PID_PATTERN.matchEntire(line)?.apply { currentPid = groups[1]!!.value.toInt() } != null  )
+                    break
             }
 
-            synchronized(this@ClashProcess) {
-                p.destroy()
-                process = null
-                pid = -1
+            while ( reader.readLine()?.apply { line = this.trim() } != null ) {
+                Log.d(TAG, line)
+
+                if ( line.startsWith(CONTROLLER_STATUS_PREFIX) ) {
+                    val error = CONTROLLER_ERROR_PATTERN.matchEntire(line)?.groups?.get(1)?.value
+
+                    if ( error != null )
+                        throw IOException("Controller: $error")
+
+                    break
+                }
             }
 
-            listener(ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED))
+            process = p
+            pid = currentPid
+
+            listener(ClashProcessStatus.STATUS_STARTED)
+
+            Log.i(TAG, "Clash started pid = $pid")
+
+            thread {
+                // Redirect stdout to log
+                while ( reader.readLine()?.apply { line = this } != null ) {
+                    Log.i(TAG, line.trim())
+                }
+
+                synchronized(this@ClashProcess) {
+                    p.destroy()
+                    process = null
+                    pid = -1
+                }
+
+                listener(ClashProcessStatus.STATUS_STOPPED)
+            }
+        }
+        catch (e: Exception) {
+            listener(ClashProcessStatus.STATUS_STOPPED)
+            throw e
         }
     }
 

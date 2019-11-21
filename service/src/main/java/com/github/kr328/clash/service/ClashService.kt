@@ -3,6 +3,7 @@ package com.github.kr328.clash.service
 import android.app.Service
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.RemoteException
@@ -19,11 +20,12 @@ class ClashService : Service() {
         private val TAG = "ClashForAndroid"
     }
 
+    private val handler = Handler()
     private val executor = Executors.newSingleThreadExecutor()
     private lateinit var clash: Clash
     private var lastProfile: String? = null
 
-    private var status = ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED)
+    private var status = ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED_INT)
         set(value) {
             field = value
 
@@ -38,6 +40,8 @@ class ClashService : Service() {
     private val defaultProfileObserver = object: Observer<String?> {
         override fun onChanged(url: String?) {
             executor.submit {
+                Log.i(TAG, "Loading profile $url")
+
                 if (url == null)
                     clash.stop()
                 if (url == lastProfile)
@@ -55,7 +59,7 @@ class ClashService : Service() {
                         lastProfile = null
                         ClashDatabase.getInstance(this@ClashService)
                             .openClashProfileDao()
-                            .setDefaultProfile(p ?: "")
+                            .setSelectedProfile(p ?: "")
                     }
                 }
             }
@@ -97,6 +101,8 @@ class ClashService : Service() {
             try {
                 clash.start()
             } catch (e: IOException) {
+                Log.e(TAG, "Start failure", e)
+
                 throw RemoteException(e.message)
             }
         }
@@ -128,12 +134,19 @@ class ClashService : Service() {
         ) {
             this.status = it
 
-            when (it.status) {
-                ClashProcessStatus.STATUS_STARTED ->
-                    ClashDatabase.getInstance(this)
-                        .openClashProfileDao()
-                        .observeDefaultProfileUrl()
-                        .observeForever(defaultProfileObserver)
+            handler.post {
+                when (it.status) {
+                    ClashProcessStatus.STATUS_STARTED_INT ->
+                        ClashDatabase.getInstance(this)
+                            .openClashProfileDao()
+                            .observeDefaultProfileUrl()
+                            .observeForever(defaultProfileObserver)
+                    ClashProcessStatus.STATUS_STOPPED_INT ->
+                        ClashDatabase.getInstance(this)
+                            .openClashProfileDao()
+                            .observeDefaultProfileUrl()
+                            .removeObserver(defaultProfileObserver)
+                }
             }
         }
     }
@@ -153,11 +166,6 @@ class ClashService : Service() {
     override fun onDestroy() {
         clash.stop()
         executor.shutdown()
-
-        ClashDatabase.getInstance(this)
-            .openClashProfileDao()
-            .observeDefaultProfileUrl()
-            .removeObserver(defaultProfileObserver)
 
         super.onDestroy()
     }

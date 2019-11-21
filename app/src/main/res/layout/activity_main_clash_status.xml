@@ -16,8 +16,8 @@
     <RelativeLayout
         android:paddingStart="18dp"
         android:paddingEnd="18dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
@@ -42,7 +42,7 @@
             android:text="@string/clash_status_click_to_start"
             android:textColor="@color/light_gray"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="5dp"
             android:layout_alignStart="@id/activity_main_clash_status_title"
             android:layout_below="@id/activity_main_clash_status_title"
             android:layout_width="wrap_content"

@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/activity_main_clash_profiles_summary"
-            android:text="@string/clash_profiles_summary"
+            android:text="@string/clash_profiles_summary_unselected"
             android:textColor="@android:color/darker_gray"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:layout_marginTop="2dp"

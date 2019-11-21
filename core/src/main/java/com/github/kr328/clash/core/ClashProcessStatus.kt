@@ -5,8 +5,10 @@ import android.os.Parcelable
 
 data class ClashProcessStatus(val status: Int) : Parcelable {
     companion object {
-        const val STATUS_STOPPED = 0
-        const val STATUS_STARTED = 1
+        const val STATUS_STOPPED_INT = 0
+        const val STATUS_STARTED_INT = 1
+        val STATUS_STOPPED = ClashProcessStatus(STATUS_STOPPED_INT)
+        val STATUS_STARTED = ClashProcessStatus(STATUS_STARTED_INT)
 
         @JvmField
         val CREATOR = object: Parcelable.Creator<ClashProcessStatus> {
