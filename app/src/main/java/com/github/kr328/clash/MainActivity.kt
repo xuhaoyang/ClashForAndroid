@@ -62,8 +62,8 @@ class MainActivity : AppCompatActivity() {
         clashStatus.observe(this) {
             handler.removeMessages(0)
             handler.postDelayed({
-                when ( it.status ) {
-                    ClashProcessStatus.STATUS_STARTED_INT -> {
+                when ( it ) {
+                    ClashProcessStatus.STATUS_STARTED -> {
                         activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_started)
                         activity_main_clash_status_title.text = getString(R.string.clash_status_started)
                         activity_main_clash_status_summary.text = getString(R.string.clash_status_forwarded_traffic, "1.4GiB")
@@ -82,9 +82,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         activity_main_clash_status.setOnClickListener {
-            when ( clashStatus.value?.status ?: ClashProcessStatus.STATUS_STOPPED_INT ) {
-                ClashProcessStatus.STATUS_STARTED_INT -> {}
-                ClashProcessStatus.STATUS_STOPPED_INT -> {
+            when ( clashStatus.value ?: ClashProcessStatus.STATUS_STOPPED ) {
+                ClashProcessStatus.STATUS_STARTED -> {}
+                ClashProcessStatus.STATUS_STOPPED -> {
                     VpnService.prepare(this)?.apply {
                          startActivityForResult(this, VPN_REQUEST_CODE)
                     } ?: startService(Intent(this, TunService::class.java))
