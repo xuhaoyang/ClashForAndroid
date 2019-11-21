@@ -22,7 +22,7 @@
     <LinearLayout
         android:id="@+id/activity_main_clash_logs"
         android:padding="15dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="35dp"
         android:layout_marginEnd="30dp"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
@@ -47,7 +47,7 @@
     <LinearLayout
         android:id="@+id/activity_main_clash_settings"
         android:padding="15dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="35dp"
         android:layout_marginEnd="30dp"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
@@ -72,7 +72,7 @@
     <LinearLayout
         android:id="@+id/activity_main_clash_feedback"
         android:padding="15dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="35dp"
         android:layout_marginEnd="30dp"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
@@ -97,7 +97,7 @@
     <LinearLayout
         android:id="@+id/activity_main_clash_about"
         android:padding="15dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="35dp"
         android:layout_marginEnd="30dp"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
