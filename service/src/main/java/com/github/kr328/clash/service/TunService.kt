@@ -8,10 +8,13 @@ import android.content.ServiceConnection
 import android.net.VpnService
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
+import android.util.Log
 import com.github.kr328.clash.core.ClashProcessStatus
 
 class TunService : VpnService() {
     companion object {
+        val TAG = "ClashForAndroid"
+
         // from https://github.com/shadowsocks/shadowsocks-android/blob/master/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt
         private const val VPN_MTU = 1500
         private const val PRIVATE_VLAN4_CLIENT = "172.19.0.1"
@@ -39,15 +42,21 @@ class TunService : VpnService() {
                     if ( status == null )
                         return
 
-                    when ( status.status ) {
-                        ClashProcessStatus.STATUS_STOPPED_INT ->
+                    Log.d(TAG, "New clash status $status")
+
+                    when ( status ) {
+                        ClashProcessStatus.STATUS_STOPPED ->
                             stopSelf()
-                        ClashProcessStatus.STATUS_STARTED_INT ->
+                        ClashProcessStatus.STATUS_STARTED ->
                             clash.startTunDevice(fileDescriptor, VPN_MTU)
                     }
                 }
             })
-            clash.start()
+
+            if ( clash.clashProcessStatus == ClashProcessStatus.STATUS_STARTED )
+                clash.startTunDevice(fileDescriptor, VPN_MTU)
+            else
+                clash.start()
 
             this@TunService.clash = clash
         }

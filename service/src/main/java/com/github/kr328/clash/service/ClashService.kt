@@ -118,6 +118,7 @@ class ClashService : Service() {
         override fun startTunDevice(fd: ParcelFileDescriptor, mtu: Int) {
             try {
                 clash.startTunDevice(fd.fileDescriptor, mtu)
+                fd.close()
             } catch (e: IOException) {
                 throw RemoteException(e.message)
             }
