@@ -21,8 +21,10 @@ class TunService : VpnService() {
     }
 
     private lateinit var fileDescriptor: ParcelFileDescriptor
+    private var clash: IClashService? = null
     private val connection = object: ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
+            clash = null
             stopSelf()
         }
 
@@ -46,16 +48,18 @@ class TunService : VpnService() {
                 }
             })
             clash.start()
+
+            this@TunService.clash = clash
         }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
+    override fun onCreate() {
+        super.onCreate()
 
         if ( prepare(this) != null ) {
             startActivity(Intent(this, VpnRequestActivity::class.java))
             stopSelf()
-            return Service.START_NOT_STICKY
+            return
         }
 
         fileDescriptor = Builder()
@@ -71,12 +75,19 @@ class TunService : VpnService() {
             .establish() ?: throw NullPointerException("Unable to establish VPN")
 
         bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
 
         return Service.START_NOT_STICKY
     }
 
     override fun onDestroy() {
         fileDescriptor.close()
+
+        clash?.stopTunDevice()
+        clash?.stop()
 
         unbindService(connection)
 

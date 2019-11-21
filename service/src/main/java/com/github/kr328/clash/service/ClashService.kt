@@ -138,6 +138,14 @@ class ClashService : Service() {
         }
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+
+        clash.start()
+
+        return START_NOT_STICKY
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
         return ClashServiceImpl()
     }

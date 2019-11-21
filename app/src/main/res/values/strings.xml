@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Clash</string>
+
+    <string name="clash_status_stopped">Clash Stopped</string>
+    <string name="clash_status_click_to_start">Click to start</string>
+    <string name="clash_status_running">Clash Started</string>
+    <string name="clash_status_forwarded_traffic">%s Traffic Forwarded</string>
+
+    <string name="clash_proxy_manage">Proxy Manage</string>
+    <string name="clash_proxy_manage_summary">%d Proxies</string>
+
+    <string name="clash_profiles">Profiles</string>
+    <string name="clash_profiles_summary">%s Selected</string>
+
+    <string name="clash_logs">Logs</string>
+    <string name="clash_settings">Settings</string>
+    <string name="clash_feedback">Feedback</string>
+    <string name="clash_about">About</string>
 </resources>
