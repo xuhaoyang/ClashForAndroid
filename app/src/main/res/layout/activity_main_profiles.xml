@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main_clash_profiles"
     android:layout_marginTop="10dp"
     android:layout_marginStart="30dp"
     android:layout_marginEnd="30dp"
@@ -20,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/activity_main_profiles"
+            android:id="@+id/activity_main_profiles_icon"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_centerVertical="true"
@@ -29,7 +31,7 @@
 
         <TextView
             android:id="@+id/activity_main_profiles_title"
-            android:layout_toEndOf="@id/activity_main_profiles"
+            android:layout_toEndOf="@id/activity_main_profiles_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
