@@ -92,9 +92,6 @@ class TunService : VpnService() {
         bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
 
         defaultNetworkObserver = DefaultNetworkObserver(this) {
-            val data = getSystemService(ConnectivityManager::class.java)!!.getNetworkCapabilities(it)
-            Log.d(TAG, "Network $data")
-
             setUnderlyingNetworks(it?.run { arrayOf(this) })
         }
 

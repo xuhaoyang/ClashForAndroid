@@ -14,7 +14,14 @@ class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> U
     private var current: Network? = null
     private val callback = object: ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            current = active
+            current = network
+
+            listener(current)
+        }
+
+        override fun onLost(network: Network) {
+            if ( current == network )
+                current = null
 
             listener(current)
         }
@@ -23,22 +30,13 @@ class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> U
             network: Network,
             networkCapabilities: NetworkCapabilities
         ) {
-            if ( current == active )
-                listener(active)
-        }
-
-        override fun onLost(network: Network) {
-            if ( active == current )
-                current = null
-
-            listener(current)
+            if ( network == current )
+                listener(current)
         }
     }
 
     fun register() {
-        listener(active)
-
-        connectivity.registerDefaultNetworkCallback(callback)
+        connectivity.registerNetworkCallback(NetworkRequest.Builder().build(), callback)
     }
 
     fun unregister() {
