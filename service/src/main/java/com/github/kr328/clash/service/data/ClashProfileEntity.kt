@@ -9,7 +9,9 @@ data class ClashProfileEntity(
     @ColumnInfo(name = "url") val url: String,
     @ColumnInfo(name = "selected") val selected: Boolean,
     @ColumnInfo(name = "type") val writable: Type,
-    @ColumnInfo(name = "last_update") val lastUpdate: Long,
+    @ColumnInfo(name = "proxies") val proxies: Long,
+    @ColumnInfo(name = "proxy_groups") val proxyGroups: Long,
+    @ColumnInfo(name = "rules") val rules: Long,
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Int = 0) {
 
     enum class Type {
