@@ -3,13 +3,12 @@ package com.github.kr328.clash.core
 import android.content.Context
 import android.net.LocalSocket
 import android.net.LocalSocketAddress
-import android.net.Uri
 import android.util.Log
 import org.json.JSONObject
 import java.io.*
 
 class Clash(
-    private val context: Context,
+    context: Context,
     clashDir: File,
     private val controllerPath: File,
     listener: (ClashProcessStatus) -> Unit
@@ -24,15 +23,12 @@ class Clash(
         const val PING_REPLY = 233
     }
 
-    private val cacheFile = context.cacheDir.resolve("config.yaml")
-
     fun ping(): Boolean {
         try {
-            return runControl(COMMAND_PING) {_, input, _ ->
+            return runControl(COMMAND_PING) { _, input, _ ->
                 input.readInt() == PING_REPLY
             }
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             Log.w(TAG, "Clash ping failure", e)
         }
         return false
@@ -40,24 +36,15 @@ class Clash(
 
     @Throws(IOException::class)
     @Synchronized
-    fun loadProfile(url: Uri?) {
-        if ( url == null || url.scheme != "content" )
-            return
+    fun loadProfile(file: File) {
+        runControl(COMMAND_PROFILE_RELOAD) { _, input, output ->
+            output.writeString(JSONObject().apply {
+                put("path", file.absolutePath)
+            }.toString())
 
-        synchronized(cacheFile) {
-            context.contentResolver.openInputStream(url)?.use {
-                it.copyTo(FileOutputStream(cacheFile))
-            }
-
-            runControl(COMMAND_PROFILE_RELOAD) {_, input, output ->
-                output.writeString(JSONObject().apply {
-                    put("path", cacheFile.absolutePath)
-                }.toString())
-
-                val result = input.readString()
-                if (result.isNotEmpty()) {
-                    throw IOException(JSONObject(result).getString("error"))
-                }
+            val result = input.readString()
+            if (result.isNotEmpty()) {
+                throw IOException(JSONObject(result).getString("error"))
             }
         }
     }
@@ -73,10 +60,18 @@ class Clash(
         }
     }
 
-    private fun <R>runControl(command: Int, block: (LocalSocket, DataInputStream, DataOutputStream) -> R): R {
+    private fun <R> runControl(
+        command: Int,
+        block: (LocalSocket, DataInputStream, DataOutputStream) -> R
+    ): R {
         val socket = LocalSocket()
 
-        socket.connect(LocalSocketAddress(controllerPath.absolutePath, LocalSocketAddress.Namespace.FILESYSTEM))
+        socket.connect(
+            LocalSocketAddress(
+                controllerPath.absolutePath,
+                LocalSocketAddress.Namespace.FILESYSTEM
+            )
+        )
 
         val input = DataInputStream(socket.inputStream)
         val output = DataOutputStream(socket.outputStream)
@@ -90,8 +85,7 @@ class Clash(
             output.close()
 
             socket.close()
-        }
-        catch (ignore: IOException) {
+        } catch (ignore: IOException) {
 
         }
 

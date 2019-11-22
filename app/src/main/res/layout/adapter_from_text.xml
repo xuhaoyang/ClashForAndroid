@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="15dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/adapter_from_text_icon"
+        android:src="@drawable/ic_about"
+        android:contentDescription="@string/app_name"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/adapter_from_text_text"
+        android:drawableEnd="@drawable/ic_about"
+        android:layout_marginStart="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:inputType="none"/>
+
+</LinearLayout>

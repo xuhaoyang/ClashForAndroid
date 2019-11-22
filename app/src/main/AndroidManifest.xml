@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfilesActivity" android:exported="false" />
+        <activity android:name=".ProfilesActivity"
+            android:label="@string/clash_profiles"
+            android:exported="false" />
+        <activity android:name=".CreateProfileActivity"
+            android:label="@string/clash_new_profile"
+            android:exported="false" />
     </application>
 </manifest>

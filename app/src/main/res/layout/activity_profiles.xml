@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/activity_profiles_toolbar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"/>
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/activity_profiles_toolbar"
+            android:elevation="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,11 +39,10 @@
                     android:contentDescription="@string/app_name"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:layout_width="40dp"
-                    android:layout_height="60dp"/>
+                    android:layout_width="20dp"
+                    android:layout_height="40dp"/>
                 <TextView
                     android:text="@string/clash_new_profile"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:gravity="center|start"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

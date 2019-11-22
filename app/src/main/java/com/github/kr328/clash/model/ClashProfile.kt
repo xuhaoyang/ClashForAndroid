@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class ClashProfile(
     @SerialName("Proxy") val proxies: List<ClashProxy>,
     @SerialName("Proxy Group") val proxyGroups: List<ClashProxyGroup>,
-    @SerialName("Rule") val rules: List<String>
+    @SerialName("Rule") val rules: List<ClashRule>
 )

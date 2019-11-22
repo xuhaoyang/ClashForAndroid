@@ -6,9 +6,9 @@ import androidx.room.*
 @TypeConverters(ClashProfileEntity.Converters::class)
 data class ClashProfileEntity(
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "url") val url: String,
+    @ColumnInfo(name = "token") val token: String,
+    @ColumnInfo(name = "cache") val cache: String,
     @ColumnInfo(name = "selected") val selected: Boolean,
-    @ColumnInfo(name = "type") val writable: Type,
     @ColumnInfo(name = "proxies") val proxies: Long,
     @ColumnInfo(name = "proxy_groups") val proxyGroups: Long,
     @ColumnInfo(name = "rules") val rules: Long,

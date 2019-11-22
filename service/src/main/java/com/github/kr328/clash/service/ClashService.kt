@@ -2,7 +2,6 @@ package com.github.kr328.clash.service
 
 import android.app.Service
 import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
@@ -12,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.ClashProcessStatus
 import com.github.kr328.clash.service.data.ClashDatabase
+import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
 
@@ -23,7 +23,6 @@ class ClashService : Service() {
     private val handler = Handler()
     private val executor = Executors.newSingleThreadExecutor()
     private lateinit var clash: Clash
-    private var lastProfile: String? = null
 
     private var status = ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED_INT)
         set(value) {
@@ -38,29 +37,17 @@ class ClashService : Service() {
     private val observers = mutableMapOf<String, IClashObserver>()
 
     private val defaultProfileObserver = object: Observer<String?> {
-        override fun onChanged(url: String?) {
+        override fun onChanged(file: String?) {
             executor.submit {
-                Log.i(TAG, "Loading profile $url")
+                Log.i(TAG, "Loading profile $file")
 
-                if (url == null)
-                    clash.stop()
-                if (url == lastProfile)
+                if (file == null)
                     return@submit
+
                 try {
-                    clash.loadProfile(Uri.parse(url))
-                    lastProfile = url
+                    clash.loadProfile(File(file))
                 } catch (e: IOException) {
                     Log.w(TAG, "Load profile failure")
-
-                    if (lastProfile == null) {
-                        clash.stop()
-                    } else {
-                        val p = lastProfile
-                        lastProfile = null
-                        ClashDatabase.getInstance(this@ClashService)
-                            .openClashProfileDao()
-                            .setSelectedProfile(p ?: "")
-                    }
                 }
             }
         }
@@ -140,12 +127,12 @@ class ClashService : Service() {
                     ClashProcessStatus.STATUS_STARTED_INT ->
                         ClashDatabase.getInstance(this)
                             .openClashProfileDao()
-                            .observeDefaultProfileUrl()
+                            .observeDefaultProfileCache()
                             .observeForever(defaultProfileObserver)
                     ClashProcessStatus.STATUS_STOPPED_INT ->
                         ClashDatabase.getInstance(this)
                             .openClashProfileDao()
-                            .observeDefaultProfileUrl()
+                            .observeDefaultProfileCache()
                             .removeObserver(defaultProfileObserver)
                 }
             }
