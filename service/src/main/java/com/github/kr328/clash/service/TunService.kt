@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.github.kr328.clash.core.ClashProcessStatus
+import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
 class TunService : VpnService() {
     companion object {
@@ -28,11 +29,11 @@ class TunService : VpnService() {
         private const val PRIVATE_VLAN6_CLIENT = "fdfe:dcba:9876::1"
     }
 
-    private var fileDescriptor: ParcelFileDescriptor? = null
-    private var clash: IClashService? = null
+    private lateinit var fileDescriptor: ParcelFileDescriptor
+    private lateinit var clash: IClashService
+    private lateinit var defaultNetworkObserver: DefaultNetworkObserver
     private val connection = object: ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
-            clash = null
             stopSelf()
         }
 
@@ -66,16 +67,7 @@ class TunService : VpnService() {
             this@TunService.clash = clash
         }
     }
-    private val networkChangedCallback = object: ConnectivityManager.NetworkCallback() {
-        override fun onCapabilitiesChanged(
-            network: Network,
-            networkCapabilities: NetworkCapabilities
-        ) {
-            val connectivity = getSystemService(ConnectivityManager::class.java)!!
 
-            setUnderlyingNetworks(connectivity.activeNetwork?.run { arrayOf(this) })
-        }
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -94,13 +86,19 @@ class TunService : VpnService() {
             .addRoute("::", 0)
             .setMtu(VPN_MTU)
             .setBlocking(false)
-            .setUnderlyingNetworks(null)
+            .setMeteredCompat(false)
             .establish() ?: throw NullPointerException("Unable to establish VPN")
 
         bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
 
-        getSystemService(ConnectivityManager::class.java)!!
-            .registerDefaultNetworkCallback(networkChangedCallback)
+        defaultNetworkObserver = DefaultNetworkObserver(this) {
+            val data = getSystemService(ConnectivityManager::class.java)!!.getNetworkCapabilities(it)
+            Log.d(TAG, "Network $data")
+
+            setUnderlyingNetworks(it?.run { arrayOf(this) })
+        }
+
+        defaultNetworkObserver.register()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -110,15 +108,14 @@ class TunService : VpnService() {
     }
 
     override fun onDestroy() {
-        fileDescriptor?.close()
+        fileDescriptor.close()
 
-        clash?.stopTunDevice()
-        clash?.stop()
+        clash.stopTunDevice()
+        clash.stop()
 
         unbindService(connection)
 
-        getSystemService(ConnectivityManager::class.java)!!
-            .unregisterNetworkCallback(networkChangedCallback)
+        defaultNetworkObserver.unregister()
 
         super.onDestroy()
     }
@@ -127,6 +124,12 @@ class TunService : VpnService() {
         DEFAULT_DNS.forEach {
             addDnsServer(it)
         }
+        return this
+    }
+
+    private fun Builder.setMeteredCompat(isMetered: Boolean): Builder {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            setMetered(isMetered)
         return this
     }
 }
