@@ -112,6 +112,8 @@ abstract class ClashProcess(private val context: Context,
             < clashDir.resolve("Country.mmdb").lastModified() )
             return
 
+        clashDir.resolve("ui").mkdirs()
+
         context.resources.assets.open("Country.mmdb").use { input ->
             FileOutputStream(clashDir.resolve("Country.mmdb")).use { output ->
                 input.copyTo(output)

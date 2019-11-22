@@ -56,7 +56,7 @@ afterEvaluate {
 
     def ds = tasks.register("downloadMMDB", MMDBDowloadTask.class) {
         onlyIf {
-            System.currentTimeMillis() - file("$buildDir/intermediates/cache/Country.tar.gz").lastModified() > 24 * 3600L
+            System.currentTimeMillis() - file("$buildDir/intermediates/cache/Country.tar.gz").lastModified() > 24 * 3600 * 1000L
         }
 
         output = "$buildDir/intermediates/cache/Country.tar.gz"

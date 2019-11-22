@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.Color
 import android.net.VpnService
 import android.os.Bundle
 import android.os.Handler
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
             handler.postDelayed({
                 when ( it ) {
                     ClashProcessStatus.STATUS_STARTED -> {
+                        activity_main_clash_status.setCardBackgroundColor(getColor(R.color.colorAccent))
                         activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_started)
                         activity_main_clash_status_title.text = getString(R.string.clash_status_started)
                         activity_main_clash_status_summary.text = getString(R.string.clash_status_forwarded_traffic, "1.4GiB")
@@ -81,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                         activity_main_clash_logs.visibility = View.VISIBLE
                     }
                     else -> {
+                        activity_main_clash_status.setCardBackgroundColor(Color.GRAY)
                         activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
                         activity_main_clash_status_title.text = getString(R.string.clash_status_stopped)
                         activity_main_clash_status_summary.text = getString(R.string.clash_status_click_to_start)

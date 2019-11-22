@@ -1,11 +1,9 @@
 package com.github.kr328.clash.service
 
 import android.app.Service
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
-import android.net.VpnService
+import android.content.*
+import android.net.*
+import android.os.Build
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.util.Log
@@ -13,14 +11,21 @@ import com.github.kr328.clash.core.ClashProcessStatus
 
 class TunService : VpnService() {
     companion object {
-        val TAG = "ClashForAndroid"
+        const val TAG = "ClashForAndroid"
+
+        val DEFAULT_DNS = listOf(
+            "1.1.1.1",
+            "8.8.8.8",
+            "208.67.222.222",
+            "114.114.114.114",
+            "223.5.5.5",
+            "119.29.29.29"
+        )
 
         // from https://github.com/shadowsocks/shadowsocks-android/blob/master/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt
         private const val VPN_MTU = 1500
         private const val PRIVATE_VLAN4_CLIENT = "172.19.0.1"
-        private const val PRIVATE_VLAN4_ROUTER = "172.19.0.2"
         private const val PRIVATE_VLAN6_CLIENT = "fdfe:dcba:9876::1"
-        private const val PRIVATE_VLAN6_ROUTER = "fdfe:dcba:9876::2"
     }
 
     private var fileDescriptor: ParcelFileDescriptor? = null
@@ -61,6 +66,16 @@ class TunService : VpnService() {
             this@TunService.clash = clash
         }
     }
+    private val networkChangedCallback = object: ConnectivityManager.NetworkCallback() {
+        override fun onCapabilitiesChanged(
+            network: Network,
+            networkCapabilities: NetworkCapabilities
+        ) {
+            val connectivity = getSystemService(ConnectivityManager::class.java)!!
+
+            setUnderlyingNetworks(connectivity.activeNetwork?.run { arrayOf(this) })
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -72,17 +87,20 @@ class TunService : VpnService() {
 
         fileDescriptor = Builder()
             .addAddress(PRIVATE_VLAN4_CLIENT, 30)
-            .addDnsServer(PRIVATE_VLAN4_ROUTER)
             .addAddress(PRIVATE_VLAN6_CLIENT, 126)
-            .addDnsServer(PRIVATE_VLAN6_ROUTER)
+            .addDefaultDns()
             .addDisallowedApplication(packageName)
             .addRoute("0.0.0.0", 0)
             .addRoute("::", 0)
             .setMtu(VPN_MTU)
             .setBlocking(false)
+            .setUnderlyingNetworks(null)
             .establish() ?: throw NullPointerException("Unable to establish VPN")
 
         bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
+
+        getSystemService(ConnectivityManager::class.java)!!
+            .registerDefaultNetworkCallback(networkChangedCallback)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -99,6 +117,16 @@ class TunService : VpnService() {
 
         unbindService(connection)
 
+        getSystemService(ConnectivityManager::class.java)!!
+            .unregisterNetworkCallback(networkChangedCallback)
+
         super.onDestroy()
+    }
+
+    private fun Builder.addDefaultDns(): Builder {
+        DEFAULT_DNS.forEach {
+            addDnsServer(it)
+        }
+        return this
     }
 }

@@ -1,6 +1,7 @@
 package com.github.kr328.clash
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,6 +58,14 @@ class CreateProfileActivity : AppCompatActivity() {
 
         setSupportActionBar(activity_new_profile_toolbar)
 
-        activity_new_profile_list.adapter = Adapter(this)
+        with(activity_new_profile_list) {
+            adapter = Adapter(this@CreateProfileActivity)
+            setOnItemClickListener {_, _, index, _ ->
+                when ( index ) {
+                    0 ->
+                        startActivity(Intent(this@CreateProfileActivity, ImportFileActivity::class.java))
+                }
+            }
+        }
     }
 }

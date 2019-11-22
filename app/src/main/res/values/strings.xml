@@ -19,11 +19,26 @@
     <string name="clash_about">About</string>
 
     <string name="clash_new_profile">New Profile</string>
-    <string name="clash_profile_item_summary">%d Proxies, %d ProxyGroups, %d Rules</string>
+    <string name="clash_profile_item_summary">%d Proxy, %d Group, %d Rule</string>
 
     <string name="clash_new_profile_file_title">File</string>
     <string name="clash_new_profile_file_summary">From Local Storage</string>
 
     <string name="clash_new_profile_url_title">URL</string>
     <string name="clash_new_profile_url_summary">From Internet</string>
+
+    <string name="clash_import_from_file">Import From File</string>
+
+    <string name="clash_profile_name">Name</string>
+    <string name="clash_profile_name_hint">Unlabeled</string>
+
+    <string name="clash_profile_file">File</string>
+    <string name="clash_profile_file_hint">content://</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="clash_import_file_empty_name">Empty Name</string>
+    <string name="clash_import_file_empty_path">Empty Path</string>
+    <string name="clash_import_file_invalid">Invalid Config: %s</string>
 </resources>

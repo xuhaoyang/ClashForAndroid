@@ -9,9 +9,9 @@ data class ClashProfileEntity(
     @ColumnInfo(name = "token") val token: String,
     @ColumnInfo(name = "cache") val cache: String,
     @ColumnInfo(name = "selected") val selected: Boolean,
-    @ColumnInfo(name = "proxies") val proxies: Long,
-    @ColumnInfo(name = "proxy_groups") val proxyGroups: Long,
-    @ColumnInfo(name = "rules") val rules: Long,
+    @ColumnInfo(name = "proxies") val proxies: Int,
+    @ColumnInfo(name = "proxy_groups") val proxyGroups: Int,
+    @ColumnInfo(name = "rules") val rules: Int,
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Int = 0) {
 
     enum class Type {

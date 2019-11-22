@@ -10,6 +10,7 @@ import com.github.kr328.clash.adapter.ProfileAdapter
 import com.github.kr328.clash.service.data.ClashDatabase
 import com.github.kr328.clash.service.data.ClashProfileEntity
 import kotlinx.android.synthetic.main.activity_profiles.*
+import kotlin.concurrent.thread
 
 class ProfilesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +28,13 @@ class ProfilesActivity : AppCompatActivity() {
             override fun canScrollHorizontally(): Boolean = false
             override fun canScrollVertically(): Boolean = false
         }
-        activity_profiles_main_list.adapter = ProfileAdapter(this)
+        activity_profiles_main_list.adapter = ProfileAdapter(this) {
+            thread {
+                ClashDatabase.getInstance(this)
+                    .openClashProfileDao()
+                    .setSelectedProfile(it)
+            }
+        }
 
         ClashDatabase.getInstance(this)
             .openClashProfileDao()

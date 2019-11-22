@@ -1,16 +1,21 @@
 package com.github.kr328.clash.service
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.ComponentName
 import android.content.Intent
-import android.os.Handler
-import android.os.IBinder
-import android.os.ParcelFileDescriptor
-import android.os.RemoteException
+import android.os.*
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.ClashProcessStatus
 import com.github.kr328.clash.service.data.ClashDatabase
+import com.github.kr328.clash.service.data.ClashProfileEntity
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -18,11 +23,20 @@ import java.util.concurrent.Executors
 class ClashService : Service() {
     companion object {
         private val TAG = "ClashForAndroid"
+
+        private const val CLASH_STATUS_NOTIFICATION_CHANNEL = "clash_status_channel"
+        private const val CLASH_STATUS_NOTIFICATION_ID = 413
+
+        private const val MAIN_ACTIVITY_NAME = ".MainActivity"
     }
 
     private val handler = Handler()
     private val executor = Executors.newSingleThreadExecutor()
+
     private lateinit var clash: Clash
+    private lateinit var currentProfile: LiveData<ClashProfileEntity?>
+
+    private var tunEnabled = false
 
     private var status = ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED_INT)
         set(value) {
@@ -36,19 +50,24 @@ class ClashService : Service() {
         }
     private val observers = mutableMapOf<String, IClashObserver>()
 
-    private val defaultProfileObserver = object: Observer<String?> {
-        override fun onChanged(file: String?) {
+    private val defaultProfileObserver = object: Observer<ClashProfileEntity?> {
+        override fun onChanged(file: ClashProfileEntity?) {
             executor.submit {
-                Log.i(TAG, "Loading profile $file")
-
-                if (file == null)
+                if (file == null){
+                    clash.stop()
                     return@submit
+                }
+
+                Log.i(TAG, "Loading profile ${file.cache}")
 
                 try {
-                    clash.loadProfile(File(file))
+                    clash.loadProfile(File(file.cache))
                 } catch (e: IOException) {
-                    Log.w(TAG, "Load profile failure")
+                    clash.stop()
+                    Log.w(TAG, "Load profile failure", e)
                 }
+
+                handler.post(this@ClashService::updateNotification)
             }
         }
     }
@@ -82,6 +101,8 @@ class ClashService : Service() {
 
         override fun stopTunDevice() {
             clash.stop()
+
+            handler.post(this@ClashService::updateNotification)
         }
 
         override fun start() {
@@ -106,14 +127,21 @@ class ClashService : Service() {
             try {
                 clash.startTunDevice(fd.fileDescriptor, mtu)
                 fd.close()
+                tunEnabled = true
             } catch (e: IOException) {
                 throw RemoteException(e.message)
             }
+
+            handler.post(this@ClashService::updateNotification)
         }
     }
 
     override fun onCreate() {
         super.onCreate()
+
+        currentProfile = ClashDatabase.getInstance(this)
+            .openClashProfileDao()
+            .observeSelectedProfile()
 
         clash = Clash(
             this,
@@ -125,17 +153,13 @@ class ClashService : Service() {
             handler.post {
                 when (it.status) {
                     ClashProcessStatus.STATUS_STARTED_INT ->
-                        ClashDatabase.getInstance(this)
-                            .openClashProfileDao()
-                            .observeDefaultProfileCache()
-                            .observeForever(defaultProfileObserver)
+                        currentProfile.observeForever(defaultProfileObserver)
                     ClashProcessStatus.STATUS_STOPPED_INT ->
-                        ClashDatabase.getInstance(this)
-                            .openClashProfileDao()
-                            .observeDefaultProfileCache()
-                            .removeObserver(defaultProfileObserver)
+                        currentProfile.removeObserver(defaultProfileObserver)
                 }
             }
+
+            handler.post(this::updateNotification)
         }
     }
 
@@ -156,5 +180,45 @@ class ClashService : Service() {
         executor.shutdown()
 
         super.onDestroy()
+    }
+
+    private fun updateNotification() {
+        if ( status == ClashProcessStatus.STATUS_STARTED ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationManagerCompat.from(this)
+                    .createNotificationChannel(NotificationChannel(CLASH_STATUS_NOTIFICATION_CHANNEL,
+                        getString(R.string.clash_service_status_channel),
+                        NotificationManager.IMPORTANCE_MIN))
+            }
+
+            val notification = NotificationCompat.Builder(this, CLASH_STATUS_NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setMode()
+                .setOngoing(true)
+                .setColorized(true)
+                .setColor(getColor(R.color.colorAccentService))
+                .setShowWhen(false)
+                .setContentTitle(getString(R.string.clash_service_running))
+                .setContentText(getString(R.string.clash_service_running_message, currentProfile.value?.name))
+                .setContentIntent(PendingIntent.getActivity(
+                    this,
+                    CLASH_STATUS_NOTIFICATION_ID,
+                    Intent.makeMainActivity(ComponentName.createRelative(packageName, MAIN_ACTIVITY_NAME))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                ))
+                .build()
+
+            NotificationManagerCompat.from(this).notify(CLASH_STATUS_NOTIFICATION_ID, notification)
+        }
+        else {
+            NotificationManagerCompat.from(this).cancel(CLASH_STATUS_NOTIFICATION_ID)
+        }
+    }
+
+    private fun NotificationCompat.Builder.setMode(): NotificationCompat.Builder {
+        if ( tunEnabled )
+            setSubText(getString(R.string.clash_service_vpn_mode))
+        return this
     }
 }

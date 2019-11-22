@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adapter_profiles_clickable"
     android:orientation="horizontal"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -25,17 +26,19 @@
             android:id="@+id/adapter_profiles_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:text="@string/app_name"/>
         <TextView
             android:id="@+id/adapter_profiles_summary"
+            android:textColor="@color/colorAccent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:text="@string/app_name"/>
     </LinearLayout>
 
     <LinearLayout
+
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,13 +51,20 @@
             android:layout_height="match_parent"
             android:background="@color/light_gray"/>
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/adapter_profiles_operation"
-            android:contentDescription="@string/app_name"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:focusable="true"
             android:clickable="true"
-            android:background="?attr/selectableItemBackground"/>
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/adapter_profiles_operation_image"
+                android:layout_margin="25dp"
+                android:contentDescription="@string/app_name"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

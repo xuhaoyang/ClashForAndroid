@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Service</string>
+
+    <string name="clash_service_status_channel">Clash Status</string>
+    <string name="clash_service_running">Clash Running</string>
+    <string name="clash_service_running_message">Profile %s loaded</string>
+    <string name="clash_service_vpn_mode">VPN</string>
 </resources>
