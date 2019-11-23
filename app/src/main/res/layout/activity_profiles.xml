@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -29,32 +31,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <LinearLayout
+            <com.github.kr328.clash.view.FatItem
                 android:id="@+id/activity_profiles_new_profile"
-                android:focusable="true"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:src="@drawable/ic_new_profile"
-                    android:contentDescription="@string/app_name"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="30dp"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
-
-                <TextView
-                    android:text="@string/clash_new_profile"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:gravity="center|start"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_new_profile"
+                app:title="@string/clash_new_profile" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

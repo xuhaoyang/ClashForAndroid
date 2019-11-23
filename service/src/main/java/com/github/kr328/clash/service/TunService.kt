@@ -105,6 +105,8 @@ class TunService : VpnService() {
     }
 
     override fun onDestroy() {
+        super.onDestroy()
+
         fileDescriptor.close()
 
         clash.stopTunDevice()
@@ -113,8 +115,6 @@ class TunService : VpnService() {
         unbindService(connection)
 
         defaultNetworkObserver.unregister()
-
-        super.onDestroy()
     }
 
     private fun Builder.addDefaultDns(): Builder {

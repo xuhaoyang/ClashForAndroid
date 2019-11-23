@@ -10,6 +10,7 @@ import android.net.VpnService
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
@@ -96,7 +97,9 @@ class MainActivity : AppCompatActivity() {
 
         activity_main_clash_status.setOnClickListener {
             when ( clashStatus.value ?: ClashProcessStatus.STATUS_STOPPED ) {
-                ClashProcessStatus.STATUS_STARTED -> {}
+                ClashProcessStatus.STATUS_STARTED -> {
+                    clash?.stop()
+                }
                 ClashProcessStatus.STATUS_STOPPED -> {
                     VpnService.prepare(this)?.apply {
                          startActivityForResult(this, VPN_REQUEST_CODE)

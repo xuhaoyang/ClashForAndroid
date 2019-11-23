@@ -12,6 +12,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import com.github.kr328.clash.view.FatItem
 import kotlinx.android.synthetic.main.activity_new_profile.*
 
 class CreateProfileActivity : AppCompatActivity() {
@@ -28,17 +29,19 @@ class CreateProfileActivity : AppCompatActivity() {
 
     class Adapter(private val context: Context) : BaseAdapter() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            return (convertView ?: LayoutInflater.from(context).inflate(R.layout.adapter_new_profile, parent, false)).apply {
+            return ((convertView ?: FatItem(context)) as FatItem).apply {
                 val current = NEW_PROFILE_SOURCE[position]
 
-                findViewById<ImageView>(R.id.adapter_new_profile_icon).setImageResource(current.icon)
-                findViewById<TextView>(R.id.adapter_new_profile_title).text = context.getString(current.title)
-                findViewById<TextView>(R.id.adapter_new_profile_summary).text = context.getString(current.summary)
+                isClickable = false
+
+                icon = context.getDrawable(current.icon)
+                title = context.getString(current.title)
+                summary = context.getString(current.summary)
             }
         }
 
         override fun getItem(position: Int): Any {
-            return NEW_PROFILE_SOURCE
+            return NEW_PROFILE_SOURCE[position]
         }
 
         override fun getItemId(position: Int): Long {

@@ -30,5 +30,7 @@
         <activity android:name=".ImportFileActivity"
             android:label="@string/clash_import_from_file"
             android:exported="false"/>
+        <activity android:name=".ClashStatusActivity"
+            android:exported="false" />
     </application>
 </manifest>
