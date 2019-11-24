@@ -12,12 +12,12 @@ func handleQueryProxies(client *net.UnixConn) {
 	proxies := tunnel.Instance().Proxies()
 
 	var root struct {
-		proxies []map[string]interface{} `json:"proxies"`
+		Proxies map[string]interface{} `json:"proxies"`
 	}
 
-	root.proxies = make([]map[string]interface{}, len(proxies))
+	root.Proxies = make(map[string]interface{})
 
-	for _, p := range proxies {
+	for k, p := range proxies {
 		inner, err := p.MarshalJSON()
 
 		if err != nil {
@@ -27,8 +27,13 @@ func handleQueryProxies(client *net.UnixConn) {
 
 		mapping := map[string]interface{}{}
 		json.Unmarshal(inner, &mapping)
-
-		root.proxies = append(root.proxies, mapping)
+		root.Proxies[k] = mapping
 	}
 
+	data, err := json.Marshal(&root)
+	if err != nil {
+		log.Errorln("MarshJSON failure %s", err.Error())
+	}
+
+	writeCommandPacket(client, data)
 }

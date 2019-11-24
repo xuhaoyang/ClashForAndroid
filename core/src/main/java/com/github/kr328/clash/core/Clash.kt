@@ -3,8 +3,13 @@ package com.github.kr328.clash.core
 import android.content.Context
 import android.util.Log
 import com.github.kr328.clash.core.Constants.TAG
+import com.github.kr328.clash.core.transact.Proxy
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONObject
-import java.io.*
+import java.io.File
+import java.io.FileDescriptor
+import java.io.IOException
 
 class Clash(
     context: Context,
@@ -25,14 +30,9 @@ class Clash(
     val process = ClashProcess(context, clashDir, controllerPath, listener)
 
     fun ping(): Boolean {
-        try {
-            return runControl(COMMAND_PING) { _, input, _ ->
-                input.readInt() == PING_REPLY
-            }
-        } catch (e: IOException) {
-            Log.w(TAG, "Clash ping failure", e)
-        }
-        return false
+        return runControlNoException(COMMAND_PING) { _, input, _ ->
+            input.readInt() == PING_REPLY
+        } ?: false
     }
 
     fun loadProfile(file: File) {
@@ -48,6 +48,17 @@ class Clash(
         }
     }
 
+    fun queryProxies(): Proxy.Packet {
+        return runControl(COMMAND_QUERY_PROXIES) { _, input, _ ->
+            val data = input.readString()
+
+            Log.d(TAG, data)
+
+            Json(JsonConfiguration.Stable.copy(strictMode = false))
+                .parse(Proxy.Packet.serializer(), data)
+        }
+    }
+
     fun startTunDevice(fd: FileDescriptor, mtu: Int) {
         runControl(COMMAND_TUN_START) { socket, _, output ->
             socket.setFileDescriptorsForSend(arrayOf(fd))
@@ -59,6 +70,6 @@ class Clash(
     }
 
     fun stopTunDevice() {
-        runControl(COMMAND_TUN_STOP)
+        runControlNoException(COMMAND_TUN_STOP)
     }
 }

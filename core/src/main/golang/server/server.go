@@ -24,7 +24,7 @@ func init() {
 	handlers[commandTunStop] = handleTunStop               // tun.go
 	handlers[commandProfileDefault] = handleProfileDefault // profile.go
 	handlers[commandProfileReload] = handleProfileReload   // profile.go
-	handlers[commandQueryProxies] = handleQueryProxies
+	handlers[commandQueryProxies] = handleQueryProxies     // proxies.go
 }
 
 // Start local control server
@@ -66,6 +66,4 @@ func handleConnection(client *net.UnixConn) {
 	}
 
 	handler(client)
-
-	client.Close()
 }

@@ -14,10 +14,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.ClashProcessStatus
+import com.github.kr328.clash.core.Constants
 import com.github.kr328.clash.service.data.ClashDatabase
 import com.github.kr328.clash.service.data.ClashProfileEntity
 import java.io.File
 import java.io.IOException
+import java.lang.Exception
 import java.util.concurrent.Executors
 
 class ClashService : Service() {
@@ -54,7 +56,7 @@ class ClashService : Service() {
         override fun onChanged(file: ClashProfileEntity?) {
             executor.submit {
                 if (file == null){
-                    clash.stop()
+                    clash.process.stop()
                     return@submit
                 }
 
@@ -63,8 +65,15 @@ class ClashService : Service() {
                 try {
                     clash.loadProfile(File(file.cache))
                 } catch (e: IOException) {
-                    clash.stop()
+                    clash.process.stop()
                     Log.w(TAG, "Load profile failure", e)
+                }
+
+                try {
+                    Log.d(Constants.TAG, clash.queryProxies().toString())
+                }
+                catch (e: Exception) {
+                    Log.e(Constants.TAG, "NMSL" ,e)
                 }
 
                 handler.post(this@ClashService::updateNotification)
@@ -107,7 +116,7 @@ class ClashService : Service() {
 
         override fun start() {
             try {
-                clash.start()
+                clash.process.start()
             } catch (e: IOException) {
                 Log.e(TAG, "Start failure", e)
 
@@ -116,7 +125,7 @@ class ClashService : Service() {
         }
 
         override fun stop() {
-            clash.stop()
+            clash.process.stop()
         }
 
         override fun getClashProcessStatus(): ClashProcessStatus {
@@ -166,7 +175,7 @@ class ClashService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        clash.start()
+        clash.process.start()
 
         return START_NOT_STICKY
     }
@@ -176,7 +185,7 @@ class ClashService : Service() {
     }
 
     override fun onDestroy() {
-        clash.stop()
+        clash.process.stop()
         executor.shutdown()
 
         super.onDestroy()
