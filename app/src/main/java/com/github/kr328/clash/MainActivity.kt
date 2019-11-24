@@ -14,7 +14,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
-import com.github.kr328.clash.core.model.ProcessEvent
+import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.IClashObserver
 import com.github.kr328.clash.service.IClashService

@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.github.kr328.clash.core.model.ProcessEvent
+import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
 class TunService : VpnService() {

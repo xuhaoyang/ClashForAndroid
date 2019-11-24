@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.github.kr328.clash.core.Clash
-import com.github.kr328.clash.core.model.ProcessEvent
+import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.core.Constants
 import com.github.kr328.clash.service.data.ClashDatabase
 import com.github.kr328.clash.service.data.ClashProfileEntity

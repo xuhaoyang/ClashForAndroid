@@ -1,4 +1,4 @@
-package com.github.kr328.clash.core.model
+package com.github.kr328.clash.core.event
 
 import kotlinx.serialization.Decoder
 import kotlinx.serialization.Encoder
@@ -9,7 +9,8 @@ import kotlinx.serialization.internal.StringDescriptor
 import java.lang.IllegalArgumentException
 
 @Serializable
-data class LogEvent(val level: Level, val message: String): Event {
+data class LogEvent(val level: Level, val message: String):
+    Event {
     companion object {
         const val DEBUG_VALUE = 1
         const val INFO_VALUE = 2
@@ -19,7 +20,11 @@ data class LogEvent(val level: Level, val message: String): Event {
 
     @Serializable(LevelSerializer::class)
     enum class Level(val value: Int) {
-        DEBUG(DEBUG_VALUE), INFO(INFO_VALUE), WARN(WARN_VALUE), ERROR(ERROR_VALUE)
+        DEBUG(DEBUG_VALUE), INFO(
+            INFO_VALUE
+        ), WARN(WARN_VALUE), ERROR(
+            ERROR_VALUE
+        )
     }
 
     class LevelSerializer : KSerializer<Level> {

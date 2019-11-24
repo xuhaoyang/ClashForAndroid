@@ -3,6 +3,7 @@ package com.github.kr328.clash.core
 import android.content.Context
 import android.util.Log
 import com.github.kr328.clash.core.Constants.TAG
+import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -10,6 +11,8 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException
+import java.lang.IllegalArgumentException
+import kotlin.reflect.KClass
 
 class Clash(
     context: Context,
@@ -24,6 +27,7 @@ class Clash(
         const val COMMAND_PROFILE_RELOAD = 4
         const val COMMAND_QUERY_PROXIES = 5
         const val COMMAND_POLL_EVENT = 6
+        const val COMMAND_SET_EVENT_ENABLED = 7
 
         const val PING_REPLY = 233
     }
@@ -62,17 +66,40 @@ class Clash(
 
     fun pollEvent(listener: (Event) -> Unit) {
         runControl(COMMAND_POLL_EVENT) { _, input, _ ->
-            while ( !Thread.currentThread().isInterrupted ) {
+            loop@while ( process.isRunning() ) {
                 when (val type = input.readInt()) {
+                    Event.EVENT_CLOSE -> {
+                        break@loop
+                    }
                     Event.EVENT_LOG -> {
                         listener(Json(JsonConfiguration.Stable).parse(LogEvent.serializer(), input.readString()))
                     }
                     Event.EVENT_PROXY_CHANGED -> {
                         listener(ProxyChangedEvent())
                     }
+                    Event.EVENT_TRAFFIC -> {
+                        listener(Json(JsonConfiguration.Stable).parse(TrafficEvent.serializer(), input.readString()))
+                    }
                     else -> Log.w(TAG, "Invalid event type $type")
                 }
             }
+        }
+    }
+
+    fun setEventEnabled(type: KClass<Event>, enabled: Boolean) {
+        runControl(COMMAND_SET_EVENT_ENABLED) { _, _, output ->
+            output.writeInt(
+                when ( type ) {
+                    LogEvent::class ->
+                        Event.EVENT_LOG
+                    ProxyChangedEvent::class ->
+                        Event.EVENT_PROXY_CHANGED
+                    TrafficEvent::class ->
+                        Event.EVENT_TRAFFIC
+                    else -> throw IllegalArgumentException("Invalid event type $type")
+                }
+            )
+            output.writeInt(if ( enabled ) 1 else 0)
         }
     }
 
