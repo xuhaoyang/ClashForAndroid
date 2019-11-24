@@ -1,4 +1,4 @@
-package com.github.kr328.clash.core.transact
+package com.github.kr328.clash.core.model
 
 import android.os.Parcel
 import android.os.Parcelable

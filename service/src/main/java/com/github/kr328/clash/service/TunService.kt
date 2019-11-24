@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.github.kr328.clash.core.ClashProcessStatus
+import com.github.kr328.clash.core.model.ProcessEvent
 import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
 class TunService : VpnService() {
@@ -44,22 +44,22 @@ class TunService : VpnService() {
 
 
             clash.registerObserver("tun", false, object: IClashObserver.Stub() {
-                override fun onStatusChanged(status: ClashProcessStatus?) {
-                    if ( status == null )
+                override fun onStatusChanged(event: ProcessEvent?) {
+                    if ( event == null )
                         return
 
-                    Log.d(TAG, "New clash status $status")
+                    Log.d(TAG, "New clash status $event")
 
-                    when ( status ) {
-                        ClashProcessStatus.STATUS_STOPPED ->
+                    when ( event ) {
+                        ProcessEvent.STATUS_STOPPED ->
                             stopSelf()
-                        ClashProcessStatus.STATUS_STARTED ->
+                        ProcessEvent.STATUS_STARTED ->
                             clash.startTunDevice(fileDescriptor, VPN_MTU)
                     }
                 }
             })
 
-            if ( clash.clashProcessStatus == ClashProcessStatus.STATUS_STARTED )
+            if ( clash.clashProcessStatus == ProcessEvent.STATUS_STARTED )
                 clash.startTunDevice(fileDescriptor, VPN_MTU)
             else
                 clash.start()

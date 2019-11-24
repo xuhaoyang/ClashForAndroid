@@ -1,7 +1,7 @@
 package com.github.kr328.clash.service;
 
 import com.github.kr328.clash.service.IClashObserver;
-import com.github.kr328.clash.core.ClashProcessStatus;
+import com.github.kr328.clash.core.model.ClashProcessStatus;
 
 interface IClashService {
     void start();

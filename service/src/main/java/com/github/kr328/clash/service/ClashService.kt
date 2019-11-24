@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.github.kr328.clash.core.Clash
-import com.github.kr328.clash.core.ClashProcessStatus
+import com.github.kr328.clash.core.model.ProcessEvent
 import com.github.kr328.clash.core.Constants
 import com.github.kr328.clash.service.data.ClashDatabase
 import com.github.kr328.clash.service.data.ClashProfileEntity
@@ -40,7 +40,8 @@ class ClashService : Service() {
 
     private var tunEnabled = false
 
-    private var status = ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED_INT)
+    private var status =
+        ProcessEvent(ProcessEvent.STATUS_STOPPED_INT)
         set(value) {
             field = value
 
@@ -128,7 +129,7 @@ class ClashService : Service() {
             clash.process.stop()
         }
 
-        override fun getClashProcessStatus(): ClashProcessStatus {
+        override fun getClashProcessStatus(): ProcessEvent {
             return status
         }
 
@@ -161,9 +162,9 @@ class ClashService : Service() {
 
             handler.post {
                 when (it.status) {
-                    ClashProcessStatus.STATUS_STARTED_INT ->
+                    ProcessEvent.STATUS_STARTED_INT ->
                         currentProfile.observeForever(defaultProfileObserver)
-                    ClashProcessStatus.STATUS_STOPPED_INT ->
+                    ProcessEvent.STATUS_STOPPED_INT ->
                         currentProfile.removeObserver(defaultProfileObserver)
                 }
             }
@@ -192,7 +193,7 @@ class ClashService : Service() {
     }
 
     private fun updateNotification() {
-        if ( status == ClashProcessStatus.STATUS_STARTED ) {
+        if ( status == ProcessEvent.STATUS_STARTED ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationManagerCompat.from(this)
                     .createNotificationChannel(NotificationChannel(CLASH_STATUS_NOTIFICATION_CHANNEL,

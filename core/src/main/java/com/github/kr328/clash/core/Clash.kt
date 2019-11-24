@@ -3,7 +3,7 @@ package com.github.kr328.clash.core
 import android.content.Context
 import android.util.Log
 import com.github.kr328.clash.core.Constants.TAG
-import com.github.kr328.clash.core.transact.Proxy
+import com.github.kr328.clash.core.model.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONObject
@@ -15,7 +15,7 @@ class Clash(
     context: Context,
     clashDir: File,
     controllerPath: File,
-    listener: (ClashProcessStatus) -> Unit
+    listener: (ProcessEvent) -> Unit
 ) : BaseClash(controllerPath) {
     companion object {
         const val COMMAND_PING = 0
@@ -23,6 +23,7 @@ class Clash(
         const val COMMAND_TUN_STOP = 2
         const val COMMAND_PROFILE_RELOAD = 4
         const val COMMAND_QUERY_PROXIES = 5
+        const val COMMAND_POLL_EVENT = 6
 
         const val PING_REPLY = 233
     }
@@ -56,6 +57,22 @@ class Clash(
 
             Json(JsonConfiguration.Stable.copy(strictMode = false))
                 .parse(Proxy.Packet.serializer(), data)
+        }
+    }
+
+    fun pollEvent(listener: (Event) -> Unit) {
+        runControl(COMMAND_POLL_EVENT) { _, input, _ ->
+            while ( !Thread.currentThread().isInterrupted ) {
+                when (val type = input.readInt()) {
+                    Event.EVENT_LOG -> {
+                        listener(Json(JsonConfiguration.Stable).parse(LogEvent.serializer(), input.readString()))
+                    }
+                    Event.EVENT_PROXY_CHANGED -> {
+                        listener(ProxyChangedEvent())
+                    }
+                    else -> Log.w(TAG, "Invalid event type $type")
+                }
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.github.kr328.clash.core
 import android.content.Context
 import android.util.Log
 import com.github.kr328.clash.core.Constants.TAG
+import com.github.kr328.clash.core.model.ProcessEvent
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -12,7 +13,7 @@ import kotlin.concurrent.thread
 class ClashProcess(private val context: Context,
                             private val clashDir: File,
                             private val controllerPath: File,
-                            private val listener: (ClashProcessStatus) -> Unit) {
+                            private val listener: (ProcessEvent) -> Unit) {
     companion object {
         private const val CONTROLLER_STATUS_PREFIX = "[CONTROLLER]"
 
@@ -72,7 +73,7 @@ class ClashProcess(private val context: Context,
             process = p
             pid = currentPid
 
-            listener(ClashProcessStatus.STATUS_STARTED)
+            listener(ProcessEvent.STATUS_STARTED)
 
             Log.i(TAG, "Clash started pid = $pid")
 
@@ -88,11 +89,11 @@ class ClashProcess(private val context: Context,
                     pid = -1
                 }
 
-                listener(ClashProcessStatus.STATUS_STOPPED)
+                listener(ProcessEvent.STATUS_STOPPED)
             }
         }
         catch (e: Exception) {
-            listener(ClashProcessStatus.STATUS_STOPPED)
+            listener(ProcessEvent.STATUS_STOPPED)
             throw e
         }
     }

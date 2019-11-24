@@ -10,12 +10,11 @@ import android.net.VpnService
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
-import com.github.kr328.clash.core.ClashProcessStatus
+import com.github.kr328.clash.core.model.ProcessEvent
 import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.IClashObserver
 import com.github.kr328.clash.service.IClashService
@@ -43,15 +42,20 @@ class MainActivity : AppCompatActivity() {
 
             clash?.apply {
                 registerObserver("main_activity",true , object: IClashObserver.Stub() {
-                    override fun onStatusChanged(status: ClashProcessStatus?) {
-                        clashStatus.postValue(status ?: ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED_INT))
+                    override fun onStatusChanged(event: ProcessEvent?) {
+                        clashStatus.postValue(event ?: ProcessEvent(
+                            ProcessEvent.STATUS_STOPPED_INT
+                        )
+                        )
                     }
                 })
             }
         }
     }
 
-    private val clashStatus = MutableLiveData<ClashProcessStatus>(ClashProcessStatus(ClashProcessStatus.STATUS_STOPPED_INT))
+    private val clashStatus = MutableLiveData<ProcessEvent>(
+        ProcessEvent(ProcessEvent.STATUS_STOPPED_INT)
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             handler.removeMessages(0)
             handler.postDelayed({
                 when ( it ) {
-                    ClashProcessStatus.STATUS_STARTED -> {
+                    ProcessEvent.STATUS_STARTED -> {
                         activity_main_clash_status.setCardBackgroundColor(getColor(R.color.colorAccent))
                         activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_started)
                         activity_main_clash_status_title.text = getString(R.string.clash_status_started)
@@ -96,11 +100,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         activity_main_clash_status.setOnClickListener {
-            when ( clashStatus.value ?: ClashProcessStatus.STATUS_STOPPED ) {
-                ClashProcessStatus.STATUS_STARTED -> {
+            when ( clashStatus.value ?: ProcessEvent.STATUS_STOPPED ) {
+                ProcessEvent.STATUS_STARTED -> {
                     clash?.stop()
                 }
-                ClashProcessStatus.STATUS_STOPPED -> {
+                ProcessEvent.STATUS_STOPPED -> {
                     VpnService.prepare(this)?.apply {
                          startActivityForResult(this, VPN_REQUEST_CODE)
                     } ?: startService(Intent(this, TunService::class.java))
