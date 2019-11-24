@@ -22,7 +22,7 @@ import java.util.concurrent.Executors
 
 class ClashService : Service() {
     companion object {
-        private val TAG = "ClashForAndroid"
+        private const val TAG = "ClashForAndroid"
 
         private const val CLASH_STATUS_NOTIFICATION_CHANNEL = "clash_status_channel"
         private const val CLASH_STATUS_NOTIFICATION_ID = 413
@@ -100,7 +100,7 @@ class ClashService : Service() {
         }
 
         override fun stopTunDevice() {
-            clash.stop()
+            clash.stopTunDevice()
 
             handler.post(this@ClashService::updateNotification)
         }

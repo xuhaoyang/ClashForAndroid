@@ -18,6 +18,9 @@ func main() {
 		return
 	}
 
+	// Redirect stderr to stdout
+	os.Stderr = os.Stdout
+
 	if cwd, err := os.Getwd(); err == nil {
 		constant.SetHomeDir(cwd)
 	} else {

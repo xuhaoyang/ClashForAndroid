@@ -48,11 +48,10 @@ class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> U
     fun register() {
         connectivity.registerNetworkCallback(NetworkRequest.Builder().build(), callback)
 
-        listener(connectivity.activeNetwork)
-
         handler.postDelayed({
             blocking = false
-        }, 1000)
+            listener(connectivity.activeNetwork)
+        }, 3000)
     }
 
     fun unregister() {

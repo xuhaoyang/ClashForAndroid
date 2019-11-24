@@ -1,27 +1,28 @@
 package com.github.kr328.clash.core
 
 import android.content.Context
-import android.net.LocalSocket
-import android.net.LocalSocketAddress
 import android.util.Log
+import com.github.kr328.clash.core.Constants.TAG
 import org.json.JSONObject
 import java.io.*
 
 class Clash(
     context: Context,
     clashDir: File,
-    private val controllerPath: File,
+    controllerPath: File,
     listener: (ClashProcessStatus) -> Unit
-) : ClashProcess(context, clashDir, controllerPath, listener) {
+) : BaseClash(controllerPath) {
     companion object {
         const val COMMAND_PING = 0
         const val COMMAND_TUN_START = 1
         const val COMMAND_TUN_STOP = 2
-        const val COMMAND_PROFILE_DEFAULT = 3
         const val COMMAND_PROFILE_RELOAD = 4
+        const val COMMAND_QUERY_PROXIES = 5
 
         const val PING_REPLY = 233
     }
+
+    val process = ClashProcess(context, clashDir, controllerPath, listener)
 
     fun ping(): Boolean {
         try {
@@ -34,8 +35,6 @@ class Clash(
         return false
     }
 
-    @Throws(IOException::class)
-    @Synchronized
     fun loadProfile(file: File) {
         runControl(COMMAND_PROFILE_RELOAD) { _, input, output ->
             output.writeString(JSONObject().apply {
@@ -49,7 +48,6 @@ class Clash(
         }
     }
 
-    @Throws(IOException::class)
     fun startTunDevice(fd: FileDescriptor, mtu: Int) {
         runControl(COMMAND_TUN_START) { socket, _, output ->
             socket.setFileDescriptorsForSend(arrayOf(fd))
@@ -60,49 +58,7 @@ class Clash(
         }
     }
 
-    private fun <R> runControl(
-        command: Int,
-        block: (LocalSocket, DataInputStream, DataOutputStream) -> R
-    ): R {
-        val socket = LocalSocket()
-
-        socket.connect(
-            LocalSocketAddress(
-                controllerPath.absolutePath,
-                LocalSocketAddress.Namespace.FILESYSTEM
-            )
-        )
-
-        val input = DataInputStream(socket.inputStream)
-        val output = DataOutputStream(socket.outputStream)
-
-        output.writeInt(command)
-
-        val result = block(socket, input, output)
-
-        try {
-            input.close()
-            output.close()
-
-            socket.close()
-        } catch (ignore: IOException) {
-
-        }
-
-        return result
-    }
-
-    private fun DataOutputStream.writeString(string: String) {
-        this.writeInt(string.length)
-        this.writeBytes(string)
-    }
-
-    private fun DataInputStream.readString(): String {
-        val len = this.readInt()
-        val buffer = ByteArray(len)
-
-        this.read(buffer)
-
-        return String(buffer)
+    fun stopTunDevice() {
+        runControl(COMMAND_TUN_STOP)
     }
 }

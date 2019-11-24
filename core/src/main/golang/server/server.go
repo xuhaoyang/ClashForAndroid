@@ -13,6 +13,7 @@ const (
 	commandTunStop        = 2
 	commandProfileDefault = 3
 	commandProfileReload  = 4
+	commandQueryProxies   = 5
 )
 
 var handlers map[int]func(*net.UnixConn) = make(map[int]func(*net.UnixConn))
@@ -23,6 +24,7 @@ func init() {
 	handlers[commandTunStop] = handleTunStop               // tun.go
 	handlers[commandProfileDefault] = handleProfileDefault // profile.go
 	handlers[commandProfileReload] = handleProfileReload   // profile.go
+	handlers[commandQueryProxies] = handleQueryProxies
 }
 
 // Start local control server
@@ -64,4 +66,6 @@ func handleConnection(client *net.UnixConn) {
 	}
 
 	handler(client)
+
+	client.Close()
 }

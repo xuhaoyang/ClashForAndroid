@@ -49,11 +49,5 @@ func handleTunStart(client *net.UnixConn) {
 }
 
 func handleTunStop(client *net.UnixConn) {
-	buf, _ := readCommandPacket(client)
-
-	if tunCommandEnd != binary.BigEndian.Uint32(buf) {
-		log.Warnln("Invalid tun command end")
-	}
-
 	tun.StopTunProxy()
 }

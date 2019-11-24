@@ -52,6 +52,8 @@ func StartTunProxy(fd, mtu int) error {
 
 // StopTunProxy - stop
 func StopTunProxy() {
+	log.Infoln("Tun Device Stopped")
+
 	instance.close()
 	instance = nil
 }

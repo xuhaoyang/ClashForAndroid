@@ -82,8 +82,8 @@ class TunService : VpnService() {
             .addAddress(PRIVATE_VLAN6_CLIENT, 126)
             .addDefaultDns()
             .addDisallowedApplication(packageName)
-            .addRoute("0.0.0.0", 0)
-            .addRoute("::", 0)
+            .addDns()
+            .addBypassPrivateRoute()
             .setMtu(VPN_MTU)
             .setBlocking(false)
             .setMeteredCompat(false)
@@ -127,6 +127,27 @@ class TunService : VpnService() {
     private fun Builder.setMeteredCompat(isMetered: Boolean): Builder {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             setMetered(isMetered)
+        return this
+    }
+
+    private fun Builder.addBypassPrivateRoute(): Builder {
+        // IPv4
+        resources.getStringArray(R.array.bypass_private_route).forEach {
+            val address = it.split("/")
+            Log.d(TAG, "$address")
+            addRoute(address[0], address[1].toInt())
+        }
+
+        // IPv6
+        addRoute("::", 0)
+
+        return this
+    }
+
+    private fun Builder.addDns(): Builder {
+        resources.getStringArray(R.array.default_dns).forEach {
+            addDnsServer(it)
+        }
         return this
     }
 }

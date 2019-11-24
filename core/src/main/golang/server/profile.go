@@ -13,8 +13,6 @@ func handleProfileDefault(client *net.UnixConn) {
 	profile.LoadDefault()
 
 	log.Infoln("Profile default loaded")
-
-	client.Close()
 }
 
 func handleProfileReload(client *net.UnixConn) {
@@ -49,6 +47,4 @@ func handleProfileReload(client *net.UnixConn) {
 	}
 
 	log.Infoln("Profile " + payload.Path + " loaded")
-
-	client.Close()
 }

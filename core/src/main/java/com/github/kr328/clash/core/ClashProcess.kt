@@ -2,19 +2,18 @@ package com.github.kr328.clash.core
 
 import android.content.Context
 import android.util.Log
+import com.github.kr328.clash.core.Constants.TAG
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
 import kotlin.concurrent.thread
 
-abstract class ClashProcess(private val context: Context,
+class ClashProcess(private val context: Context,
                             private val clashDir: File,
                             private val controllerPath: File,
                             private val listener: (ClashProcessStatus) -> Unit) {
     companion object {
-        const val TAG = "ClashForAndroid"
-
         private const val CONTROLLER_STATUS_PREFIX = "[CONTROLLER]"
 
         private val PID_PATTERN = Regex("\\[PID]\\s*(\\d+)")
