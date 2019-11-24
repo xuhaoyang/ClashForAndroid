@@ -2,12 +2,15 @@ package com.github.kr328.clash.core.event
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.github.kr328.clash.core.event.Event
 import com.github.kr328.clash.core.serialization.Parcels
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProxyChangedEvent(val name: String, val selected: String) : Event,Parcelable {
+data class ErrorEvent(val type: Type, val message: String): Event, Parcelable {
+    enum class Type {
+
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         Parcels.dump(serializer(), this, parcel)
     }
@@ -16,12 +19,12 @@ data class ProxyChangedEvent(val name: String, val selected: String) : Event,Par
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ProxyChangedEvent> {
-        override fun createFromParcel(parcel: Parcel): ProxyChangedEvent {
+    companion object CREATOR : Parcelable.Creator<ErrorEvent> {
+        override fun createFromParcel(parcel: Parcel): ErrorEvent {
             return Parcels.load(serializer(), parcel)
         }
 
-        override fun newArray(size: Int): Array<ProxyChangedEvent?> {
+        override fun newArray(size: Int): Array<ErrorEvent?> {
             return arrayOfNulls(size)
         }
     }
