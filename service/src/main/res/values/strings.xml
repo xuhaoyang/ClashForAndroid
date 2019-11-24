@@ -5,4 +5,8 @@
     <string name="clash_service_running">Running</string>
     <string name="clash_service_running_message">Profile %s loaded</string>
     <string name="clash_service_vpn_mode">VPN</string>
+
+    <string name="clash_notification_up">UP</string>
+    <string name="clash_notification_down">Down</string>
+    <string name="clash_notification_default">0 KiB/s</string>
 </resources>

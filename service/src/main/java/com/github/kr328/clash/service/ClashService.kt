@@ -25,11 +25,6 @@ import java.util.concurrent.Executors
 class ClashService : Service() {
     companion object {
         private const val TAG = "ClashForAndroid"
-
-        private const val CLASH_STATUS_NOTIFICATION_CHANNEL = "clash_status_channel"
-        private const val CLASH_STATUS_NOTIFICATION_ID = 413
-
-        private const val MAIN_ACTIVITY_NAME = ".MainActivity"
     }
 
     private val handler = Handler()
