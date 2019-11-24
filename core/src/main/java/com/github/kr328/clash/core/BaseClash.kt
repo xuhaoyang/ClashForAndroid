@@ -9,6 +9,7 @@ import java.io.DataOutputStream
 import java.io.File
 import java.io.IOException
 
+@Suppress("SameParameterValue")
 abstract class BaseClash(private val controllerPath: File) {
     protected fun <R> runControl(
         command: Int,
