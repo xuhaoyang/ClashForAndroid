@@ -86,7 +86,7 @@ class Clash(
     }
 
     fun setEventEnabled(type: Int, enabled: Boolean) {
-        runControl(COMMAND_SET_EVENT_ENABLED) { _, _, output ->
+        runControlNoException(COMMAND_SET_EVENT_ENABLED) { _, _, output ->
             output.writeInt(type)
             output.writeInt(if ( enabled ) 1 else 0)
         }

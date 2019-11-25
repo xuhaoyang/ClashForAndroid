@@ -11,15 +11,12 @@ import androidx.appcompat.app.AlertDialog
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.github.kr328.clash.model.ClashProfile
-import com.github.kr328.clash.service.data.ClashDatabase
 import com.github.kr328.clash.service.data.ClashProfileEntity
 import com.github.kr328.clash.utils.FileUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_import_file.*
 import java.io.FileOutputStream
-import java.lang.Exception
-import java.lang.NullPointerException
 import kotlin.concurrent.thread
 
 class ImportFileActivity : BaseActivity() {
@@ -129,17 +126,20 @@ class ImportFileActivity : BaseActivity() {
                 it.write(data.toByteArray())
             }
 
-            ClashDatabase.getInstance(this)
-                .openClashProfileDao()
-                .addProfile(ClashProfileEntity(
-                    name = activity_import_file_name_text.text.toString(),
-                    token = "file|" + activity_import_file_path_text.tag.toString(),
-                    cache = cache.absolutePath,
-                    active = false,
-                    proxies = parsed.proxies.size,
-                    proxyGroups = parsed.proxyGroups.size,
-                    rules = parsed.rules.size
-                ))
+            runClash {
+                it.profileService.addProfile(
+                    ClashProfileEntity(
+                        name = activity_import_file_name_text.text.toString(),
+                        token = "file|" + activity_import_file_path_text.tag.toString(),
+                        cache = cache.absolutePath,
+                        active = false,
+                        proxies = parsed.proxies.size,
+                        proxyGroups = parsed.proxyGroups.size,
+                        rules = parsed.rules.size,
+                        lastUpdate = System.currentTimeMillis()
+                    )
+                )
+            }
 
             finish()
         }

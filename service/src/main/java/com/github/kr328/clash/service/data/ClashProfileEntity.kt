@@ -17,6 +17,7 @@ data class ClashProfileEntity(
     @ColumnInfo(name = "proxies") val proxies: Int,
     @ColumnInfo(name = "proxy_groups") val proxyGroups: Int,
     @ColumnInfo(name = "rules") val rules: Int,
+    @ColumnInfo(name = "last_update") val lastUpdate: Long,
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Int = 0) : Parcelable {
 
     enum class Type {

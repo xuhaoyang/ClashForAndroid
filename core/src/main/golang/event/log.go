@@ -47,7 +47,6 @@ func StartLogEvent() {
 				binary.BigEndian.PutUint32(prefix[:], EventLog)
 
 				send(append(prefix[:], s[:]...))
-
 			case <-logExit:
 				return
 			}

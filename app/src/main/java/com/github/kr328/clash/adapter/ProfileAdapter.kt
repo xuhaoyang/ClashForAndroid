@@ -9,7 +9,7 @@ import com.github.kr328.clash.view.RadioFatItem
 
 class ProfileAdapter(private val context: Context, private val listener: (Int) -> Unit) :
     RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder>() {
-    var profiles: List<ClashProfileEntity> = emptyList()
+    var profiles: Array<ClashProfileEntity> = emptyArray()
 
     class ProfileViewHolder(val view: RadioFatItem) : RecyclerView.ViewHolder(view)
 

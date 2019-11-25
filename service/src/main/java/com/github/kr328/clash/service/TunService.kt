@@ -6,9 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.net.VpnService
-import android.os.Build
-import android.os.IBinder
-import android.os.ParcelFileDescriptor
+import android.os.*
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
@@ -145,5 +143,9 @@ class TunService : VpnService(), IClashEventObserver {
     override fun onProfileChanged(event: ProfileChangedEvent?) {}
     override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
     override fun onTrafficEvent(event: TrafficEvent?) {}
-    override fun asBinder(): IBinder = throw IllegalArgumentException("asBinder Unsupported")
+    override fun asBinder(): IBinder = object: Binder() {
+        override fun queryLocalInterface(descriptor: String): IInterface? {
+            return this@TunService
+        }
+    }
 }

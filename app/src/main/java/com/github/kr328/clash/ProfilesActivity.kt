@@ -2,15 +2,12 @@ package com.github.kr328.clash
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.kr328.clash.adapter.ProfileAdapter
-import com.github.kr328.clash.service.data.ClashDatabase
+import com.github.kr328.clash.core.event.ProfileChangedEvent
 import com.github.kr328.clash.service.data.ClashProfileEntity
 import kotlinx.android.synthetic.main.activity_profiles.*
-import kotlin.concurrent.thread
 
 class ProfilesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +15,6 @@ class ProfilesActivity : BaseActivity() {
         setContentView(R.layout.activity_profiles)
 
         setSupportActionBar(activity_profiles_toolbar)
-        activity_profiles_toolbar.elevation = 4.0f
 
         activity_profiles_new_profile.setOnClickListener {
             startActivity(Intent(this, CreateProfileActivity::class.java))
@@ -28,21 +24,44 @@ class ProfilesActivity : BaseActivity() {
             override fun canScrollHorizontally(): Boolean = false
             override fun canScrollVertically(): Boolean = false
         }
-        activity_profiles_main_list.adapter = ProfileAdapter(this) {
-            thread {
-                ClashDatabase.getInstance(this)
-                    .openClashProfileDao()
-                    .setSelectedProfile(it)
+        activity_profiles_main_list.adapter = ProfileAdapter(this) { id ->
+            runClash {
+                it.profileService.setActiveProfile(id)
             }
         }
 
-        ClashDatabase.getInstance(this)
-            .openClashProfileDao()
-            .observeProfiles()
-            .observe(this, this::refreshList)
+        reloadList()
     }
 
-    private fun refreshList(newData: List<ClashProfileEntity>) {
+    override fun onStart() {
+        super.onStart()
+
+        runClash {
+            it.eventService.registerEventObserver(ProfilesActivity::class.java.simpleName,
+                this,
+                intArrayOf())
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        runClash {
+            it.eventService.unregisterEventObserver(ProfilesActivity::class.java.simpleName)
+        }
+    }
+
+    override fun onProfileChanged(event: ProfileChangedEvent?) {
+        reloadList()
+    }
+
+    private fun reloadList() {
+        runClash {
+            refreshList(it.profileService.queryProfiles())
+        }
+    }
+
+    private fun refreshList(newData: Array<ClashProfileEntity>) {
         val adapter = activity_profiles_main_list.adapter as ProfileAdapter
         val oldData = adapter.profiles
 
@@ -58,7 +77,9 @@ class ProfilesActivity : BaseActivity() {
                 oldData[oldItemPosition] == newData[newItemPosition]
         })
 
-        adapter.profiles = newData
-        result.dispatchUpdatesTo(adapter)
+        runOnUiThread {
+            adapter.profiles = newData
+            result.dispatchUpdatesTo(adapter)
+        }
     }
 }

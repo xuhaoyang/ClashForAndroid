@@ -63,7 +63,7 @@ func handleConnection(client *net.UnixConn) {
 	handler := handlers[int(command)]
 	if handler == nil {
 		log.Warnln("Invalid command failure %d", command)
+	} else {
+		handler(client)
 	}
-
-	handler(client)
 }

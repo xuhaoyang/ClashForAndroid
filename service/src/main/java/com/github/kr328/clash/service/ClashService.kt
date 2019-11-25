@@ -2,7 +2,9 @@ package com.github.kr328.clash.service
 
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.IBinder
+import android.os.IInterface
 import android.os.ParcelFileDescriptor
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.event.*
@@ -13,7 +15,8 @@ import java.io.IOException
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
-class ClashService : Service(), IClashEventObserver, ClashEventService.Master, ClashProfileService.Master {
+class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
+    ClashProfileService.Master {
     private val executor = Executors.newSingleThreadExecutor()
     private var pollThread: Thread? = null
 
@@ -23,7 +26,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master, C
     private lateinit var clash: Clash
     private lateinit var database: ClashDatabase
 
-    private val clashService = object: IClashService.Stub() {
+    private val clashService = object : IClashService.Stub() {
         override fun stopTunDevice() {
             clash.stopTunDevice()
         }
@@ -71,11 +74,13 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master, C
     }
 
     override fun requireEvent(event: Int) {
-        clash.setEventEnabled(event, true)
+        if (clash.process.getProcessStatus() == ProcessEvent.STARTED)
+            clash.setEventEnabled(event, true)
     }
 
     override fun releaseEvent(event: Int) {
-        clash.setEventEnabled(event, false)
+        if (clash.process.getProcessStatus() == ProcessEvent.STARTED)
+            clash.setEventEnabled(event, false)
     }
 
     override fun onCreate() {
@@ -83,15 +88,18 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master, C
 
         database = ClashDatabase.getInstance(this)
 
-        eventService.registerEventObserver(ClashService::class.java.simpleName,
-            this,
-            intArrayOf(Event.EVENT_TRAFFIC))
-
         clash = Clash(
             this,
             filesDir.resolve("clash"),
             cacheDir.resolve("clash_controller"),
-            eventService::preformProcessEvent)
+            eventService::preformProcessEvent
+        )
+
+        eventService.registerEventObserver(
+            ClashService::class.java.simpleName,
+            this,
+            intArrayOf(Event.EVENT_TRAFFIC)
+        )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -114,10 +122,44 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master, C
     }
 
     override fun onProfileChanged(event: ProfileChangedEvent?) {
+        reloadProfile()
+    }
+
+    override fun onProcessEvent(event: ProcessEvent?) {
+        when (event!!) {
+            ProcessEvent.STARTED -> {
+                pollThread = thread {
+                    try {
+                        clash.pollEvent {
+                            when (it) {
+                                is LogEvent ->
+                                    eventService.preformLogEvent(it)
+                                is TrafficEvent ->
+                                    eventService.preformTrafficEvent(it)
+                                is ProxyChangedEvent ->
+                                    eventService.preformProxyChangedEvent(it)
+                            }
+                        }
+                    }
+                    catch (e: Exception) {
+                        Log.i("Event poll exited", e)
+                    }
+                }
+
+                reloadProfile()
+            }
+            ProcessEvent.STOPPED -> {
+                pollThread?.interrupt()
+                pollThread = null
+            }
+        }
+    }
+
+    private fun reloadProfile() {
         executor.submit {
             val active = database.openClashProfileDao().queryActiveProfile()
 
-            if (active == null){
+            if (active == null) {
                 clash.process.stop()
                 return@submit
             }
@@ -133,32 +175,6 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master, C
         }
     }
 
-    override fun onProcessEvent(event: ProcessEvent?) {
-        when ( event!! ) {
-            ProcessEvent.STARTED -> {
-                pollThread = thread {
-                    clash.pollEvent {
-                        try {
-                            when ( it ) {
-                                is LogEvent ->
-                                    eventService.preformLogEvent(it)
-                                is TrafficEvent ->
-                                    eventService.preformTrafficEvent(it)
-                                is ProxyChangedEvent ->
-                                    eventService.preformProxyChangedEvent(it)
-                            }
-                        }
-                        catch (e: Exception) {}
-                    }
-                }
-            }
-            ProcessEvent.STOPPED -> {
-                pollThread?.interrupt()
-                pollThread = null
-            }
-        }
-    }
-
     override fun onTrafficEvent(event: TrafficEvent?) {
 
     }
@@ -170,5 +186,9 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master, C
     override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
     override fun onLogEvent(event: LogEvent?) {}
     override fun onErrorEvent(event: ErrorEvent?) {}
-    override fun asBinder(): IBinder = throw IllegalArgumentException("asBinder Unsupported")
+    override fun asBinder(): IBinder = object : Binder() {
+        override fun queryLocalInterface(descriptor: String): IInterface? {
+            return this@ClashService
+        }
+    }
 }

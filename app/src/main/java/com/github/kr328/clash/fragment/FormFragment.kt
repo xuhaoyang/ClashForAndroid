@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.kr328.clash.adapter.FormAdapter
-import java.lang.Exception
 
 class FormFragment(private val elements: List<FormElement>) : Fragment() {
     enum class FormType {

@@ -4,7 +4,7 @@
     <string name="clash_status_stopped">Stopped</string>
     <string name="clash_status_click_to_start">Click here to start</string>
     <string name="clash_status_started">Running</string>
-    <string name="clash_status_forwarded_traffic">%s Traffic Forwarded</string>
+    <string name="clash_status_forwarded_traffic">%s Forwarded</string>
 
     <string name="clash_proxy_manage">Proxy Manage</string>
     <string name="clash_proxy_manage_summary">%d Proxies</string>

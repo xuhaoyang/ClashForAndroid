@@ -2,11 +2,11 @@ package com.github.kr328.clash.core
 
 import android.net.LocalSocket
 import android.net.LocalSocketAddress
-import android.util.Log
-import com.github.kr328.clash.core.Constants.TAG
+import com.github.kr328.clash.core.utils.Log
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
+import java.lang.Exception
 
 @Suppress("SameParameterValue")
 abstract class BaseClash(private val controllerPath: File) {
@@ -45,14 +45,21 @@ abstract class BaseClash(private val controllerPath: File) {
         command: Int,
         block: (LocalSocket, DataInputStream, DataOutputStream) -> R
     ): R? {
-        return runCatching {
+        return try {
             runControl(command, block)
-        }.getOrNull()
+        }
+        catch (e: Exception) {
+            Log.w("Run command $command failure", e)
+            null
+        }
     }
 
     protected fun runControlNoException(command: Int) {
-        runCatching {
+        try {
             runControl(command)
+        }
+        catch (e: Exception) {
+            Log.w("Run command $command failure", e)
         }
     }
 
@@ -64,8 +71,6 @@ abstract class BaseClash(private val controllerPath: File) {
     protected fun DataInputStream.readString(): String {
         val len = this.readInt()
         val buffer = ByteArray(len)
-
-        Log.d(TAG, "Read $len")
 
         this.readFully(buffer)
 

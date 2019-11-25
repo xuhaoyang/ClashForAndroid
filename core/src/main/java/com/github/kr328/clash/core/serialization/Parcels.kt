@@ -1,6 +1,7 @@
 package com.github.kr328.clash.core.serialization
 
 import android.os.Parcel
+import com.github.kr328.clash.core.utils.Log
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.EmptyModule
 
@@ -29,13 +30,16 @@ object Parcels : AbstractSerialFormat(EmptyModule) {
         override fun decodeNotNullMark(): Boolean {
             nextObject = parcel.readValue(Parcels::class.java.classLoader)
 
+            Log.i("-> $nextObject")
+
             return nextObject != null
         }
 
         override fun decodeNull(): Nothing? = null
 
         override fun decodeValue(): Any {
-            return nextObject ?: throw NullPointerException("Parcel read data null")
+            return nextObject ?: parcel.readValue(Parcels::class.java.classLoader)
+                ?: throw NullPointerException("Parcel read data null")
         }
     }
 }

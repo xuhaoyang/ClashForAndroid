@@ -1,25 +1,18 @@
 package com.github.kr328.clash
 
 import android.app.Activity
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.graphics.Color
 import android.net.VpnService
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.observe
+import com.github.kr328.clash.core.event.Event
 import com.github.kr328.clash.core.event.ProcessEvent
-import com.github.kr328.clash.service.ClashService
-import com.github.kr328.clash.service.IClashObserver
-import com.github.kr328.clash.service.IClashService
+import com.github.kr328.clash.core.event.ProfileChangedEvent
+import com.github.kr328.clash.core.event.TrafficEvent
+import com.github.kr328.clash.core.utils.ByteFormatter
 import com.github.kr328.clash.service.TunService
-import com.github.kr328.clash.service.data.ClashDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_clash_status.*
 import kotlinx.android.synthetic.main.activity_main_profiles.*
@@ -29,33 +22,6 @@ class MainActivity : BaseActivity() {
     companion object {
         const val VPN_REQUEST_CODE = 233
     }
-
-    private val handler = Handler()
-    private var clash: IClashService? = null
-    private val connection = object: ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName?) {
-            finish()
-        }
-
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            clash = IClashService.Stub.asInterface(service)
-
-            clash?.apply {
-                registerObserver("main_activity",true , object: IClashObserver.Stub() {
-                    override fun onStatusChanged(event: ProcessEvent?) {
-                        clashStatus.postValue(event ?: ProcessEvent(
-                            ProcessEvent.STATUS_STOPPED_INT
-                        )
-                        )
-                    }
-                })
-            }
-        }
-    }
-
-    private val clashStatus = MutableLiveData<ProcessEvent>(
-        ProcessEvent(ProcessEvent.STATUS_STOPPED_INT)
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,77 +41,109 @@ class MainActivity : BaseActivity() {
         activity_main_clash_proxies.visibility = View.GONE
         activity_main_clash_logs.visibility = View.GONE
 
-        clashStatus.observe(this) {
-            handler.removeMessages(0)
-            handler.postDelayed({
-                when ( it ) {
-                    ProcessEvent.STATUS_STARTED -> {
-                        activity_main_clash_status.setCardBackgroundColor(getColor(R.color.colorAccent))
-                        activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_started)
-                        activity_main_clash_status_title.text = getString(R.string.clash_status_started)
-                        activity_main_clash_status_summary.text = getString(R.string.clash_status_forwarded_traffic, "1.4GiB")
-                        activity_main_clash_proxies.visibility = View.VISIBLE
-                        activity_main_clash_logs.visibility = View.VISIBLE
-                    }
-                    else -> {
-                        activity_main_clash_status.setCardBackgroundColor(Color.GRAY)
-                        activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
-                        activity_main_clash_status_title.text = getString(R.string.clash_status_stopped)
-                        activity_main_clash_status_summary.text = getString(R.string.clash_status_click_to_start)
-                        activity_main_clash_proxies.visibility = View.GONE
-                        activity_main_clash_logs.visibility = View.GONE
-                    }
-                }
-            }, 300)
-        }
-
         activity_main_clash_status.setOnClickListener {
-            when ( clashStatus.value ?: ProcessEvent.STATUS_STOPPED ) {
-                ProcessEvent.STATUS_STARTED -> {
-                    clash?.stop()
-                }
-                ProcessEvent.STATUS_STOPPED -> {
-                    VpnService.prepare(this)?.apply {
-                         startActivityForResult(this, VPN_REQUEST_CODE)
-                    } ?: startService(Intent(this, TunService::class.java))
+            runClash {
+                when (it.currentProcessStatus) {
+                    ProcessEvent.STARTED -> {
+                        it.stop()
+                    }
+                    else -> runOnUiThread {
+                        VpnService.prepare(this@MainActivity)?.apply {
+                            startActivityForResult(this, VPN_REQUEST_CODE)
+                        } ?: startService(Intent(this@MainActivity, TunService::class.java))
+                    }
+
                 }
             }
         }
+    }
 
-        ClashDatabase.getInstance(this)
-            .openClashProfileDao()
-            .observeDefaultProfileName()
-            .observe(this) {
-                activity_main_clash_profiles_summary.text =
-                    if ( it == null )
-                        getString(R.string.clash_profiles_summary_unselected)
-                    else
-                        getString(R.string.clash_profiles_summary_selected, it)
+    override fun onProcessEvent(event: ProcessEvent?) {
+        runOnUiThread {
+            when (event) {
+                ProcessEvent.STARTED -> {
+                    activity_main_clash_status.setCardBackgroundColor(getColor(R.color.colorAccent))
+                    activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_started)
+                    activity_main_clash_status_title.text = getString(R.string.clash_status_started)
+                    activity_main_clash_status_summary.text =
+                        getString(R.string.clash_status_forwarded_traffic, "0 Bytes")
+                    activity_main_clash_proxies.visibility = View.VISIBLE
+                    activity_main_clash_logs.visibility = View.VISIBLE
+                }
+                else -> {
+                    activity_main_clash_status.setCardBackgroundColor(Color.GRAY)
+                    activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
+                    activity_main_clash_status_title.text = getString(R.string.clash_status_stopped)
+                    activity_main_clash_status_summary.text =
+                        getString(R.string.clash_status_click_to_start)
+                    activity_main_clash_proxies.visibility = View.GONE
+                    activity_main_clash_logs.visibility = View.GONE
+                }
             }
+        }
+    }
+
+    override fun onTrafficEvent(event: TrafficEvent?) {
+        activity_main_clash_status_summary.text =
+            getString(R.string.clash_status_forwarded_traffic,
+                ByteFormatter.byteToString(event?.total ?: 0))
+    }
+
+    override fun onProfileChanged(event: ProfileChangedEvent?) {
+        loadActiveProfile()
     }
 
     override fun onStart() {
         super.onStart()
 
-        bindService(Intent(this, ClashService::class.java),
-            connection,
-            Context.BIND_AUTO_CREATE)
+        runClash {
+            it.eventService.registerEventObserver(MainActivity::class.java.simpleName,
+                this,
+                intArrayOf(Event.EVENT_TRAFFIC))
+
+            onProcessEvent(it.currentProcessStatus)
+        }
+
+        loadActiveProfile()
     }
 
     override fun onStop() {
         super.onStop()
 
-        unbindService(connection)
+        runClash {
+            it.eventService.unregisterEventObserver(MainActivity::class.java.simpleName)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when ( requestCode ) {
+        when (requestCode) {
             VPN_REQUEST_CODE -> {
-                if ( resultCode == Activity.RESULT_OK )
+                if (resultCode == Activity.RESULT_OK)
                     startService(Intent(this, TunService::class.java))
             }
         }
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun loadActiveProfile() {
+        runClash {
+            val profile = it.profileService.queryActiveProfile()
+
+            runOnUiThread {
+                if ( profile != null ) {
+                    activity_main_clash_proxies_summary.text =
+                        getString(R.string.clash_proxy_manage_summary, profile.proxies)
+                    activity_main_clash_profiles_summary.text =
+                        getString(R.string.clash_profiles_summary_selected, profile.name)
+                }
+                else {
+                    activity_main_clash_proxies_summary.text =
+                        getString(R.string.clash_proxy_manage_summary, 0)
+                    activity_main_clash_profiles_summary.text =
+                        getString(R.string.clash_profiles_summary_unselected)
+                }
+            }
+        }
     }
 }

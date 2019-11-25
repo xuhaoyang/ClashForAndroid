@@ -1,9 +1,8 @@
 package com.github.kr328.clash.core
 
 import android.content.Context
-import android.util.Log
-import com.github.kr328.clash.core.Constants.TAG
 import com.github.kr328.clash.core.event.ProcessEvent
+import com.github.kr328.clash.core.utils.Log
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -42,7 +41,7 @@ class ClashProcess(private val context: Context,
                 directory(clashDir)
             }.start()
 
-            Log.i(TAG, "Starting clash [$clashPath]")
+            Log.i("Starting clash [$clashPath]")
 
             val reader = p.inputStream.bufferedReader()
             var line = ""
@@ -50,14 +49,14 @@ class ClashProcess(private val context: Context,
             // Parse pid
             var currentPid = 0
             while ( reader.readLine()?.apply { line = this.trim() } != null ) {
-                Log.d(TAG, line)
+                Log.i(line)
 
                 if ( PID_PATTERN.matchEntire(line)?.apply { currentPid = groups[1]!!.value.toInt() } != null  )
                     break
             }
 
             while ( reader.readLine()?.apply { line = this.trim() } != null ) {
-                Log.d(TAG, line)
+                Log.i(line)
 
                 if ( line.startsWith(CONTROLLER_STATUS_PREFIX) ) {
                     val error = CONTROLLER_ERROR_PATTERN.matchEntire(line)?.groups?.get(1)?.value
@@ -74,12 +73,12 @@ class ClashProcess(private val context: Context,
 
             listener(ProcessEvent.STARTED)
 
-            Log.i(TAG, "Clash started pid = $pid")
+            Log.i("Clash started pid = $pid")
 
             thread {
                 // Redirect stdout to log
                 while ( reader.readLine()?.apply { line = this } != null ) {
-                    Log.i(TAG, line.trim())
+                    Log.i(line.trim())
                 }
 
                 synchronized(this@ClashProcess) {
