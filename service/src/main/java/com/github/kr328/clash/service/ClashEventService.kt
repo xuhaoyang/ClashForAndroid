@@ -3,7 +3,6 @@ package com.github.kr328.clash.service
 import android.os.Handler
 import android.os.Looper
 import com.github.kr328.clash.core.event.*
-import java.util.*
 import kotlin.concurrent.thread
 
 class ClashEventService(private val master: Master) : IClashEventService.Stub() {

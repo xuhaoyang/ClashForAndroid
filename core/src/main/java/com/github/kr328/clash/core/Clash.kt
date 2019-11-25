@@ -4,15 +4,13 @@ import android.content.Context
 import android.util.Log
 import com.github.kr328.clash.core.Constants.TAG
 import com.github.kr328.clash.core.event.*
-import com.github.kr328.clash.core.model.*
+import com.github.kr328.clash.core.model.Proxy
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONObject
 import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException
-import java.lang.IllegalArgumentException
-import kotlin.reflect.KClass
 
 class Clash(
     context: Context,

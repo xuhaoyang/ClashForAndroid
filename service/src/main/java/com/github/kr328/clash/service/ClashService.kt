@@ -2,7 +2,6 @@ package com.github.kr328.clash.service
 
 import android.app.Service
 import android.content.Intent
-import android.os.Binder
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import com.github.kr328.clash.core.Clash
@@ -11,15 +10,15 @@ import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.data.ClashDatabase
 import java.io.File
 import java.io.IOException
-import java.lang.IllegalArgumentException
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
-class ClashService : Service(), IClashEventObserver, ClashEventService.Master {
+class ClashService : Service(), IClashEventObserver, ClashEventService.Master, ClashProfileService.Master {
     private val executor = Executors.newSingleThreadExecutor()
     private var pollThread: Thread? = null
 
     private val eventService = ClashEventService(this)
+    private val profileService = ClashProfileService(this, this)
 
     private lateinit var clash: Clash
     private lateinit var database: ClashDatabase
@@ -60,6 +59,10 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master {
 
         override fun getEventService(): IClashEventService {
             return this@ClashService.eventService
+        }
+
+        override fun getProfileService(): IClashProfileService {
+            return this@ClashService.profileService
         }
 
         override fun getCurrentProcessStatus(): ProcessEvent {
@@ -158,6 +161,10 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master {
 
     override fun onTrafficEvent(event: TrafficEvent?) {
 
+    }
+
+    override fun preformProfileChanged() {
+        eventService.preformProfileChangedEvent(ProfileChangedEvent())
     }
 
     override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}

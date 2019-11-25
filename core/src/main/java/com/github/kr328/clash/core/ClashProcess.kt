@@ -7,7 +7,6 @@ import com.github.kr328.clash.core.event.ProcessEvent
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
 import kotlin.concurrent.thread
 
 class ClashProcess(private val context: Context,

@@ -3,13 +3,8 @@ package com.github.kr328.clash.core.event
 import android.os.Parcel
 import android.os.Parcelable
 import com.github.kr328.clash.core.serialization.Parcels
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialDescriptor
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
-import java.lang.IllegalArgumentException
 
 @Serializable
 data class LogEvent(val level: Level, val message: String):

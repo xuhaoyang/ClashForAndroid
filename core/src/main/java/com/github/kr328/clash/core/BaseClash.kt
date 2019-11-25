@@ -7,7 +7,6 @@ import com.github.kr328.clash.core.Constants.TAG
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
-import java.io.IOException
 
 @Suppress("SameParameterValue")
 abstract class BaseClash(private val controllerPath: File) {
