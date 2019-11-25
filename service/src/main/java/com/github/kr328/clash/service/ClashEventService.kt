@@ -3,6 +3,8 @@ package com.github.kr328.clash.service
 import android.os.Handler
 import android.os.Looper
 import com.github.kr328.clash.core.event.*
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
 class ClashEventService(private val master: Master) : IClashEventService.Stub() {
@@ -18,20 +20,15 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     private data class EventObserverRecord(val observer: IClashEventObserver, val acquiredEvent: Set<Int>)
 
     private val observers = mutableMapOf<String, EventObserverRecord>()
-    private lateinit var handler: Handler
+    private val handler = Executors.newSingleThreadExecutor()
 
-    init {
-        thread {
-            Looper.prepare()
-
-            handler = Handler()
-
-            Looper.loop()
-        }
-    }
+    private var currentProcessEvent = ProcessEvent.STOPPED
+    private var currentTrafficEvent = TrafficEvent(0, 0, 0)
 
     fun preformProcessEvent(event: ProcessEvent) {
-        handler.post {
+        handler.submit {
+            currentProcessEvent = event
+
             observers.values.forEach {
                 it.observer.onProcessEvent(event)
             }
@@ -39,7 +36,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     }
 
     fun preformLogEvent(event: LogEvent) {
-        handler.post {
+        handler.submit {
             observers.values.forEach {
                 if ( it.acquiredEvent.contains(Event.EVENT_LOG) )
                     it.observer.onLogEvent(event)
@@ -48,7 +45,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     }
 
     fun preformProxyChangedEvent(event: ProxyChangedEvent) {
-        handler.post {
+        handler.submit {
             observers.values.forEach {
                 if ( it.acquiredEvent.contains(Event.EVENT_PROXY_CHANGED) )
                     it.observer.onProxyChangedEvent(event)
@@ -57,7 +54,9 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     }
 
     fun preformTrafficEvent(event: TrafficEvent) {
-        handler.post {
+        handler.submit {
+            currentTrafficEvent = event
+
             observers.values.forEach {
                 if ( it.acquiredEvent.contains(Event.EVENT_TRAFFIC) )
                     it.observer.onTrafficEvent(event)
@@ -66,7 +65,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     }
 
     fun preformErrorEvent(event: ErrorEvent) {
-        handler.post {
+        handler.submit {
             observers.values.forEach {
                 it.observer.onErrorEvent(event)
             }
@@ -74,7 +73,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     }
 
     fun preformProfileChangedEvent(event: ProfileChangedEvent) {
-        handler.post {
+        handler.submit {
             observers.values.forEach {
                 it.observer.onProfileChanged(event)
             }
@@ -82,7 +81,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     }
 
     override fun unregisterEventObserver(id: String?) {
-        handler.post {
+        handler.submit {
             require(id != null)
 
             observers.remove(id)
@@ -96,7 +95,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         observer: IClashEventObserver?,
         events: IntArray?
     ) {
-        handler.post {
+        handler.submit {
             require(id != null && observer != null && events != null)
 
             observers[id] = EventObserverRecord(observer, events.toSet())
@@ -105,12 +104,21 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
                 unregisterEventObserver(id)
             }, 0)
 
+            observer.onProcessEvent(currentProcessEvent)
+
+            if ( events.contains(Event.EVENT_TRAFFIC) )
+                observer.onTrafficEvent(currentTrafficEvent)
+
             recastEventRequirement()
         }
     }
 
-    private fun recastEventRequirement() {
-        handler.post {
+    fun shutdown() {
+        handler.shutdown()
+    }
+
+    fun recastEventRequirement() {
+        handler.submit {
             val req = observers.values.flatMap {
                 it.acquiredEvent
             }.toSet()

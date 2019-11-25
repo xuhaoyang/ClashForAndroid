@@ -8,10 +8,10 @@ var (
 )
 
 const (
-	EventClose        = 0
-	EventLog          = 1
-	EventProxyChanged = 2
-	EventTraffic      = 3
+	EventClose        uint32 = 0
+	EventLog          uint32 = 1
+	EventProxyChanged uint32 = 2
+	EventTraffic      uint32 = 3
 )
 
 func SetHandlers(send func([]byte), close func()) error {

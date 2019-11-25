@@ -17,15 +17,17 @@ import kotlin.concurrent.thread
 
 abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
     companion object {
-        private var clash: IClashService? = null
         private var activityCount: Int = 0
 
-        private var paddingRequest = LinkedBlockingQueue<(IClashService) -> Unit>()
-        private var requestHandler: Thread? = null
+        private val paddingRequest = LinkedBlockingQueue<(IClashService) -> Unit>()
+        private var clashConnection: ClashConnection? = null
 
-        private val clashConnection = object: ServiceConnection {
+        class ClashConnection : ServiceConnection {
+            private var requestHandler: Thread? = null
+            private var clash: IClashService? = null
+
             override fun onServiceDisconnected(name: ComponentName?) {
-                synchronized(BaseActivity::class) {
+                synchronized(BaseActivity::class.java) {
                     Log.i("ClashService disconnected")
 
                     requestHandler?.interrupt()
@@ -48,7 +50,9 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
                         }
                         catch (e: InterruptedException) {}
 
-                        synchronized(BaseActivity::class) {
+                        Log.i("ClashConnect exited")
+
+                        synchronized(BaseActivity::class.java) {
                             clash = null
                             requestHandler = null
                         }
@@ -65,23 +69,32 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        synchronized(BaseActivity::class) {
-            if ( clash == null )
-                bindService(Intent(this, ClashService::class.java),
-                    clashConnection,
+        synchronized(BaseActivity::class.java) {
+            if ( clashConnection == null ) {
+                clashConnection = ClashConnection()
+
+                applicationContext.bindService(Intent(this, ClashService::class.java),
+                    clashConnection!!,
                     Context.BIND_AUTO_CREATE)
+            }
+
             activityCount++;
         }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
-        synchronized(BaseActivity::class) {
+        synchronized(BaseActivity::class.java) {
             if ( --activityCount <= 0 ) {
-                unbindService(clashConnection)
+                if ( clashConnection != null ) {
+                    applicationContext.unbindService(clashConnection!!)
+                    clashConnection?.onServiceDisconnected(null)
+
+                    clashConnection = null
+                }
             }
         }
+
+        super.onDestroy()
     }
 
     private val observerBinder = object: IClashEventObserver.Stub() {

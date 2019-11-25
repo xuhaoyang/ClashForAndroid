@@ -25,6 +25,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
     private lateinit var clash: Clash
     private lateinit var database: ClashDatabase
+    private lateinit var notification: ClashNotification
 
     private val clashService = object : IClashService.Stub() {
         override fun stopTunDevice() {
@@ -95,6 +96,8 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             eventService::preformProcessEvent
         )
 
+        notification = ClashNotification(this)
+
         eventService.registerEventObserver(
             ClashService::class.java.simpleName,
             this,
@@ -116,7 +119,9 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
     override fun onDestroy() {
         clash.process.stop()
+
         executor.shutdown()
+        eventService.shutdown()
 
         super.onDestroy()
     }
@@ -147,8 +152,14 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 }
 
                 reloadProfile()
+
+                notification.show()
+
+                eventService.recastEventRequirement()
             }
             ProcessEvent.STOPPED -> {
+                notification.cancel()
+
                 pollThread?.interrupt()
                 pollThread = null
             }
@@ -168,6 +179,8 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
             try {
                 clash.loadProfile(File(active.cache))
+
+                notification.setProfile(active.name)
             } catch (e: IOException) {
                 clash.process.stop()
                 Log.w("Load profile failure", e)
@@ -176,7 +189,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
     }
 
     override fun onTrafficEvent(event: TrafficEvent?) {
-
+        notification.setSpeed(event?.up ?: 0 , event?.down ?: 0)
     }
 
     override fun preformProfileChanged() {

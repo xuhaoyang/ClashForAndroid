@@ -12,23 +12,13 @@ import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
 class TunService : VpnService(), IClashEventObserver {
     companion object {
-        const val TAG = "ClashForAndroid"
-
-        val DEFAULT_DNS = listOf(
-            "1.1.1.1",
-            "8.8.8.8",
-            "208.67.222.222",
-            "114.114.114.114",
-            "223.5.5.5",
-            "119.29.29.29"
-        )
-
         // from https://github.com/shadowsocks/shadowsocks-android/blob/master/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt
         private const val VPN_MTU = 1500
         private const val PRIVATE_VLAN4_CLIENT = "172.19.0.1"
         private const val PRIVATE_VLAN6_CLIENT = "fdfe:dcba:9876::1"
     }
 
+    private var startTime = System.currentTimeMillis()
     private lateinit var fileDescriptor: ParcelFileDescriptor
     private lateinit var clash: IClashService
     private lateinit var defaultNetworkObserver: DefaultNetworkObserver
@@ -44,14 +34,11 @@ class TunService : VpnService(), IClashEventObserver {
 
             this@TunService.clash = clash
 
+            startTime = System.currentTimeMillis()
+
             clash.eventService.registerEventObserver(TunService::class.java.simpleName,
                 this@TunService,
                 intArrayOf())
-
-            if ( clash.currentProcessStatus == ProcessEvent.STARTED )
-                clash.startTunDevice(fileDescriptor, VPN_MTU)
-            else
-                clash.start()
         }
     }
 
@@ -68,7 +55,7 @@ class TunService : VpnService(), IClashEventObserver {
             .addAddress(PRIVATE_VLAN4_CLIENT, 30)
             .addAddress(PRIVATE_VLAN6_CLIENT, 126)
             .addDefaultDns()
-            .addDisallowedApplication(packageName)
+            .addBypassApplications()
             .addBypassPrivateRoute()
             .setMtu(VPN_MTU)
             .setBlocking(false)
@@ -106,7 +93,10 @@ class TunService : VpnService(), IClashEventObserver {
     override fun onProcessEvent(event: ProcessEvent?) {
         when ( event ) {
             ProcessEvent.STOPPED ->
-                stopSelf()
+                if ( System.currentTimeMillis() - startTime > 5 * 1000L )
+                    stopSelf()
+                else
+                    clash.start()
             ProcessEvent.STARTED ->
                 clash.startTunDevice(fileDescriptor, VPN_MTU)
         }
@@ -135,6 +125,14 @@ class TunService : VpnService(), IClashEventObserver {
         resources.getStringArray(R.array.default_dns).forEach {
             addDnsServer(it)
         }
+        return this
+    }
+
+    private fun Builder.addBypassApplications(): Builder {
+        resources.getStringArray(R.array.default_bypass_application)
+            .forEach {
+                runCatching { this.addDisallowedApplication(it) }
+            }
         return this
     }
 

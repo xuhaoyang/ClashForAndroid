@@ -21,7 +21,7 @@ func handleQueryProxies(client *net.UnixConn) {
 		inner, err := p.MarshalJSON()
 
 		if err != nil {
-			log.Warnln("MarshalJSON failure %s", err.Error())
+			log.Errorln("MarshalJSON failure %s", err.Error())
 			continue
 		}
 

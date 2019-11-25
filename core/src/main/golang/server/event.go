@@ -31,13 +31,13 @@ func handlePollEvent(client *net.UnixConn) {
 			return
 		}
 
-		writeCommandPacket(client, buf)
+		client.Write(buf)
 	}
 }
 
 func handleSetEventEnabled(client *net.UnixConn) {
-	var eventType int
-	var enabled int
+	var eventType uint32
+	var enabled uint32
 	var err error
 
 	err = binary.Read(client, binary.BigEndian, &eventType)
@@ -52,6 +52,16 @@ func handleSetEventEnabled(client *net.UnixConn) {
 
 	switch eventType {
 	case event.EventLog:
-		event.StartLogEvent()
+		if enabled == 1 {
+			event.StartLogEvent()
+		} else {
+			event.StopLogEvent()
+		}
+	case event.EventTraffic:
+		if enabled == 1 {
+			event.StartTrafficEvent()
+		} else {
+			event.StopTrafficEvent()
+		}
 	}
 }

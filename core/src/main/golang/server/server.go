@@ -8,23 +8,27 @@ import (
 )
 
 const (
-	commandPing           = 0
-	commandTunStart       = 1
-	commandTunStop        = 2
-	commandProfileDefault = 3
-	commandProfileReload  = 4
-	commandQueryProxies   = 5
+	commandPing            uint32 = 0
+	commandTunStart        uint32 = 1
+	commandTunStop         uint32 = 2
+	commandProfileDefault  uint32 = 3
+	commandProfileReload   uint32 = 4
+	commandQueryProxies    uint32 = 5
+	commandPollEvent       uint32 = 6
+	commandSetEventEnabled uint32 = 7
 )
 
-var handlers map[int]func(*net.UnixConn) = make(map[int]func(*net.UnixConn))
+var handlers map[uint32]func(*net.UnixConn) = make(map[uint32]func(*net.UnixConn))
 
 func init() {
-	handlers[commandPing] = handlePing                     // ping.go
-	handlers[commandTunStart] = handleTunStart             // tun.go
-	handlers[commandTunStop] = handleTunStop               // tun.go
-	handlers[commandProfileDefault] = handleProfileDefault // profile.go
-	handlers[commandProfileReload] = handleProfileReload   // profile.go
-	handlers[commandQueryProxies] = handleQueryProxies     // proxies.go
+	handlers[commandPing] = handlePing                       // ping.go
+	handlers[commandTunStart] = handleTunStart               // tun.go
+	handlers[commandTunStop] = handleTunStop                 // tun.go
+	handlers[commandProfileDefault] = handleProfileDefault   // profile.go
+	handlers[commandProfileReload] = handleProfileReload     // profile.go
+	handlers[commandQueryProxies] = handleQueryProxies       // proxies.go
+	handlers[commandPollEvent] = handlePollEvent             // event.go
+	handlers[commandSetEventEnabled] = handleSetEventEnabled // event.go
 }
 
 // Start local control server
@@ -54,15 +58,16 @@ func Start(path string) error {
 }
 
 func handleConnection(client *net.UnixConn) {
-	var command int32
+	var command uint32
 
 	if err := binary.Read(client, binary.BigEndian, &command); err != nil {
-		log.Warnln("Unix read command failure %s", err.Error())
+		log.Errorln("Unix read command failure %s", err.Error())
 	}
 
-	handler := handlers[int(command)]
+	handler := handlers[command]
 	if handler == nil {
-		log.Warnln("Invalid command failure %d", command)
+		log.Errorln("Invalid command failure %d", command)
+		client.Close()
 	} else {
 		handler(client)
 	}

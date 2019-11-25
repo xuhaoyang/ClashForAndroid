@@ -18,7 +18,8 @@ func handleProfileDefault(client *net.UnixConn) {
 func handleProfileReload(client *net.UnixConn) {
 	packet, err := readCommandPacket(client)
 	if err != nil {
-		log.Warnln("Read profile payload failure, %s", err.Error())
+		log.Errorln("Read profile payload failure, %s", err.Error())
+		return
 	}
 
 	var payload struct {
@@ -27,7 +28,8 @@ func handleProfileReload(client *net.UnixConn) {
 
 	err = json.Unmarshal(packet, &payload)
 	if err != nil {
-		log.Warnln("Parse profile payload failure, %s", err.Error())
+		log.Errorln("Parse profile payload failure, %s", err.Error())
+		return
 	}
 
 	err = profile.LoadFromFile(payload.Path)
@@ -44,6 +46,7 @@ func handleProfileReload(client *net.UnixConn) {
 		writeCommandPacket(client, buffer)
 	} else {
 		binary.Write(client, binary.BigEndian, uint32(0))
+		return
 	}
 
 	log.Infoln("Profile " + payload.Path + " loaded")

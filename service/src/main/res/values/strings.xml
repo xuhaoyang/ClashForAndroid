@@ -8,5 +8,5 @@
 
     <string name="clash_notification_up">UP</string>
     <string name="clash_notification_down">Down</string>
-    <string name="clash_notification_default">0 KiB/s</string>
+    <string name="clash_notification_default">0 Byte/s</string>
 </resources>

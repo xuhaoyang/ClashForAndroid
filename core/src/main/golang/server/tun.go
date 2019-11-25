@@ -18,19 +18,19 @@ func handleTunStart(client *net.UnixConn) {
 
 	_, noob, _, _, err := client.ReadMsgUnix(nil, buffer)
 	if err != nil {
-		log.Warnln("Read tun socket failure, %s", err.Error())
+		log.Errorln("Read tun socket failure, %s", err.Error())
 		return
 	}
 
 	msg, err := unix.ParseSocketControlMessage(buffer[:noob])
 	if err != nil || len(msg) != 1 {
-		log.Warnln("Parse tun socket failure, %s", err.Error())
+		log.Errorln("Parse tun socket failure, %s", err.Error())
 		return
 	}
 
 	fds, err := unix.ParseUnixRights(&msg[0])
 	if err != nil {
-		log.Warnln("Parse tun socket failure, %s", err.Error())
+		log.Errorln("Parse tun socket failure, %s", err.Error())
 		return
 	}
 
@@ -41,7 +41,7 @@ func handleTunStart(client *net.UnixConn) {
 	binary.Read(client, binary.BigEndian, &end)
 
 	if end != tunCommandEnd {
-		log.Warnln("Invalid tun command end")
+		log.Errorln("Invalid tun command end")
 		return
 	}
 

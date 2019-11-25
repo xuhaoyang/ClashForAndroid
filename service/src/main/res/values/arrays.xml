@@ -166,4 +166,9 @@
         <item>1.1.1.1</item>
         <item>8.8.8.8</item>
     </string-array>
+
+    <string-array name="default_bypass_application">
+        <item>com.github.kr328.clash</item>
+        <item>com.android.networkstack</item>
+    </string-array>
 </resources>

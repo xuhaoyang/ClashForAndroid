@@ -6,11 +6,11 @@
     <string name="clash_status_started">Running</string>
     <string name="clash_status_forwarded_traffic">%s Forwarded</string>
 
-    <string name="clash_proxy_manage">Proxy Manage</string>
-    <string name="clash_proxy_manage_summary">%d Proxies</string>
+    <string name="clash_proxy_manage">Proxy</string>
+    <string name="clash_proxy_manage_summary">%d Items</string>
 
-    <string name="clash_profiles">Profiles</string>
-    <string name="clash_profiles_summary_selected">%s Selected</string>
+    <string name="clash_profiles">Profile</string>
+    <string name="clash_profiles_summary_selected">%s Active</string>
     <string name="clash_profiles_summary_unselected">Unselected</string>
 
     <string name="clash_logs">Logs</string>

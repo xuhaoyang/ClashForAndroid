@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.VpnService
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import com.github.kr328.clash.core.event.Event
 import com.github.kr328.clash.core.event.ProcessEvent
@@ -22,6 +21,8 @@ class MainActivity : BaseActivity() {
     companion object {
         const val VPN_REQUEST_CODE = 233
     }
+
+    private var lastEvent: ProcessEvent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +53,6 @@ class MainActivity : BaseActivity() {
                             startActivityForResult(this, VPN_REQUEST_CODE)
                         } ?: startService(Intent(this@MainActivity, TunService::class.java))
                     }
-
                 }
             }
         }
@@ -60,6 +60,11 @@ class MainActivity : BaseActivity() {
 
     override fun onProcessEvent(event: ProcessEvent?) {
         runOnUiThread {
+            if ( event == lastEvent )
+                return@runOnUiThread
+
+            lastEvent = event
+
             when (event) {
                 ProcessEvent.STARTED -> {
                     activity_main_clash_status.setCardBackgroundColor(getColor(R.color.colorAccent))
@@ -84,9 +89,11 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onTrafficEvent(event: TrafficEvent?) {
-        activity_main_clash_status_summary.text =
-            getString(R.string.clash_status_forwarded_traffic,
-                ByteFormatter.byteToString(event?.total ?: 0))
+        runOnUiThread {
+            activity_main_clash_status_summary.text =
+                getString(R.string.clash_status_forwarded_traffic,
+                    ByteFormatter.byteToString(event?.total ?: 0))
+        }
     }
 
     override fun onProfileChanged(event: ProfileChangedEvent?) {
@@ -100,8 +107,6 @@ class MainActivity : BaseActivity() {
             it.eventService.registerEventObserver(MainActivity::class.java.simpleName,
                 this,
                 intArrayOf(Event.EVENT_TRAFFIC))
-
-            onProcessEvent(it.currentProcessStatus)
         }
 
         loadActiveProfile()
