@@ -7,54 +7,86 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Handler
+import com.github.kr328.clash.core.utils.Log
+import java.lang.Exception
 
 class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> Unit) {
     private val handler = Handler()
     private val connectivity = context.getSystemService(ConnectivityManager::class.java)!!
-    private var blocking: Boolean = true
-    private var current: Network? = null
     private val callback = object: ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            if ( blocking )
-                return
-
-            current = network
-
-            listener(current)
+            handler.removeMessages(0)
+            handler.postDelayed({
+                listener(rebuildNetworkList())
+            }, 500)
         }
 
         override fun onLost(network: Network) {
-            if ( blocking )
-                return
-
-            if ( current == network )
-                current = null
-
-            listener(current)
+            handler.removeMessages(0)
+            handler.postDelayed({
+                listener(rebuildNetworkList())
+            }, 500)
         }
 
         override fun onCapabilitiesChanged(
             network: Network,
             networkCapabilities: NetworkCapabilities
         ) {
-            if ( blocking )
-                return
-
-            if ( network == current )
-                listener(current)
+            handler.removeMessages(0)
+            handler.postDelayed({
+                listener(rebuildNetworkList())
+            }, 500)
         }
     }
 
     fun register() {
         connectivity.registerNetworkCallback(NetworkRequest.Builder().build(), callback)
-
-        handler.postDelayed({
-            blocking = false
-            listener(connectivity.activeNetwork)
-        }, 3000)
     }
 
     fun unregister() {
         connectivity.unregisterNetworkCallback(callback)
+    }
+
+    private fun rebuildNetworkList(): Network? {
+        return try {
+            connectivity.allNetworks
+                .map {
+                    connectivity.getNetworkCapabilities(it) to it
+                }
+                .filter {
+                    it.first != null
+                }
+                .map {
+                    it.first!! to it.second
+                }
+                .filterNot {
+                    it.first.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
+                            !it.first.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                }
+                .sortedBy {
+                        when {
+                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> 0
+                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> 1
+                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> 2
+                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) -> 3
+                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> 4
+                            else -> 5
+                        } + if ( it.first.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED) )
+                            -1000
+                        else
+                            0
+                }
+                .map {
+                    Log.i("Network ${it.first}")
+                    it
+                }
+                .map {
+                    it.second
+                }
+                .firstOrNull()
+        }
+        catch (e: Exception) {
+            null
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.content.ServiceConnection
 import android.net.VpnService
 import android.os.*
 import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
 class TunService : VpnService(), IClashEventObserver {
@@ -65,7 +66,7 @@ class TunService : VpnService(), IClashEventObserver {
         bindService(Intent(this, ClashService::class.java), connection, Context.BIND_AUTO_CREATE)
 
         defaultNetworkObserver = DefaultNetworkObserver(this) {
-            setUnderlyingNetworks(it?.run { arrayOf(this) })
+            setUnderlyingNetworks(it?.run { arrayOf(it) })
         }
 
         defaultNetworkObserver.register()
