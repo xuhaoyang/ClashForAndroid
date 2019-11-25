@@ -1,13 +1,7 @@
 package com.github.kr328.clash.adapter
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.recyclerview.widget.RecyclerView
 import com.github.kr328.clash.R
 import com.github.kr328.clash.service.data.ClashProfileEntity
@@ -39,7 +33,7 @@ class ProfileAdapter(private val context: Context, private val listener: (Int) -
             R.string.clash_profile_item_summary,
             current.proxies, current.proxyGroups, current.rules
         )
-        holder.view.isChecked = current.selected
+        holder.view.isChecked = current.active
         holder.view.setOnClickListener {
             listener(current.id)
         }

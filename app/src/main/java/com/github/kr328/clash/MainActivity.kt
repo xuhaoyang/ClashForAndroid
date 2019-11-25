@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_main_clash_status.*
 import kotlinx.android.synthetic.main.activity_main_profiles.*
 import kotlinx.android.synthetic.main.activity_main_proxy_manage.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     companion object {
         const val VPN_REQUEST_CODE = 233
     }

@@ -15,7 +15,7 @@ import androidx.fragment.app.commit
 import com.github.kr328.clash.view.FatItem
 import kotlinx.android.synthetic.main.activity_new_profile.*
 
-class CreateProfileActivity : AppCompatActivity() {
+class CreateProfileActivity : BaseActivity() {
     companion object {
         val NEW_PROFILE_SOURCE = listOf(
             AdapterData(R.drawable.ic_new_profile_file,

@@ -16,7 +16,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         private val EVENT_SET = setOf(Event.EVENT_LOG, Event.EVENT_TRAFFIC, Event.EVENT_PROXY_CHANGED)
     }
 
-    private data class EventObserverRecord(val observer: IClashEventObserver, val acquiredEvent: MutableSet<Int>)
+    private data class EventObserverRecord(val observer: IClashEventObserver, val acquiredEvent: Set<Int>)
 
     private val observers = mutableMapOf<String, EventObserverRecord>()
     private lateinit var handler: Handler
@@ -42,7 +42,8 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     fun preformLogEvent(event: LogEvent) {
         handler.post {
             observers.values.forEach {
-                it.observer.onLogEvent(event)
+                if ( it.acquiredEvent.contains(Event.EVENT_LOG) )
+                    it.observer.onLogEvent(event)
             }
         }
     }
@@ -50,7 +51,8 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     fun preformProxyChangedEvent(event: ProxyChangedEvent) {
         handler.post {
             observers.values.forEach {
-                it.observer.onProxyChangedEvent(event)
+                if ( it.acquiredEvent.contains(Event.EVENT_PROXY_CHANGED) )
+                    it.observer.onProxyChangedEvent(event)
             }
         }
     }
@@ -58,7 +60,8 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     fun preformTrafficEvent(event: TrafficEvent) {
         handler.post {
             observers.values.forEach {
-                it.observer.onTrafficEvent(event)
+                if ( it.acquiredEvent.contains(Event.EVENT_TRAFFIC) )
+                    it.observer.onTrafficEvent(event)
             }
         }
     }
@@ -71,23 +74,11 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    override fun acquireEvent(id: String?, event: Int) {
+    fun preformProfileChangedEvent(event: ProfileChangedEvent) {
         handler.post {
-            require(id != null)
-
-            observers[id]?.acquiredEvent?.add(event)
-
-            recastEventRequirement()
-        }
-    }
-
-    override fun releaseEvent(id: String?, event: Int) {
-        handler.post {
-            require(id != null)
-
-            observers[id]?.acquiredEvent?.remove(event)
-
-            recastEventRequirement()
+            observers.values.forEach {
+                it.observer.onProfileChanged(event)
+            }
         }
     }
 
@@ -101,15 +92,25 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    override fun registerEventObserver(id: String?, observer: IClashEventObserver?) {
+    override fun registerEventObserver(
+        id: String?,
+        observer: IClashEventObserver?,
+        events: IntArray?
+    ) {
         handler.post {
-            require(id != null && observer != null)
+            require(id != null && observer != null && events != null)
 
-            observers[id] = EventObserverRecord(observer, mutableSetOf())
+            observers[id] = EventObserverRecord(observer, events.toSet())
+
+            observer.asBinder().linkToDeath({
+                unregisterEventObserver(id)
+            }, 0)
+
+            recastEventRequirement()
         }
     }
 
-    fun recastEventRequirement() {
+    private fun recastEventRequirement() {
         handler.post {
             val req = observers.values.flatMap {
                 it.acquiredEvent

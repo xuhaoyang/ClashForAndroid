@@ -48,4 +48,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0"
     implementation "com.charleskorn.kaml:kaml:0.14.0"
     implementation "com.google.android.material:material:1.2.0-alpha02"
+    implementation 'com.google.firebase:firebase-analytics:17.2.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

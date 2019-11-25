@@ -5,3 +5,4 @@ parcelable LogEvent;
 parcelable ProxyChangedEvent;
 parcelable TrafficEvent;
 parcelable ErrorEvent;
+parcelable ProfileChangedEvent;

@@ -8,7 +8,6 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.github.kr328.clash.model.ClashProfile
@@ -18,13 +17,12 @@ import com.github.kr328.clash.utils.FileUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_import_file.*
-import kotlinx.serialization.parse
 import java.io.FileOutputStream
 import java.lang.Exception
 import java.lang.NullPointerException
 import kotlin.concurrent.thread
 
-class ImportFileActivity : AppCompatActivity() {
+class ImportFileActivity : BaseActivity() {
     companion object {
         const val REQUEST_FILE_CODE = 185
     }
@@ -137,7 +135,7 @@ class ImportFileActivity : AppCompatActivity() {
                     name = activity_import_file_name_text.text.toString(),
                     token = "file|" + activity_import_file_path_text.tag.toString(),
                     cache = cache.absolutePath,
-                    selected = false,
+                    active = false,
                     proxies = parsed.proxies.size,
                     proxyGroups = parsed.proxyGroups.size,
                     rules = parsed.rules.size

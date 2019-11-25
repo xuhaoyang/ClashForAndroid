@@ -66,7 +66,8 @@ class Clash(
 
     fun pollEvent(listener: (Event) -> Unit) {
         runControl(COMMAND_POLL_EVENT) { _, input, _ ->
-            loop@while ( process.isRunning() ) {
+            loop@while ( process.getProcessStatus() == ProcessEvent.STARTED
+                && !Thread.currentThread().isInterrupted ) {
                 when (val type = input.readInt()) {
                     Event.EVENT_CLOSE -> {
                         break@loop
@@ -75,7 +76,7 @@ class Clash(
                         listener(Json(JsonConfiguration.Stable).parse(LogEvent.serializer(), input.readString()))
                     }
                     Event.EVENT_PROXY_CHANGED -> {
-                        listener(ProxyChangedEvent())
+                        listener(Json(JsonConfiguration.Stable).parse(ProxyChangedEvent.serializer(), input.readString()))
                     }
                     Event.EVENT_TRAFFIC -> {
                         listener(Json(JsonConfiguration.Stable).parse(TrafficEvent.serializer(), input.readString()))
@@ -86,19 +87,9 @@ class Clash(
         }
     }
 
-    fun setEventEnabled(type: KClass<Event>, enabled: Boolean) {
+    fun setEventEnabled(type: Int, enabled: Boolean) {
         runControl(COMMAND_SET_EVENT_ENABLED) { _, _, output ->
-            output.writeInt(
-                when ( type ) {
-                    LogEvent::class ->
-                        Event.EVENT_LOG
-                    ProxyChangedEvent::class ->
-                        Event.EVENT_PROXY_CHANGED
-                    TrafficEvent::class ->
-                        Event.EVENT_TRAFFIC
-                    else -> throw IllegalArgumentException("Invalid event type $type")
-                }
-            )
+            output.writeInt(type)
             output.writeInt(if ( enabled ) 1 else 0)
         }
     }

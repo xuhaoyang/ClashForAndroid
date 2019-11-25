@@ -12,7 +12,7 @@ import com.github.kr328.clash.service.data.ClashProfileEntity
 import kotlinx.android.synthetic.main.activity_profiles.*
 import kotlin.concurrent.thread
 
-class ProfilesActivity : AppCompatActivity() {
+class ProfilesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profiles)

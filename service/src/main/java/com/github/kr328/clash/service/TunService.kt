@@ -3,14 +3,15 @@ package com.github.kr328.clash.service
 import android.app.Service
 import android.content.*
 import android.net.*
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
-import android.util.Log
-import com.github.kr328.clash.core.event.ProcessEvent
+import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.service.net.DefaultNetworkObserver
+import java.lang.IllegalArgumentException
 
-class TunService : VpnService() {
+class TunService : VpnService(), IClashEventObserver {
     companion object {
         const val TAG = "ClashForAndroid"
 
@@ -42,29 +43,16 @@ class TunService : VpnService() {
                 service
             ) ?: throw NullPointerException()
 
+            this@TunService.clash = clash
 
-            clash.registerObserver("tun", false, object: IClashObserver.Stub() {
-                override fun onStatusChanged(event: ProcessEvent?) {
-                    if ( event == null )
-                        return
+            clash.eventService.registerEventObserver(TunService::class.java.simpleName,
+                this@TunService,
+                intArrayOf())
 
-                    Log.d(TAG, "New clash status $event")
-
-                    when ( event ) {
-                        ProcessEvent.STATUS_STOPPED ->
-                            stopSelf()
-                        ProcessEvent.STATUS_STARTED ->
-                            clash.startTunDevice(fileDescriptor, VPN_MTU)
-                    }
-                }
-            })
-
-            if ( clash.clashProcessStatus == ProcessEvent.STATUS_STARTED )
+            if ( clash.currentProcessStatus == ProcessEvent.STARTED )
                 clash.startTunDevice(fileDescriptor, VPN_MTU)
             else
                 clash.start()
-
-            this@TunService.clash = clash
         }
     }
 
@@ -82,7 +70,6 @@ class TunService : VpnService() {
             .addAddress(PRIVATE_VLAN6_CLIENT, 126)
             .addDefaultDns()
             .addDisallowedApplication(packageName)
-            .addDns()
             .addBypassPrivateRoute()
             .setMtu(VPN_MTU)
             .setBlocking(false)
@@ -117,11 +104,13 @@ class TunService : VpnService() {
         defaultNetworkObserver.unregister()
     }
 
-    private fun Builder.addDefaultDns(): Builder {
-        DEFAULT_DNS.forEach {
-            addDnsServer(it)
+    override fun onProcessEvent(event: ProcessEvent?) {
+        when ( event ) {
+            ProcessEvent.STOPPED ->
+                stopSelf()
+            ProcessEvent.STARTED ->
+                clash.startTunDevice(fileDescriptor, VPN_MTU)
         }
-        return this
     }
 
     private fun Builder.setMeteredCompat(isMetered: Boolean): Builder {
@@ -134,7 +123,6 @@ class TunService : VpnService() {
         // IPv4
         resources.getStringArray(R.array.bypass_private_route).forEach {
             val address = it.split("/")
-            Log.d(TAG, "$address")
             addRoute(address[0], address[1].toInt())
         }
 
@@ -144,10 +132,17 @@ class TunService : VpnService() {
         return this
     }
 
-    private fun Builder.addDns(): Builder {
+    private fun Builder.addDefaultDns(): Builder {
         resources.getStringArray(R.array.default_dns).forEach {
             addDnsServer(it)
         }
         return this
     }
+
+    override fun onLogEvent(event: LogEvent?) {}
+    override fun onErrorEvent(event: ErrorEvent?) {}
+    override fun onProfileChanged(event: ProfileChangedEvent?) {}
+    override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
+    override fun onTrafficEvent(event: TrafficEvent?) {}
+    override fun asBinder(): IBinder = throw IllegalArgumentException("asBinder Unsupported")
 }

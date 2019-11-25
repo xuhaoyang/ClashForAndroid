@@ -99,8 +99,11 @@ class ClashProcess(private val context: Context,
     }
 
     @Synchronized
-    fun isRunning(): Boolean {
-        return pid > 0
+    fun getProcessStatus(): ProcessEvent {
+        return if ( pid > 0 )
+            ProcessEvent.STARTED
+        else
+            ProcessEvent.STOPPED
     }
 
     fun stop() {

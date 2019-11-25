@@ -8,4 +8,5 @@ interface IClashEventObserver {
     void onLogEvent(in LogEvent event);
     void onErrorEvent(in ErrorEvent event);
     void onTrafficEvent(in TrafficEvent event);
+    void onProfileChanged(in ProfileChangedEvent event);
 }

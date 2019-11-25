@@ -8,7 +8,7 @@ data class ClashProfileEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "token") val token: String,
     @ColumnInfo(name = "cache") val cache: String,
-    @ColumnInfo(name = "selected") val selected: Boolean,
+    @ColumnInfo(name = "active") val active: Boolean,
     @ColumnInfo(name = "proxies") val proxies: Int,
     @ColumnInfo(name = "proxy_groups") val proxyGroups: Int,
     @ColumnInfo(name = "rules") val rules: Int,

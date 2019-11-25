@@ -1,122 +1,43 @@
 package com.github.kr328.clash.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
-import android.content.ComponentName
 import android.content.Intent
-import android.os.*
-import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import android.os.Binder
+import android.os.IBinder
+import android.os.ParcelFileDescriptor
 import com.github.kr328.clash.core.Clash
-import com.github.kr328.clash.core.event.ProcessEvent
-import com.github.kr328.clash.core.Constants
+import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.data.ClashDatabase
-import com.github.kr328.clash.service.data.ClashProfileEntity
 import java.io.File
 import java.io.IOException
-import java.lang.Exception
+import java.lang.IllegalArgumentException
 import java.util.concurrent.Executors
+import kotlin.concurrent.thread
 
-class ClashService : Service() {
-    companion object {
-        private const val TAG = "ClashForAndroid"
-    }
-
-    private val handler = Handler()
+class ClashService : Service(), IClashEventObserver, ClashEventService.Master {
     private val executor = Executors.newSingleThreadExecutor()
+    private var pollThread: Thread? = null
+
+    private val eventService = ClashEventService(this)
 
     private lateinit var clash: Clash
-    private lateinit var currentProfile: LiveData<ClashProfileEntity?>
+    private lateinit var database: ClashDatabase
 
-    private var tunEnabled = false
-
-    private var status =
-        ProcessEvent(ProcessEvent.STATUS_STOPPED_INT)
-        set(value) {
-            field = value
-
-            for (observer in observers.values) {
-                runCatching {
-                    observer.onStatusChanged(status)
-                }
-            }
-        }
-    private val observers = mutableMapOf<String, IClashObserver>()
-
-    private val defaultProfileObserver = object: Observer<ClashProfileEntity?> {
-        override fun onChanged(file: ClashProfileEntity?) {
-            executor.submit {
-                if (file == null){
-                    clash.process.stop()
-                    return@submit
-                }
-
-                Log.i(TAG, "Loading profile ${file.cache}")
-
-                try {
-                    clash.loadProfile(File(file.cache))
-                } catch (e: IOException) {
-                    clash.process.stop()
-                    Log.w(TAG, "Load profile failure", e)
-                }
-
-                try {
-                    Log.d(Constants.TAG, clash.queryProxies().toString())
-                }
-                catch (e: Exception) {
-                    Log.e(Constants.TAG, "NMSL" ,e)
-                }
-
-                handler.post(this@ClashService::updateNotification)
-            }
-        }
-    }
-
-    private inner class ClashServiceImpl : IClashService.Stub() {
-        override fun registerObserver(
-            id: String?,
-            notifyCurrent: Boolean,
-            observer: IClashObserver?
-        ) {
-            if (id == null || observer == null)
-                throw RemoteException()
-
-            observers[id] = observer
-
-            if (notifyCurrent)
-                observer.onStatusChanged(status)
-
-
-            observer.asBinder().linkToDeath({
-                observers.remove(id)
-            }, 0)
-        }
-
-        override fun unregisterObserver(id: String?) {
-            if (id == null)
-                throw RemoteException()
-
-            observers.remove(id)
-        }
-
+    private val clashService = object: IClashService.Stub() {
         override fun stopTunDevice() {
             clash.stopTunDevice()
-
-            handler.post(this@ClashService::updateNotification)
         }
 
         override fun start() {
             try {
                 clash.process.start()
             } catch (e: IOException) {
-                Log.e(TAG, "Start failure", e)
+                Log.e("Start failure", e)
 
-                throw RemoteException(e.message)
+                this@ClashService.eventService.preformErrorEvent(
+                    ErrorEvent(ErrorEvent.Type.START_FAILURE, e.toString())
+                )
             }
         }
 
@@ -124,48 +45,50 @@ class ClashService : Service() {
             clash.process.stop()
         }
 
-        override fun getClashProcessStatus(): ProcessEvent {
-            return status
-        }
-
         override fun startTunDevice(fd: ParcelFileDescriptor, mtu: Int) {
             try {
                 clash.startTunDevice(fd.fileDescriptor, mtu)
                 fd.close()
-                tunEnabled = true
             } catch (e: IOException) {
-                throw RemoteException(e.message)
-            }
+                Log.e("Start tun failure", e)
 
-            handler.post(this@ClashService::updateNotification)
+                this@ClashService.eventService.preformErrorEvent(
+                    ErrorEvent(ErrorEvent.Type.START_FAILURE, e.toString())
+                )
+            }
         }
+
+        override fun getEventService(): IClashEventService {
+            return this@ClashService.eventService
+        }
+
+        override fun getCurrentProcessStatus(): ProcessEvent {
+            return clash.process.getProcessStatus()
+        }
+    }
+
+    override fun requireEvent(event: Int) {
+        clash.setEventEnabled(event, true)
+    }
+
+    override fun releaseEvent(event: Int) {
+        clash.setEventEnabled(event, false)
     }
 
     override fun onCreate() {
         super.onCreate()
 
-        currentProfile = ClashDatabase.getInstance(this)
-            .openClashProfileDao()
-            .observeSelectedProfile()
+        database = ClashDatabase.getInstance(this)
+
+        eventService.registerEventObserver(ClashService::class.java.simpleName,
+            this,
+            intArrayOf(Event.EVENT_TRAFFIC))
 
         clash = Clash(
             this,
             filesDir.resolve("clash"),
-            cacheDir.resolve("clash_controller")
-        ) {
-            this.status = it
-
-            handler.post {
-                when (it.status) {
-                    ProcessEvent.STATUS_STARTED_INT ->
-                        currentProfile.observeForever(defaultProfileObserver)
-                    ProcessEvent.STATUS_STOPPED_INT ->
-                        currentProfile.removeObserver(defaultProfileObserver)
-                }
-            }
-
-            handler.post(this::updateNotification)
-        }
+            cacheDir.resolve("clash_controller"),
+            eventService::preformProcessEvent)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -177,7 +100,7 @@ class ClashService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        return ClashServiceImpl()
+        return clashService
     }
 
     override fun onDestroy() {
@@ -187,43 +110,58 @@ class ClashService : Service() {
         super.onDestroy()
     }
 
-    private fun updateNotification() {
-        if ( status == ProcessEvent.STATUS_STARTED ) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationManagerCompat.from(this)
-                    .createNotificationChannel(NotificationChannel(CLASH_STATUS_NOTIFICATION_CHANNEL,
-                        getString(R.string.clash_service_status_channel),
-                        NotificationManager.IMPORTANCE_MIN))
+    override fun onProfileChanged(event: ProfileChangedEvent?) {
+        executor.submit {
+            val active = database.openClashProfileDao().queryActiveProfile()
+
+            if (active == null){
+                clash.process.stop()
+                return@submit
             }
 
-            val notification = NotificationCompat.Builder(this, CLASH_STATUS_NOTIFICATION_CHANNEL)
-                .setSmallIcon(R.drawable.ic_notification_icon)
-                .setMode()
-                .setOngoing(true)
-                .setColorized(true)
-                .setColor(getColor(R.color.colorAccentService))
-                .setShowWhen(false)
-                .setContentTitle(getString(R.string.clash_service_running))
-                .setContentText(getString(R.string.clash_service_running_message, currentProfile.value?.name))
-                .setContentIntent(PendingIntent.getActivity(
-                    this,
-                    CLASH_STATUS_NOTIFICATION_ID,
-                    Intent.makeMainActivity(ComponentName.createRelative(packageName, MAIN_ACTIVITY_NAME))
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                ))
-                .build()
+            Log.i("Loading profile ${active.cache}")
 
-            NotificationManagerCompat.from(this).notify(CLASH_STATUS_NOTIFICATION_ID, notification)
-        }
-        else {
-            NotificationManagerCompat.from(this).cancel(CLASH_STATUS_NOTIFICATION_ID)
+            try {
+                clash.loadProfile(File(active.cache))
+            } catch (e: IOException) {
+                clash.process.stop()
+                Log.w("Load profile failure", e)
+            }
         }
     }
 
-    private fun NotificationCompat.Builder.setMode(): NotificationCompat.Builder {
-        if ( tunEnabled )
-            setSubText(getString(R.string.clash_service_vpn_mode))
-        return this
+    override fun onProcessEvent(event: ProcessEvent?) {
+        when ( event!! ) {
+            ProcessEvent.STARTED -> {
+                pollThread = thread {
+                    clash.pollEvent {
+                        try {
+                            when ( it ) {
+                                is LogEvent ->
+                                    eventService.preformLogEvent(it)
+                                is TrafficEvent ->
+                                    eventService.preformTrafficEvent(it)
+                                is ProxyChangedEvent ->
+                                    eventService.preformProxyChangedEvent(it)
+                            }
+                        }
+                        catch (e: Exception) {}
+                    }
+                }
+            }
+            ProcessEvent.STOPPED -> {
+                pollThread?.interrupt()
+                pollThread = null
+            }
+        }
     }
+
+    override fun onTrafficEvent(event: TrafficEvent?) {
+
+    }
+
+    override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
+    override fun onLogEvent(event: LogEvent?) {}
+    override fun onErrorEvent(event: ErrorEvent?) {}
+    override fun asBinder(): IBinder = throw IllegalArgumentException("asBinder Unsupported")
 }
