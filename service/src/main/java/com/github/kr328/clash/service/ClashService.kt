@@ -11,8 +11,10 @@ import android.os.IInterface
 import android.os.ParcelFileDescriptor
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.model.ProxyPacket
 import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.data.ClashDatabase
+import java.io.EOFException
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -36,10 +38,24 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             clash.stopTunDevice()
         }
 
+        override fun queryAllProxies(): ProxyPacket {
+            return try {
+                ProxyPacket(clash.queryProxies().proxies.mapValues {
+                    it.value.copy(history = it.value.history.take(1))
+                })
+            } catch (e: Exception) {
+                this@ClashService.eventService.preformErrorEvent(
+                    ErrorEvent(ErrorEvent.Type.QUERY_PROXY_FAILURE, e.toString())
+                )
+
+                ProxyPacket(emptyMap())
+            }
+        }
+
         override fun start() {
             try {
                 clash.process.start()
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e("Start failure", e)
 
                 this@ClashService.eventService.preformErrorEvent(
@@ -58,7 +74,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
                 clash.startTunDevice(fd.fileDescriptor, mtu)
                 fd.close()
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e("Start tun failure", e)
 
                 this@ClashService.eventService.preformErrorEvent(

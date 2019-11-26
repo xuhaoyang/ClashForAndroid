@@ -9,6 +9,7 @@ import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.core.event.ProxyChangedEvent
 import com.github.kr328.clash.core.event.TrafficEvent
 import com.github.kr328.clash.core.model.Proxy
+import com.github.kr328.clash.core.model.ProxyPacket
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONObject
@@ -56,14 +57,14 @@ class Clash(
         }
     }
 
-    fun queryProxies(): Proxy.Packet {
+    fun queryProxies(): ProxyPacket {
         return runControl(COMMAND_QUERY_PROXIES) { _, input, _ ->
             val data = input.readString()
 
             Log.d(TAG, data)
 
             Json(JsonConfiguration.Stable.copy(strictMode = false))
-                .parse(Proxy.Packet.serializer(), data)
+                .parse(ProxyPacket.serializer(), data)
         }
     }
 

@@ -4,6 +4,7 @@ import com.github.kr328.clash.service.IClashEventObserver;
 import com.github.kr328.clash.service.IClashEventService;
 import com.github.kr328.clash.service.IClashProfileService;
 import com.github.kr328.clash.core.event.Event;
+import com.github.kr328.clash.core.model.ProxyPacket;
 
 interface IClashService {
     // Services
@@ -18,4 +19,7 @@ interface IClashService {
     void stopTunDevice();
     void start();
     void stop();
+
+    // Query
+    ProxyPacket queryAllProxies();
 }

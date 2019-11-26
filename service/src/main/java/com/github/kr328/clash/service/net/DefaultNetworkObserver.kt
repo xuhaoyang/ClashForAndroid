@@ -49,15 +49,10 @@ class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> U
     private fun rebuildNetworkList(): Network? {
         return try {
             connectivity.allNetworks
-                .map {
-                    connectivity.getNetworkCapabilities(it) to it
+                .flatMap { network ->
+                    connectivity.getNetworkCapabilities(network)?.let { listOf(it to network) } ?: emptyList()
                 }
-                .filter {
-                    it.first != null
-                }
-                .map {
-                    it.first!! to it.second
-                }
+                .asSequence()
                 .filterNot {
                     it.first.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
                             !it.first.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
