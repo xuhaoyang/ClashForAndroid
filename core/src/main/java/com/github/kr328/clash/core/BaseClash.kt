@@ -6,7 +6,6 @@ import com.github.kr328.clash.core.utils.Log
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
-import java.lang.Exception
 
 @Suppress("SameParameterValue")
 abstract class BaseClash(private val controllerPath: File) {
@@ -47,8 +46,7 @@ abstract class BaseClash(private val controllerPath: File) {
     ): R? {
         return try {
             runControl(command, block)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.w("Run command $command failure", e)
             null
         }
@@ -57,8 +55,7 @@ abstract class BaseClash(private val controllerPath: File) {
     protected fun runControlNoException(command: Int) {
         try {
             runControl(command)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.w("Run command $command failure", e)
         }
     }

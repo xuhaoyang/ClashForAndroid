@@ -8,12 +8,11 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Handler
 import com.github.kr328.clash.core.utils.Log
-import java.lang.Exception
 
 class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> Unit) {
     private val handler = Handler()
     private val connectivity = context.getSystemService(ConnectivityManager::class.java)!!
-    private val callback = object: ConnectivityManager.NetworkCallback() {
+    private val callback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             handler.removeMessages(0)
             handler.postDelayed({
@@ -64,17 +63,17 @@ class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> U
                             !it.first.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 }
                 .sortedBy {
-                        when {
-                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> 0
-                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> 1
-                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> 2
-                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) -> 3
-                            it.first.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> 4
-                            else -> 5
-                        } + if ( it.first.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED) )
-                            -1000
-                        else
-                            0
+                    when {
+                        it.first.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> 0
+                        it.first.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> 1
+                        it.first.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> 2
+                        it.first.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) -> 3
+                        it.first.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> 4
+                        else -> 5
+                    } + if (it.first.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED))
+                        -1000
+                    else
+                        0
                 }
                 .map {
                     Log.i("Network ${it.first}")
@@ -84,8 +83,7 @@ class DefaultNetworkObserver(val context: Context, val listener: (Network?) -> U
                     it.second
                 }
                 .firstOrNull()
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             null
         }
     }

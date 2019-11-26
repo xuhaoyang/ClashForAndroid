@@ -6,7 +6,7 @@ import com.github.kr328.clash.core.serialization.Parcels
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TrafficEvent(val down: Long, val up: Long, val total: Long): Event, Parcelable {
+data class TrafficEvent(val down: Long, val up: Long, val total: Long) : Event, Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         Parcels.dump(serializer(), this, parcel)
     }

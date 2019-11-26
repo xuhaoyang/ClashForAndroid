@@ -20,13 +20,14 @@
         android:paddingBottom="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/activity_main_clash_proxies_icon"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_centerVertical="true"
             android:contentDescription="@string/clash_status_stopped"
-            android:src="@drawable/ic_proxies"/>
+            android:src="@drawable/ic_proxies" />
 
         <TextView
             android:id="@+id/activity_main_clash_proxies_title"
@@ -35,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/clash_proxy_manage"/>
+            android:text="@string/clash_proxy_manage" />
 
         <TextView
             android:id="@+id/activity_main_clash_proxies_summary"
@@ -46,6 +47,6 @@
             android:layout_alignStart="@id/activity_main_clash_proxies_title"
             android:layout_below="@id/activity_main_clash_proxies_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

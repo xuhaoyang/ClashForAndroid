@@ -13,7 +13,7 @@ object FileUtils {
 
         do {
             file = dir.resolve(random.nextLong().toString() + suffix)
-        } while ( file.exists() )
+        } while (file.exists())
 
         return file
     }

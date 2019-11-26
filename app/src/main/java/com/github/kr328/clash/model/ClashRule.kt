@@ -61,7 +61,7 @@ data class ClashRule(val matcher: Matcher, val pattern: String, val target: Stri
                     ClashRule(Matcher.fromString(rule[0]), rule[1], rule[2])
                 }
                 2 -> {
-                    if ( Matcher.fromString(rule[0]) != Matcher.MATCH )
+                    if (Matcher.fromString(rule[0]) != Matcher.MATCH)
                         throw YamlException("Invalid rule $rule", 0, 0)
 
                     ClashRule(Matcher.MATCH, "", rule[1])
@@ -71,10 +71,9 @@ data class ClashRule(val matcher: Matcher, val pattern: String, val target: Stri
         }
 
         override fun serialize(encoder: Encoder, obj: ClashRule) {
-            if ( obj.matcher == Matcher.MATCH ) {
+            if (obj.matcher == Matcher.MATCH) {
                 encoder.encodeString("${obj.matcher},${obj.target}")
-            }
-            else {
+            } else {
                 encoder.encodeString("${obj.matcher},${obj.pattern},${obj.target}")
             }
         }

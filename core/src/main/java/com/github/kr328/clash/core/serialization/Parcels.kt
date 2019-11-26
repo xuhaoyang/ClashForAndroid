@@ -19,6 +19,7 @@ object Parcels : AbstractSerialFormat(EmptyModule) {
         override fun encodeValue(value: Any) {
             parcel.writeValue(value)
         }
+
         override fun encodeNull() {
             parcel.writeValue(null)
         }
@@ -39,7 +40,7 @@ object Parcels : AbstractSerialFormat(EmptyModule) {
 
         override fun decodeValue(): Any {
             return nextObject ?: parcel.readValue(Parcels::class.java.classLoader)
-                ?: throw NullPointerException("Parcel read data null")
+            ?: throw NullPointerException("Parcel read data null")
         }
     }
 }

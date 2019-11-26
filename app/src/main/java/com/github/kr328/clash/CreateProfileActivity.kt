@@ -12,12 +12,16 @@ import kotlinx.android.synthetic.main.activity_new_profile.*
 class CreateProfileActivity : BaseActivity() {
     companion object {
         val NEW_PROFILE_SOURCE = listOf(
-            AdapterData(R.drawable.ic_new_profile_file,
+            AdapterData(
+                R.drawable.ic_new_profile_file,
                 R.string.clash_new_profile_file_title,
-                R.string.clash_new_profile_file_summary),
-            AdapterData(R.drawable.ic_new_profile_url,
+                R.string.clash_new_profile_file_summary
+            ),
+            AdapterData(
+                R.drawable.ic_new_profile_url,
                 R.string.clash_new_profile_url_title,
-                R.string.clash_new_profile_url_summary)
+                R.string.clash_new_profile_url_summary
+            )
         )
     }
 
@@ -57,10 +61,15 @@ class CreateProfileActivity : BaseActivity() {
 
         with(activity_new_profile_list) {
             adapter = Adapter(this@CreateProfileActivity)
-            setOnItemClickListener {_, _, index, _ ->
-                when ( index ) {
+            setOnItemClickListener { _, _, index, _ ->
+                when (index) {
                     0 ->
-                        startActivity(Intent(this@CreateProfileActivity, ImportFileActivity::class.java))
+                        startActivity(
+                            Intent(
+                                this@CreateProfileActivity,
+                                ImportFileActivity::class.java
+                            )
+                        )
                 }
             }
         }

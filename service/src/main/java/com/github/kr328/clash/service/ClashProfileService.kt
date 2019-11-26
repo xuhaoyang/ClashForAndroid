@@ -4,7 +4,7 @@ import android.content.Context
 import com.github.kr328.clash.service.data.ClashDatabase
 import com.github.kr328.clash.service.data.ClashProfileEntity
 
-class ClashProfileService(context: Context, private val master: Master):
+class ClashProfileService(context: Context, private val master: Master) :
     IClashProfileService.Stub() {
     interface Master {
         fun preformProfileChanged()

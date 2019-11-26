@@ -18,7 +18,8 @@ data class ClashProfileEntity(
     @ColumnInfo(name = "proxy_groups") val proxyGroups: Int,
     @ColumnInfo(name = "rules") val rules: Int,
     @ColumnInfo(name = "last_update") val lastUpdate: Long,
-    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Int = 0) : Parcelable {
+    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Int = 0
+) : Parcelable {
 
     enum class Type {
         UNKNOWN, URL, FILE
@@ -28,7 +29,7 @@ data class ClashProfileEntity(
         @TypeConverter
         fun typeToInt(type: Type?): Int? {
             return type?.run {
-                when ( this ) {
+                when (this) {
                     Type.URL -> 1
                     Type.FILE -> 2
                     Type.UNKNOWN -> 0

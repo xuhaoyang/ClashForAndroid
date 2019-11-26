@@ -13,10 +13,12 @@ abstract class ClashDatabase : RoomDatabase() {
         private var instance: ClashDatabase? = null
 
         fun getInstance(context: Context): ClashDatabase {
-            if ( instance == null )
-                instance = Room.databaseBuilder(context.applicationContext,
+            if (instance == null)
+                instance = Room.databaseBuilder(
+                    context.applicationContext,
                     ClashDatabase::class.java,
-                    "clash-config").build()
+                    "clash-config"
+                ).build()
             return instance ?: throw NullPointerException()
         }
     }

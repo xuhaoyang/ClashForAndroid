@@ -7,7 +7,7 @@ import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
 
 @Serializable
-data class LogEvent(val level: Level, val message: String):
+data class LogEvent(val level: Level, val message: String) :
     Event, Parcelable {
     companion object {
         const val DEBUG_VALUE = 1
@@ -16,7 +16,7 @@ data class LogEvent(val level: Level, val message: String):
         const val ERROR_VALUE = 4
 
         @JvmField
-        val CREATOR = object: Parcelable.Creator<LogEvent> {
+        val CREATOR = object : Parcelable.Creator<LogEvent> {
             override fun createFromParcel(parcel: Parcel): LogEvent {
                 return Parcels.load(serializer(), parcel)
             }
@@ -31,7 +31,8 @@ data class LogEvent(val level: Level, val message: String):
     enum class Level(val value: Int) {
         DEBUG(DEBUG_VALUE), INFO(
             INFO_VALUE
-        ), WARN(WARN_VALUE), ERROR(
+        ),
+        WARN(WARN_VALUE), ERROR(
             ERROR_VALUE
         )
     }

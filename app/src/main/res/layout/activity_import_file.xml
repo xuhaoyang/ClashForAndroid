@@ -8,34 +8,38 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/activity_import_file_toolbar"
             android:layout_width="match_parent"
             android:layout_height="60dp">
+
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:layout_gravity="end">
-                    <ImageView
-                        android:id="@+id/activity_import_file_save"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_save"
-                        android:contentDescription="@string/app_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:focusable="true"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"/>
-                    <ProgressBar
-                        android:id="@+id/activity_import_file_saving"
-                        android:visibility="gone"
-                        android:layout_gravity="center"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"/>
-                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/activity_import_file_save"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_save"
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground" />
+
+                <ProgressBar
+                    android:id="@+id/activity_import_file_saving"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </FrameLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -52,7 +56,7 @@
             android:src="@drawable/ic_about"
             android:contentDescription="@string/app_name"
             android:layout_width="25dp"
-            android:layout_height="25dp"/>
+            android:layout_height="25dp" />
 
         <LinearLayout
             android:id="@+id/activity_import_file_name"
@@ -71,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorAccent"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
             <TextView
                 android:id="@+id/activity_import_file_name_text"
@@ -81,12 +85,12 @@
                 android:padding="5dp"
                 android:lines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:hint="@string/clash_profile_name_hint"/>
+                android:hint="@string/clash_profile_name_hint" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/colorAccent"/>
+                android:background="@color/colorAccent" />
         </LinearLayout>
     </LinearLayout>
 
@@ -103,7 +107,7 @@
             android:src="@drawable/ic_new_profile_file"
             android:contentDescription="@string/app_name"
             android:layout_width="25dp"
-            android:layout_height="25dp"/>
+            android:layout_height="25dp" />
 
         <LinearLayout
             android:id="@+id/activity_import_file_path"
@@ -122,7 +126,7 @@
                 android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
             <TextView
                 android:id="@+id/activity_import_file_path_text"
@@ -132,12 +136,12 @@
                 android:padding="5dp"
                 android:lines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:hint="@string/clash_profile_file_hint"/>
+                android:hint="@string/clash_profile_file_hint" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/colorAccent"/>
+                android:background="@color/colorAccent" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

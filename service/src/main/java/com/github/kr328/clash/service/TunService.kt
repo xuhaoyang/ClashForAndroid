@@ -8,7 +8,6 @@ import android.content.ServiceConnection
 import android.net.VpnService
 import android.os.*
 import com.github.kr328.clash.core.event.*
-import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
 class TunService : VpnService(), IClashEventObserver {
@@ -19,11 +18,11 @@ class TunService : VpnService(), IClashEventObserver {
         private const val PRIVATE_VLAN6_CLIENT = "fdfe:dcba:9876::1"
     }
 
-    private var startTime = System.currentTimeMillis()
+    private var start = true
     private lateinit var fileDescriptor: ParcelFileDescriptor
     private lateinit var clash: IClashService
     private lateinit var defaultNetworkObserver: DefaultNetworkObserver
-    private val connection = object: ServiceConnection {
+    private val connection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
             stopSelf()
         }
@@ -35,11 +34,13 @@ class TunService : VpnService(), IClashEventObserver {
 
             this@TunService.clash = clash
 
-            startTime = System.currentTimeMillis()
+            start = true
 
-            clash.eventService.registerEventObserver(TunService::class.java.simpleName,
+            clash.eventService.registerEventObserver(
+                TunService::class.java.simpleName,
                 this@TunService,
-                intArrayOf())
+                intArrayOf()
+            )
         }
     }
 
@@ -47,7 +48,7 @@ class TunService : VpnService(), IClashEventObserver {
     override fun onCreate() {
         super.onCreate()
 
-        if ( prepare(this) != null ) {
+        if (prepare(this) != null) {
             stopSelf()
             return
         }
@@ -86,20 +87,25 @@ class TunService : VpnService(), IClashEventObserver {
         clash.stopTunDevice()
         clash.stop()
 
+        clash.eventService.unregisterEventObserver(TunService::class.java.simpleName)
+
         unbindService(connection)
 
         defaultNetworkObserver.unregister()
     }
 
     override fun onProcessEvent(event: ProcessEvent?) {
-        when ( event ) {
-            ProcessEvent.STOPPED ->
-                if ( System.currentTimeMillis() - startTime > 5 * 1000L )
-                    stopSelf()
-                else
+        when (event) {
+            ProcessEvent.STOPPED -> {
+                if (start)
                     clash.start()
-            ProcessEvent.STARTED ->
+                else
+                    stopSelf()
+            }
+            ProcessEvent.STARTED -> {
+                start = false
                 clash.startTunDevice(fileDescriptor, VPN_MTU)
+            }
         }
     }
 
@@ -142,7 +148,7 @@ class TunService : VpnService(), IClashEventObserver {
     override fun onProfileChanged(event: ProfileChangedEvent?) {}
     override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
     override fun onTrafficEvent(event: TrafficEvent?) {}
-    override fun asBinder(): IBinder = object: Binder() {
+    override fun asBinder(): IBinder = object : Binder() {
         override fun queryLocalInterface(descriptor: String): IInterface? {
             return this@TunService
         }

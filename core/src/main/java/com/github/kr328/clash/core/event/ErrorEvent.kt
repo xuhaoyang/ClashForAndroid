@@ -6,7 +6,7 @@ import com.github.kr328.clash.core.serialization.Parcels
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ErrorEvent(val type: Type, val message: String): Event, Parcelable {
+data class ErrorEvent(val type: Type, val message: String) : Event, Parcelable {
     enum class Type {
         START_FAILURE
     }

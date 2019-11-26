@@ -7,10 +7,11 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/activity_new_profile_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="60dp"/>
+            android:layout_height="60dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ListView

@@ -10,23 +10,25 @@
         android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
         android:textColor="@android:color/black"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:textAppearance="@style/TextAppearance.Compat.Notification"
                 android:textColor="@android:color/black"
                 android:id="@+id/clash_notification_up_title"
                 android:text="@string/clash_notification_up"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:textAppearance="@style/TextAppearance.Compat.Notification"
@@ -34,7 +36,7 @@
                 android:id="@+id/clash_notification_down_title"
                 android:text="@string/clash_notification_down"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
@@ -57,7 +59,7 @@
                 android:id="@+id/clash_notification_down"
                 android:text="@string/clash_notification_default"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

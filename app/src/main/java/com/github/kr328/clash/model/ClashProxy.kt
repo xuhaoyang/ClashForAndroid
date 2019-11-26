@@ -5,4 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ClashProxy(
     private val type: String,
-    private val name: String)
+    private val name: String
+)

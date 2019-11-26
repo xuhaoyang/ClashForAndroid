@@ -20,12 +20,13 @@
         android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/activity_main_clash_status_icon"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:contentDescription="@string/clash_status_stopped"
-            android:src="@drawable/ic_clash_stopped"/>
+            android:src="@drawable/ic_clash_stopped" />
 
         <TextView
             android:id="@+id/activity_main_clash_status_title"
@@ -35,7 +36,7 @@
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/white"
-            android:text="@string/clash_status_stopped"/>
+            android:text="@string/clash_status_stopped" />
 
         <TextView
             android:id="@+id/activity_main_clash_status_summary"
@@ -46,6 +47,6 @@
             android:layout_alignStart="@id/activity_main_clash_status_title"
             android:layout_below="@id/activity_main_clash_status_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

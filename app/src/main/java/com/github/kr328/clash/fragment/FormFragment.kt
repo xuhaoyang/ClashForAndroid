@@ -19,7 +19,14 @@ class FormFragment(private val elements: List<FormElement>) : Fragment() {
 
         fun dump(element: FormElement, data: Any)
     }
-    data class FormElement(val type: FormType, val icon: Int, val title: Int, val hint: Int, val result: ResultDumper)
+
+    data class FormElement(
+        val type: FormType,
+        val icon: Int,
+        val title: Int,
+        val hint: Int,
+        val result: ResultDumper
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +34,10 @@ class FormFragment(private val elements: List<FormElement>) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return RecyclerView(requireActivity()).apply {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
             layoutManager = LinearLayoutManager(requireActivity())
             adapter = FormAdapter(requireActivity(), elements)
         }

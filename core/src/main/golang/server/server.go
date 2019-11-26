@@ -8,27 +8,27 @@ import (
 )
 
 const (
-	commandPing            uint32 = 0
-	commandTunStart        uint32 = 1
-	commandTunStop         uint32 = 2
-	commandProfileDefault  uint32 = 3
-	commandProfileReload   uint32 = 4
-	commandQueryProxies    uint32 = 5
-	commandPollEvent       uint32 = 6
-	commandSetEventEnabled uint32 = 7
+	commandPing           uint32 = 0
+	commandTunStart       uint32 = 1
+	commandTunStop        uint32 = 2
+	commandProfileDefault uint32 = 3
+	commandProfileReload  uint32 = 4
+	commandQueryProxies   uint32 = 5
+	commandPullTraffic    uint32 = 6
+	commandPullLog        uint32 = 7
 )
 
 var handlers map[uint32]func(*net.UnixConn) = make(map[uint32]func(*net.UnixConn))
 
 func init() {
-	handlers[commandPing] = handlePing                       // ping.go
-	handlers[commandTunStart] = handleTunStart               // tun.go
-	handlers[commandTunStop] = handleTunStop                 // tun.go
-	handlers[commandProfileDefault] = handleProfileDefault   // profile.go
-	handlers[commandProfileReload] = handleProfileReload     // profile.go
-	handlers[commandQueryProxies] = handleQueryProxies       // proxies.go
-	handlers[commandPollEvent] = handlePollEvent             // event.go
-	handlers[commandSetEventEnabled] = handleSetEventEnabled // event.go
+	handlers[commandPing] = handlePing                     // ping.go
+	handlers[commandTunStart] = handleTunStart             // tun.go
+	handlers[commandTunStop] = handleTunStop               // tun.go
+	handlers[commandProfileDefault] = handleProfileDefault // profile.go
+	handlers[commandProfileReload] = handleProfileReload   // profile.go
+	handlers[commandQueryProxies] = handleQueryProxies     // proxies.go
+	handlers[commandPullTraffic] = handlePullTrafficEvent  // event.go
+	handlers[commandPullLog] = nil                         // event.go
 }
 
 // Start local control server

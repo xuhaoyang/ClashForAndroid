@@ -60,7 +60,7 @@ class MainActivity : BaseActivity() {
 
     override fun onProcessEvent(event: ProcessEvent?) {
         runOnUiThread {
-            if ( event == lastEvent )
+            if (event == lastEvent)
                 return@runOnUiThread
 
             lastEvent = event
@@ -90,9 +90,13 @@ class MainActivity : BaseActivity() {
 
     override fun onTrafficEvent(event: TrafficEvent?) {
         runOnUiThread {
-            activity_main_clash_status_summary.text =
-                getString(R.string.clash_status_forwarded_traffic,
-                    ByteFormatter.byteToString(event?.total ?: 0))
+            if (lastEvent == ProcessEvent.STARTED) {
+                activity_main_clash_status_summary.text =
+                    getString(
+                        R.string.clash_status_forwarded_traffic,
+                        ByteFormatter.byteToString(event?.total ?: 0)
+                    )
+            }
         }
     }
 
@@ -104,9 +108,11 @@ class MainActivity : BaseActivity() {
         super.onStart()
 
         runClash {
-            it.eventService.registerEventObserver(MainActivity::class.java.simpleName,
+            it.eventService.registerEventObserver(
+                MainActivity::class.java.simpleName,
                 this,
-                intArrayOf(Event.EVENT_TRAFFIC))
+                intArrayOf(Event.EVENT_TRAFFIC)
+            )
         }
 
         loadActiveProfile()
@@ -136,13 +142,12 @@ class MainActivity : BaseActivity() {
             val profile = it.profileService.queryActiveProfile()
 
             runOnUiThread {
-                if ( profile != null ) {
+                if (profile != null) {
                     activity_main_clash_proxies_summary.text =
                         getString(R.string.clash_proxy_manage_summary, profile.proxies)
                     activity_main_clash_profiles_summary.text =
                         getString(R.string.clash_profiles_summary_selected, profile.name)
-                }
-                else {
+                } else {
                     activity_main_clash_proxies_summary.text =
                         getString(R.string.clash_proxy_manage_summary, 0)
                     activity_main_clash_profiles_summary.text =

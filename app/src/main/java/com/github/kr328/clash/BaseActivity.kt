@@ -42,13 +42,13 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
                     clash = IClashService.Stub.asInterface(service)
                     requestHandler = thread {
                         try {
-                            while ( !Thread.currentThread().isInterrupted ) {
+                            while (!Thread.currentThread().isInterrupted) {
                                 val block = paddingRequest.take()
 
                                 clash?.run(block)
                             }
+                        } catch (e: InterruptedException) {
                         }
-                        catch (e: InterruptedException) {}
 
                         Log.i("ClashConnect exited")
 
@@ -70,22 +70,24 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
         super.onCreate(savedInstanceState)
 
         synchronized(BaseActivity::class.java) {
-            if ( clashConnection == null ) {
+            if (clashConnection == null) {
                 clashConnection = ClashConnection()
 
-                applicationContext.bindService(Intent(this, ClashService::class.java),
+                applicationContext.bindService(
+                    Intent(this, ClashService::class.java),
                     clashConnection!!,
-                    Context.BIND_AUTO_CREATE)
+                    Context.BIND_AUTO_CREATE
+                )
             }
 
-            activityCount++;
+            activityCount++
         }
     }
 
     override fun onDestroy() {
         synchronized(BaseActivity::class.java) {
-            if ( --activityCount <= 0 ) {
-                if ( clashConnection != null ) {
+            if (--activityCount <= 0) {
+                if (clashConnection != null) {
                     applicationContext.unbindService(clashConnection!!)
                     clashConnection?.onServiceDisconnected(null)
 
@@ -97,17 +99,22 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
         super.onDestroy()
     }
 
-    private val observerBinder = object: IClashEventObserver.Stub() {
+    private val observerBinder = object : IClashEventObserver.Stub() {
         override fun onLogEvent(event: LogEvent?) =
             this@BaseActivity.onLogEvent(event)
+
         override fun onProcessEvent(event: ProcessEvent?) =
             this@BaseActivity.onProcessEvent(event)
+
         override fun onProxyChangedEvent(event: ProxyChangedEvent?) =
             this@BaseActivity.onProxyChangedEvent(event)
+
         override fun onErrorEvent(event: ErrorEvent?) =
             this@BaseActivity.onErrorEvent(event)
+
         override fun onTrafficEvent(event: TrafficEvent?) =
             this@BaseActivity.onTrafficEvent(event)
+
         override fun onProfileChanged(event: ProfileChangedEvent?) =
             this@BaseActivity.onProfileChanged(event)
     }
@@ -118,5 +125,7 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
     override fun onProcessEvent(event: ProcessEvent?) {}
     override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
     override fun onTrafficEvent(event: TrafficEvent?) {}
-    override fun asBinder(): IBinder {return observerBinder}
+    override fun asBinder(): IBinder {
+        return observerBinder
+    }
 }

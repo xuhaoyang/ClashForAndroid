@@ -16,7 +16,9 @@
         app:contentInsetStart="0dp" />
 
     <include layout="@layout/activity_main_clash_status" />
+
     <include layout="@layout/activity_main_proxy_manage" />
+
     <include layout="@layout/activity_main_profiles" />
 
     <LinearLayout
@@ -31,17 +33,19 @@
         android:focusable="true"
         android:clickable="true"
         android:orientation="horizontal">
+
         <ImageView
             android:contentDescription="@string/clash_logs"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/ic_logs" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/clash_logs"/>
+            android:text="@string/clash_logs" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,17 +60,19 @@
         android:focusable="true"
         android:clickable="true"
         android:orientation="horizontal">
+
         <ImageView
             android:contentDescription="@string/clash_settings"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/ic_settings" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/clash_settings"/>
+            android:text="@string/clash_settings" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,17 +87,19 @@
         android:focusable="true"
         android:clickable="true"
         android:orientation="horizontal">
+
         <ImageView
             android:contentDescription="@string/clash_feedback"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/ic_feedback" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/clash_feedback"/>
+            android:text="@string/clash_feedback" />
     </LinearLayout>
 
     <LinearLayout
@@ -106,16 +114,18 @@
         android:focusable="true"
         android:clickable="true"
         android:orientation="horizontal">
+
         <ImageView
             android:contentDescription="@string/clash_about"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/ic_about" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/clash_about"/>
+            android:text="@string/clash_about" />
     </LinearLayout>
 </LinearLayout>

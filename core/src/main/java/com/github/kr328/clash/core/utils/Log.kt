@@ -3,7 +3,7 @@ package com.github.kr328.clash.core.utils
 import com.github.kr328.clash.core.Constants.TAG
 
 object Log {
-    var handler: LogHandler = object: LogHandler {
+    var handler: LogHandler = object : LogHandler {
         override fun info(message: String, throwable: Throwable?) {
             android.util.Log.i(TAG, message, throwable)
         }

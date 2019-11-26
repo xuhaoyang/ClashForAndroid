@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MainApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,16 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfilesActivity"
+        <activity
+            android:name=".ProfilesActivity"
             android:label="@string/clash_profiles"
             android:exported="false" />
-        <activity android:name=".CreateProfileActivity"
+        <activity
+            android:name=".CreateProfileActivity"
             android:label="@string/clash_new_profile"
             android:exported="false" />
-        <activity android:name=".ImportFileActivity"
+        <activity
+            android:name=".ImportFileActivity"
             android:label="@string/clash_import_from_file"
-            android:exported="false"/>
-        <activity android:name=".ClashStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ClashStatusActivity"
             android:exported="false" />
     </application>
 </manifest>

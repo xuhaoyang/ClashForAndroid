@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginStart="27.5dp"/>
+        android:layout_marginStart="27.5dp" />
 
     <LinearLayout
         android:id="@+id/view_fat_item_text_container"
@@ -24,16 +24,18 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/view_fat_item_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
         <TextView
             android:layout_marginTop="5dp"
             android:id="@+id/view_fat_item_summary"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -48,6 +50,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@id/view_fat_item_text_container"
         android:layout_alignBottom="@id/view_fat_item_text_container">
+
         <View
             android:id="@+id/view_fat_item_divider"
             android:layout_width="1dp"
@@ -61,7 +64,7 @@
             android:id="@+id/view_fat_item_operation"
             android:layout_marginEnd="25dp"
             android:layout_width="30dp"
-            android:layout_height="30dp"/>
+            android:layout_height="30dp" />
     </LinearLayout>
 
 

@@ -9,4 +9,7 @@
     <string name="clash_notification_up">UP</string>
     <string name="clash_notification_down">Down</string>
     <string name="clash_notification_default">0 Byte/s</string>
+
+    <!-- from https://github.com/shadowsocks/shadowsocks-android/blob/master/core/src/main/res/values/strings.xml -->
+    <string name="clash_notification_content">"%1$s↑\t%2$s↓"</string>
 </resources>

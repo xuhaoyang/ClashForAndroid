@@ -1,9 +1,13 @@
 package com.github.kr328.clash.core
 
 import android.content.Context
+import android.net.LocalSocket
 import android.util.Log
 import com.github.kr328.clash.core.Constants.TAG
-import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.event.LogEvent
+import com.github.kr328.clash.core.event.ProcessEvent
+import com.github.kr328.clash.core.event.ProxyChangedEvent
+import com.github.kr328.clash.core.event.TrafficEvent
 import com.github.kr328.clash.core.model.Proxy
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -24,8 +28,9 @@ class Clash(
         const val COMMAND_TUN_STOP = 2
         const val COMMAND_PROFILE_RELOAD = 4
         const val COMMAND_QUERY_PROXIES = 5
-        const val COMMAND_POLL_EVENT = 6
-        const val COMMAND_SET_EVENT_ENABLED = 7
+        const val COMMAND_PULL_TRAFFIC = 6
+        const val COMMAND_PULL_LOG = 7
+        const val COMMAND_PULL_PROXY_CHANGED = 8
 
         const val PING_REPLY = 233
     }
@@ -62,33 +67,51 @@ class Clash(
         }
     }
 
-    fun pollEvent(listener: (Event) -> Unit) {
-        runControl(COMMAND_POLL_EVENT) { _, input, _ ->
-            loop@while ( process.getProcessStatus() == ProcessEvent.STARTED
-                && !Thread.currentThread().isInterrupted ) {
-                when (val type = input.readInt()) {
-                    Event.EVENT_CLOSE -> {
-                        break@loop
-                    }
-                    Event.EVENT_LOG -> {
-                        listener(Json(JsonConfiguration.Stable).parse(LogEvent.serializer(), input.readString()))
-                    }
-                    Event.EVENT_PROXY_CHANGED -> {
-                        listener(Json(JsonConfiguration.Stable).parse(ProxyChangedEvent.serializer(), input.readString()))
-                    }
-                    Event.EVENT_TRAFFIC -> {
-                        listener(Json(JsonConfiguration.Stable).parse(TrafficEvent.serializer(), input.readString()))
-                    }
-                    else -> Log.w(TAG, "Invalid event type $type")
-                }
+    fun pullTrafficEvent(initial: (LocalSocket) -> Unit, callback: (TrafficEvent) -> Unit) {
+        runControlNoException(COMMAND_PULL_TRAFFIC) { socket, input, _ ->
+            initial(socket)
+
+            while (!Thread.currentThread().isInterrupted) {
+                callback(
+                    Json(JsonConfiguration.Stable).parse(
+                        TrafficEvent.serializer(),
+                        input.readString()
+                    )
+                )
             }
         }
     }
 
-    fun setEventEnabled(type: Int, enabled: Boolean) {
-        runControlNoException(COMMAND_SET_EVENT_ENABLED) { _, _, output ->
-            output.writeInt(type)
-            output.writeInt(if ( enabled ) 1 else 0)
+    fun pullLogsEvent(initial: (LocalSocket) -> Unit, callback: (LogEvent) -> Unit) {
+        runControlNoException(COMMAND_PULL_LOG) { socket, input, _ ->
+            initial(socket)
+
+            while (!Thread.currentThread().isInterrupted) {
+                callback(
+                    Json(JsonConfiguration.Stable).parse(
+                        LogEvent.serializer(),
+                        input.readString()
+                    )
+                )
+            }
+        }
+    }
+
+    fun pullProxyChangedEvent(
+        initial: (LocalSocket) -> Unit,
+        callback: (ProxyChangedEvent) -> Unit
+    ) {
+        runControlNoException(COMMAND_PULL_PROXY_CHANGED) { socket, input, _ ->
+            initial(socket)
+
+            while (!Thread.currentThread().isInterrupted) {
+                callback(
+                    Json(JsonConfiguration.Stable).parse(
+                        ProxyChangedEvent.serializer(),
+                        input.readString()
+                    )
+                )
+            }
         }
     }
 

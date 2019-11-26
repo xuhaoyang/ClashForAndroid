@@ -115,12 +115,17 @@ class ImportFileActivity : BaseActivity() {
 
     private fun checkAndInsert() {
         try {
-            val data  = contentResolver.openInputStream(activity_import_file_path_text.tag as Uri)?.use {
-                it.readBytes().toString(Charsets.UTF_8)
-            } ?: throw NullPointerException("Unable to open config file")
+            val data =
+                contentResolver.openInputStream(activity_import_file_path_text.tag as Uri)?.use {
+                    it.readBytes().toString(Charsets.UTF_8)
+                } ?: throw NullPointerException("Unable to open config file")
 
-            val parsed = Yaml(configuration = YamlConfiguration(strictMode = false)).parse(ClashProfile.serializer(), data)
-            val cache = FileUtils.generateRandomFile(filesDir.resolve(Constants.PROFILES_DIR), ".yaml")
+            val parsed = Yaml(configuration = YamlConfiguration(strictMode = false)).parse(
+                ClashProfile.serializer(),
+                data
+            )
+            val cache =
+                FileUtils.generateRandomFile(filesDir.resolve(Constants.PROFILES_DIR), ".yaml")
 
             FileOutputStream(cache).use {
                 it.write(data.toByteArray())
@@ -142,8 +147,7 @@ class ImportFileActivity : BaseActivity() {
             }
 
             finish()
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Snackbar.make(
                 activity_import_file_root,
                 getString(R.string.clash_import_file_invalid, e.toString()),

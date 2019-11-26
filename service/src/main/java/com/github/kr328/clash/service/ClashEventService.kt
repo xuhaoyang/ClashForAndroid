@@ -1,11 +1,7 @@
 package com.github.kr328.clash.service
 
-import android.os.Handler
-import android.os.Looper
 import com.github.kr328.clash.core.event.*
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
-import kotlin.concurrent.thread
 
 class ClashEventService(private val master: Master) : IClashEventService.Stub() {
     interface Master {
@@ -14,10 +10,14 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     }
 
     companion object {
-        private val EVENT_SET = setOf(Event.EVENT_LOG, Event.EVENT_TRAFFIC, Event.EVENT_PROXY_CHANGED)
+        private val EVENT_SET =
+            setOf(Event.EVENT_LOG, Event.EVENT_TRAFFIC, Event.EVENT_PROXY_CHANGED)
     }
 
-    private data class EventObserverRecord(val observer: IClashEventObserver, val acquiredEvent: Set<Int>)
+    private data class EventObserverRecord(
+        val observer: IClashEventObserver,
+        val acquiredEvent: Set<Int>
+    )
 
     private val observers = mutableMapOf<String, EventObserverRecord>()
     private val handler = Executors.newSingleThreadExecutor()
@@ -38,7 +38,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     fun preformLogEvent(event: LogEvent) {
         handler.submit {
             observers.values.forEach {
-                if ( it.acquiredEvent.contains(Event.EVENT_LOG) )
+                if (it.acquiredEvent.contains(Event.EVENT_LOG))
                     it.observer.onLogEvent(event)
             }
         }
@@ -47,7 +47,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     fun preformProxyChangedEvent(event: ProxyChangedEvent) {
         handler.submit {
             observers.values.forEach {
-                if ( it.acquiredEvent.contains(Event.EVENT_PROXY_CHANGED) )
+                if (it.acquiredEvent.contains(Event.EVENT_PROXY_CHANGED))
                     it.observer.onProxyChangedEvent(event)
             }
         }
@@ -58,7 +58,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
             currentTrafficEvent = event
 
             observers.values.forEach {
-                if ( it.acquiredEvent.contains(Event.EVENT_TRAFFIC) )
+                if (it.acquiredEvent.contains(Event.EVENT_TRAFFIC))
                     it.observer.onTrafficEvent(event)
             }
         }
@@ -98,18 +98,22 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         handler.submit {
             require(id != null && observer != null && events != null)
 
+            val initial = !observers.containsKey(id)
+
             observers[id] = EventObserverRecord(observer, events.toSet())
 
             observer.asBinder().linkToDeath({
                 unregisterEventObserver(id)
             }, 0)
 
-            observer.onProcessEvent(currentProcessEvent)
-
-            if ( events.contains(Event.EVENT_TRAFFIC) )
-                observer.onTrafficEvent(currentTrafficEvent)
-
             recastEventRequirement()
+
+            if (initial) {
+                observer.onProcessEvent(currentProcessEvent)
+
+                if (events.contains(Event.EVENT_TRAFFIC))
+                    observer.onTrafficEvent(currentTrafficEvent)
+            }
         }
     }
 

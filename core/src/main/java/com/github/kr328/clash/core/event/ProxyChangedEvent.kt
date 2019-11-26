@@ -6,7 +6,7 @@ import com.github.kr328.clash.core.serialization.Parcels
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProxyChangedEvent(val name: String, val selected: String) : Event,Parcelable {
+data class ProxyChangedEvent(val name: String, val selected: String) : Event, Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         Parcels.dump(serializer(), this, parcel)
     }

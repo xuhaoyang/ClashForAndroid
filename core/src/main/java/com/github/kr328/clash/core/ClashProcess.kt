@@ -8,10 +8,12 @@ import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.concurrent.thread
 
-class ClashProcess(private val context: Context,
-                            private val clashDir: File,
-                            private val controllerPath: File,
-                            private val listener: (ProcessEvent) -> Unit) {
+class ClashProcess(
+    private val context: Context,
+    private val clashDir: File,
+    private val controllerPath: File,
+    private val listener: (ProcessEvent) -> Unit
+) {
     companion object {
         private const val CONTROLLER_STATUS_PREFIX = "[CONTROLLER]"
 
@@ -24,7 +26,7 @@ class ClashProcess(private val context: Context,
 
     @Synchronized
     fun start() {
-        if ( pid > 0 )
+        if (pid > 0)
             return
 
         try {
@@ -34,7 +36,8 @@ class ClashProcess(private val context: Context,
 
             extractMMDB()
 
-            val clashPath = File(context.applicationInfo.nativeLibraryDir,"libclash.so").absolutePath
+            val clashPath =
+                File(context.applicationInfo.nativeLibraryDir, "libclash.so").absolutePath
 
             val p = ProcessBuilder().apply {
                 command(clashPath, controllerPath.absolutePath)
@@ -48,20 +51,22 @@ class ClashProcess(private val context: Context,
 
             // Parse pid
             var currentPid = 0
-            while ( reader.readLine()?.apply { line = this.trim() } != null ) {
+            while (reader.readLine()?.apply { line = this.trim() } != null) {
                 Log.i(line)
 
-                if ( PID_PATTERN.matchEntire(line)?.apply { currentPid = groups[1]!!.value.toInt() } != null  )
+                if (PID_PATTERN.matchEntire(line)?.apply {
+                        currentPid = groups[1]!!.value.toInt()
+                    } != null)
                     break
             }
 
-            while ( reader.readLine()?.apply { line = this.trim() } != null ) {
+            while (reader.readLine()?.apply { line = this.trim() } != null) {
                 Log.i(line)
 
-                if ( line.startsWith(CONTROLLER_STATUS_PREFIX) ) {
+                if (line.startsWith(CONTROLLER_STATUS_PREFIX)) {
                     val error = CONTROLLER_ERROR_PATTERN.matchEntire(line)?.groups?.get(1)?.value
 
-                    if ( error != null )
+                    if (error != null)
                         throw IOException("Controller: $error")
 
                     break
@@ -77,7 +82,7 @@ class ClashProcess(private val context: Context,
 
             thread {
                 // Redirect stdout to log
-                while ( reader.readLine()?.apply { line = this } != null ) {
+                while (reader.readLine()?.apply { line = this } != null) {
                     Log.i(line.trim())
                 }
 
@@ -89,8 +94,7 @@ class ClashProcess(private val context: Context,
 
                 listener(ProcessEvent.STOPPED)
             }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             listener(ProcessEvent.STOPPED)
             throw e
         }
@@ -98,7 +102,7 @@ class ClashProcess(private val context: Context,
 
     @Synchronized
     fun getProcessStatus(): ProcessEvent {
-        return if ( pid > 0 )
+        return if (pid > 0)
             ProcessEvent.STARTED
         else
             ProcessEvent.STOPPED
@@ -109,8 +113,9 @@ class ClashProcess(private val context: Context,
     }
 
     private fun extractMMDB() {
-        if ( context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
-            < clashDir.resolve("Country.mmdb").lastModified() )
+        if (context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
+            < clashDir.resolve("Country.mmdb").lastModified()
+        )
             return
 
         clashDir.resolve("ui").mkdirs()

@@ -1,67 +1,60 @@
 package server
 
 import (
-	"encoding/binary"
-	"github.com/kr328/clash/event"
+	"bytes"
+	"encoding/json"
 	"net"
+	"time"
+
+	"github.com/Dreamacro/clash/tunnel"
 )
 
-func handlePollEvent(client *net.UnixConn) {
-	var control chan []byte = make(chan []byte, 10)
+func handlePullTrafficEvent(client *net.UnixConn) {
+	trafficExit := make(chan int)
+	ticker := time.NewTicker(time.Second)
 
-	defer close(control)
-	defer event.ClearHandlers()
+	traffic := tunnel.DefaultManager
+	buf := &bytes.Buffer{}
 
-	var send func([]byte) = func(buf []byte) {
-		control <- buf
-	}
+	defer close(trafficExit)
+	defer ticker.Stop()
 
-	var c func() = func() {
-		close(control)
-	}
+	go func() {
+		for {
+			var buf [4]byte
 
-	defer binary.Write(client, binary.BigEndian, event.EventClose)
+			_, err := client.Read(buf[:])
 
-	if err := event.SetHandlers(send, c); err != nil {
-		return
-	}
+			if err != nil {
+				trafficExit <- 0
+				return
+			}
+		}
+	}()
 
-	for buf := range control {
-		if buf == nil {
+	for {
+		select {
+		case <-ticker.C:
+			buf.Reset()
+
+			var Packet struct {
+				Up    int64 `json:"up"`
+				Down  int64 `json:"down"`
+				Total int64 `json:"total"`
+			}
+
+			up, down := traffic.Now()
+			snapshot := traffic.Snapshot()
+
+			Packet.Up = up
+			Packet.Down = down
+			Packet.Total = snapshot.DownloadTotal + snapshot.UploadTotal
+
+			json.NewEncoder(buf).Encode(&Packet)
+
+			writeCommandPacket(client, buf.Bytes())
+		case <-trafficExit:
 			return
-		}
-
-		client.Write(buf)
-	}
-}
-
-func handleSetEventEnabled(client *net.UnixConn) {
-	var eventType uint32
-	var enabled uint32
-	var err error
-
-	err = binary.Read(client, binary.BigEndian, &eventType)
-	if err != nil {
-		return
-	}
-
-	err = binary.Read(client, binary.BigEndian, &enabled)
-	if err != nil {
-		return
-	}
-
-	switch eventType {
-	case event.EventLog:
-		if enabled == 1 {
-			event.StartLogEvent()
-		} else {
-			event.StopLogEvent()
-		}
-	case event.EventTraffic:
-		if enabled == 1 {
-			event.StartTrafficEvent()
-		} else {
-			event.StopTrafficEvent()
 		}
 	}
 }

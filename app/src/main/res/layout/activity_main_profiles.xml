@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main_clash_profiles"
     android:layout_marginTop="10dp"
@@ -21,13 +20,14 @@
         android:paddingBottom="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/activity_main_profiles_icon"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_centerVertical="true"
             android:contentDescription="@string/clash_status_stopped"
-            android:src="@drawable/ic_profiles"/>
+            android:src="@drawable/ic_profiles" />
 
         <TextView
             android:id="@+id/activity_main_profiles_title"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/clash_profiles"/>
+            android:text="@string/clash_profiles" />
 
         <TextView
             android:id="@+id/activity_main_clash_profiles_summary"
@@ -47,6 +47,6 @@
             android:layout_alignStart="@id/activity_main_profiles_title"
             android:layout_below="@id/activity_main_profiles_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

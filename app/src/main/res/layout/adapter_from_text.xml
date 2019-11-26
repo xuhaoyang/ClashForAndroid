@@ -11,7 +11,7 @@
         android:src="@drawable/ic_about"
         android:contentDescription="@string/app_name"
         android:layout_width="30dp"
-        android:layout_height="30dp"/>
+        android:layout_height="30dp" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/adapter_from_text_text"
@@ -22,6 +22,6 @@
         android:focusable="true"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:inputType="none"/>
+        android:inputType="none" />
 
 </LinearLayout>

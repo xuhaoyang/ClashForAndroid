@@ -20,7 +20,7 @@ class ProfilesActivity : BaseActivity() {
             startActivity(Intent(this, CreateProfileActivity::class.java))
         }
 
-        activity_profiles_main_list.layoutManager = object: LinearLayoutManager(this) {
+        activity_profiles_main_list.layoutManager = object : LinearLayoutManager(this) {
             override fun canScrollHorizontally(): Boolean = false
             override fun canScrollVertically(): Boolean = false
         }
@@ -37,9 +37,11 @@ class ProfilesActivity : BaseActivity() {
         super.onStart()
 
         runClash {
-            it.eventService.registerEventObserver(ProfilesActivity::class.java.simpleName,
+            it.eventService.registerEventObserver(
+                ProfilesActivity::class.java.simpleName,
                 this,
-                intArrayOf())
+                intArrayOf()
+            )
         }
     }
 

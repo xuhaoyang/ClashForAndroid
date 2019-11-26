@@ -9,7 +9,12 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.github.kr328.clash.R
 
-class FatItem @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
+class FatItem @JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    defStyleRes: Int = 0
+) :
     FrameLayout(context, attributeSet, defStyleAttr, defStyleRes) {
     private val titleView: TextView
     private val summaryView: TextView
@@ -21,15 +26,19 @@ class FatItem @JvmOverloads constructor(context: Context, attributeSet: Attribut
 
     var icon: Drawable?
         get() = iconView.background
-        set(value) { iconView.background = value }
+        set(value) {
+            iconView.background = value
+        }
     var title: CharSequence?
         get() = titleView.text
-        set(value) { titleView.text = value }
+        set(value) {
+            titleView.text = value
+        }
     var summary: CharSequence?
         get() = summaryView.text
         set(value) {
             summaryView.text = value
-            if ( value?.isNotBlank() != true )
+            if (value?.isNotBlank() != true)
                 summaryView.visibility = View.GONE
             else
                 summaryView.visibility = View.VISIBLE
@@ -38,7 +47,7 @@ class FatItem @JvmOverloads constructor(context: Context, attributeSet: Attribut
         get() = operationView.background
         set(value) {
             operationView.background = value
-            if ( value == null )
+            if (value == null)
                 operationClickable.visibility = View.GONE
             else
                 operationClickable.visibility = View.VISIBLE
@@ -72,7 +81,7 @@ class FatItem @JvmOverloads constructor(context: Context, attributeSet: Attribut
     }
 
     init {
-        with ( LayoutInflater.from(context).inflate(R.layout.view_fat_item, this, true) ) {
+        with(LayoutInflater.from(context).inflate(R.layout.view_fat_item, this, true)) {
             titleView = findViewById(R.id.view_fat_item_title)
             summaryView = findViewById(R.id.view_fat_item_summary)
             operationView = findViewById(R.id.view_fat_item_operation)
@@ -88,8 +97,7 @@ class FatItem @JvmOverloads constructor(context: Context, attributeSet: Attribut
                 title = getString(R.styleable.FatItem_title)
                 summary = getString(R.styleable.FatItem_summary)
                 operation = getDrawable(R.styleable.FatItem_operation)
-            }
-            finally {
+            } finally {
                 recycle()
             }
         }
