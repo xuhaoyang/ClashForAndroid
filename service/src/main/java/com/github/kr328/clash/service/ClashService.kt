@@ -184,7 +184,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 reloadProfile()
 
                 notification.show()
-                
+
                 eventService.recastEventRequirement()
             }
             ProcessEvent.STOPPED -> {
