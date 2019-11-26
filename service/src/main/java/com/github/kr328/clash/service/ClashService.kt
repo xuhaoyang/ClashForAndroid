@@ -184,10 +184,12 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 reloadProfile()
 
                 notification.show()
-
+                
                 eventService.recastEventRequirement()
             }
             ProcessEvent.STOPPED -> {
+                eventService.preformTrafficEvent(TrafficEvent(0, 0, 0))
+
                 notification.cancel()
             }
         }
