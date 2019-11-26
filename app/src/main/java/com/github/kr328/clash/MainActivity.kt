@@ -76,7 +76,7 @@ class MainActivity : BaseActivity() {
                     activity_main_clash_logs.visibility = View.VISIBLE
                 }
                 else -> {
-                    activity_main_clash_status.setCardBackgroundColor(Color.GRAY)
+                    activity_main_clash_status.setCardBackgroundColor(getColor(R.color.gray))
                     activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
                     activity_main_clash_status_title.text = getString(R.string.clash_status_stopped)
                     activity_main_clash_status_summary.text =

@@ -14,6 +14,6 @@ class ProxyActivity : BaseActivity() {
 
         content.layoutManager = LinearLayoutManager(this)
 
-        
+
     }
 }

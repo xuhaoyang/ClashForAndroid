@@ -11,7 +11,7 @@
     android:focusable="true"
     app:cardElevation="4dp"
     app:cardCornerRadius="8dp"
-    app:cardBackgroundColor="@android:color/darker_gray">
+    app:cardBackgroundColor="@color/gray">
 
     <RelativeLayout
         android:paddingStart="18dp"
