@@ -32,6 +32,10 @@ class MainActivity : BaseActivity() {
             setLogo(R.mipmap.ic_launcher_foreground)
         })
 
+        activity_main_clash_proxies.setOnClickListener {
+            startActivity(Intent(this, ProxyActivity::class.java))
+        }
+
         activity_main_clash_profiles.setOnClickListener {
             startActivity(Intent(this, ProfilesActivity::class.java))
         }
