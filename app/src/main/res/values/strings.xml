@@ -41,4 +41,6 @@
     <string name="clash_import_file_empty_name">Empty Name</string>
     <string name="clash_import_file_empty_path">Empty Path</string>
     <string name="clash_import_file_invalid">Invalid Config: %s</string>
+
+    <string name="clash_proxy_group_title">%s - %s</string>
 </resources>

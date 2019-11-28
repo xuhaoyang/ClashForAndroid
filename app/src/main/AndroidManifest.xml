@@ -44,7 +44,7 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity android:name=".ProxyActivity"
-            android:label="@string/clash_profiles"
+            android:label="@string/clash_proxy_manage"
             android:exported="false"
             android:screenOrientation="portrait"/>
     </application>

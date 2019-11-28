@@ -1,29 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/adapter_proxy_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="5dp">
         <RelativeLayout
-            android:padding="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:padding="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/adapter_proxy_name"
                 android:textColor="@android:color/black"
                 android:text="@string/app_name"
+                android:maxLines="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:id="@+id/adapter_proxy_type"
                 android:layout_below="@id/adapter_proxy_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name"/>
+                android:textSize="12sp"
+                android:text="@string/app_name"
+                android:maxLines="1"/>
+
+            <TextView
+                android:layout_alignParentEnd="true"
+                android:gravity="end"
+                android:textSize="12sp"
+                android:id="@+id/adapter_proxy_delay"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/adapter_proxy_name"
+                android:layout_marginStart="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="30dp"/>
 
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

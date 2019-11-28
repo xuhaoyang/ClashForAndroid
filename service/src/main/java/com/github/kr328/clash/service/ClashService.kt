@@ -12,9 +12,9 @@ import android.os.ParcelFileDescriptor
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.ProxyPacket
+import com.github.kr328.clash.core.model.RawProxyPacket
 import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.data.ClashDatabase
-import java.io.EOFException
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -40,14 +40,11 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
         override fun queryAllProxies(): ProxyPacket {
             return try {
-                ProxyPacket(clash.queryProxies().proxies.mapValues {
-                    it.value.copy(history = it.value.history.take(1))
-                })
+                ProxyPacket.fromRawProxy(clash.queryProxies())
             } catch (e: Exception) {
                 this@ClashService.eventService.preformErrorEvent(
                     ErrorEvent(ErrorEvent.Type.QUERY_PROXY_FAILURE, e.toString())
                 )
-
                 ProxyPacket(emptyMap())
             }
         }
