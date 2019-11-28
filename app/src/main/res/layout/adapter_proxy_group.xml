@@ -9,18 +9,28 @@
     android:paddingTop="12dp">
 
     <TextView
+        android:padding="2dp"
         android:layout_marginStart="2dp"
         android:textColor="@color/colorAccent"
         android:text="@string/app_name"
         android:id="@+id/adapter_proxy_group_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <View
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/ic_url_test"
+        android:layout_toStartOf="@id/adapter_proxy_group_expand"/>
+
+    <View
+        android:id="@+id/adapter_proxy_group_expand"
         android:layout_alignParentEnd="true"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:background="@drawable/ic_expand"/>
+        android:layout_marginEnd="5dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@drawable/ic_expand_more"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/adapter_proxy_group_list"

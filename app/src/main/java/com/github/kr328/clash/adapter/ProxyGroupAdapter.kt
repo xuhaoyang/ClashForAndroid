@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.kr328.clash.R
+import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.model.ListProxyGroup
 
 class ProxyGroupAdapter(private val context: Context) : RecyclerView.Adapter<ProxyGroupAdapter.Holder>() {
@@ -16,6 +17,7 @@ class ProxyGroupAdapter(private val context: Context) : RecyclerView.Adapter<Pro
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.adapter_proxy_group_name)
         val list: RecyclerView = view.findViewById(R.id.adapter_proxy_group_list)
+        val expend: View = view.findViewById(R.id.adapter_proxy_group_expand)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -37,10 +39,18 @@ class ProxyGroupAdapter(private val context: Context) : RecyclerView.Adapter<Pro
         val current = data[position]
 
         holder.name.text = current.name
+        holder.list.visibility = if (current.hide) View.GONE else View.VISIBLE
+
+        Log.i("${current.hide}")
 
         (holder.list.adapter as ProxyAdapter).apply {
             proxies = current.proxies
             now = current.now
+
+            holder.expend.setOnClickListener {
+                current.hide = !current.hide
+                this@ProxyGroupAdapter.notifyItemChanged(position)
+            }
         }
     }
 }
