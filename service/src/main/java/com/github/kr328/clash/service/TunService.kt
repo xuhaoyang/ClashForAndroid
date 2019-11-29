@@ -100,7 +100,10 @@ class TunService : VpnService(), IClashEventObserver {
     override fun onProcessEvent(event: ProcessEvent?) {
         when (event) {
             ProcessEvent.STOPPED -> {
-                if (start)
+                val startNow = start
+                start = false
+
+                if (startNow)
                     clash.start()
                 else
                     stopSelf()

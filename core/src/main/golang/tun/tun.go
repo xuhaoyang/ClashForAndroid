@@ -77,5 +77,9 @@ func SetDNSRedirect(addr *net.UDPAddr) {
 		return
 	}
 
-	instance.dnsRedirect.SetTargetAddress(addr)
+	if addr != nil {
+		instance.dnsRedirect.SetTargetAddress(addr)
+	} else {
+		instance.dnsRedirect.SetDefaultTargetAddress()
+	}
 }
