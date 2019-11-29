@@ -12,8 +12,10 @@ import (
 	"github.com/google/netstack/waiter"
 )
 
-const defaultTimeout = 5
-const defaultDNS = "8.8.8.8"
+const (
+	defaultTimeout = 5
+	defaultDNS     = "8.8.8.8"
+)
 
 type DnsRedirectEndpoint struct {
 	stack        *stack.Stack

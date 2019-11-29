@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/netstack/tcpip"
 	"github.com/google/netstack/tcpip/network/ipv4"
+	"github.com/google/netstack/tcpip/network/ipv6"
 	"github.com/google/netstack/tcpip/stack"
 	"github.com/google/netstack/tcpip/transport/udp"
 )
@@ -46,6 +47,7 @@ func StartTunProxy(fd, mtu int) error {
 	if err := s.RegisterTransportEndpoint(1,
 		[]tcpip.NetworkProtocolNumber{
 			ipv4.ProtocolNumber,
+			ipv6.ProtocolNumber,
 		},
 		udp.ProtocolNumber,
 		*id,
