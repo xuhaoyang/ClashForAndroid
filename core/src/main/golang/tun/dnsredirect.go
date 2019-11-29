@@ -64,7 +64,7 @@ func NewDnsRedirect(s *stack.Stack) *DnsRedirectEndpoint {
 			}
 		}()
 
-		// recive
+		// receive
 		go func() {
 			var buffer [128]byte
 
