@@ -7,7 +7,6 @@ import (
 	adapters "github.com/Dreamacro/clash/adapters/outbound"
 	"github.com/Dreamacro/clash/component/auth"
 	trie "github.com/Dreamacro/clash/component/domain-trie"
-	"github.com/Dreamacro/clash/component/socks5"
 	"github.com/Dreamacro/clash/config"
 	"github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/dns"
@@ -15,7 +14,7 @@ import (
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/tunnel"
 
-	"github.com/kr328/clash/tun"
+	"github.com/kr328/cfa/tun"
 )
 
 // LoadDefault - load default configure
@@ -83,10 +82,12 @@ func LoadFromFile(path string) error {
 		addr = strings.ReplaceAll(addr, "0.0.0.0", "127.0.0.1")
 		addr = strings.ReplaceAll(addr, "::", "::1")
 
-		if err == nil {
-			listen := socks5.ParseAddr(addr)
-			tun.SetDNSRedirect(&listen)
+		listen, err := net.ResolveUDPAddr("udp", addr)
+		if err != nil {
+			log.Errorln("Unable to parse dns address" + err.Error())
 		}
+
+		tun.SetDNSRedirect(listen)
 	} else {
 		tun.SetDNSRedirect(nil)
 	}

@@ -8,8 +8,8 @@ import (
 
 	"github.com/Dreamacro/clash/constant"
 
-	"github.com/kr328/clash/profile"
-	"github.com/kr328/clash/server"
+	"github.com/kr328/cfa/profile"
+	"github.com/kr328/cfa/server"
 )
 
 func main() {

@@ -6,7 +6,7 @@ import (
 	"net"
 
 	"github.com/Dreamacro/clash/log"
-	"github.com/kr328/clash/profile"
+	"github.com/kr328/cfa/profile"
 )
 
 func handleProfileDefault(client *net.UnixConn) {

@@ -160,13 +160,6 @@
         <item>208.0.0.0/4</item>
     </string-array>
 
-    <string-array name="default_dns" translatable="false">
-        <item>119.29.29.29</item>
-        <item>223.5.5.5</item>
-        <item>1.1.1.1</item>
-        <item>8.8.8.8</item>
-    </string-array>
-
     <string-array name="default_bypass_application">
         <item>com.github.kr328.clash</item>
         <item>com.android.networkstack</item>

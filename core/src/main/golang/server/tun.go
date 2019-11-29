@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/Dreamacro/clash/log"
-	"github.com/kr328/clash/tun"
+	"github.com/kr328/cfa/tun"
 	"golang.org/x/sys/unix"
 )
 
@@ -45,7 +45,9 @@ func handleTunStart(client *net.UnixConn) {
 		return
 	}
 
-	tun.StartTunProxy(fds[0], int(mtu))
+	if err := tun.StartTunProxy(fds[0], int(mtu)); err != nil {
+		log.Errorln("Open tun device failure" + err.Error())
+	}
 }
 
 func handleTunStop(client *net.UnixConn) {
