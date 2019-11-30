@@ -29,8 +29,6 @@ class ProfilesActivity : BaseActivity() {
                 it.profileService.setActiveProfile(id)
             }
         }
-
-        reloadList()
     }
 
     override fun onStart() {
@@ -43,6 +41,8 @@ class ProfilesActivity : BaseActivity() {
                 intArrayOf()
             )
         }
+
+        reloadList()
     }
 
     override fun onStop() {

@@ -20,7 +20,6 @@ class FatItem @JvmOverloads constructor(
     private val summaryView: TextView
     private val operationView: View
     private val iconView: View
-    private val dividerView: View
     private val clickable: View
     private val operationClickable: View
 
@@ -85,7 +84,6 @@ class FatItem @JvmOverloads constructor(
             titleView = findViewById(R.id.view_fat_item_title)
             summaryView = findViewById(R.id.view_fat_item_summary)
             operationView = findViewById(R.id.view_fat_item_operation)
-            dividerView = findViewById(R.id.view_fat_item_divider)
             iconView = findViewById(R.id.view_fat_item_icon)
             clickable = findViewById(R.id.view_fat_item_clickable)
             operationClickable = findViewById(R.id.view_fat_item_operation_clickable)

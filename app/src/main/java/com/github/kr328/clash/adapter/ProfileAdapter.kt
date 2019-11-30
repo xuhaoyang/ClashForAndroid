@@ -41,15 +41,17 @@ class ProfileAdapter(private val context: Context, private val listener: (Int) -
             listener(current.id)
         }
 
-        with(current.token) {
-            when {
-                startsWith("http") || startsWith("content") -> {
-                    holder.view.operation = context.getDrawable(R.drawable.ic_profile_refresh)
-                }
-                startsWith("file") -> {
-                    holder.view.operation = context.getDrawable(R.drawable.ic_profile_edit)
-                }
-            }
-        }
+        holder.view.operation = context.getDrawable(R.drawable.ic_vert)
+
+//        with(current.token) {
+//            when {
+//                startsWith("http") || startsWith("content") -> {
+//
+//                }
+//                startsWith("file") -> {
+//
+//                }
+//            }
+//        }
     }
 }

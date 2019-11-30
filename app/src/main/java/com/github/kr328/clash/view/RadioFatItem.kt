@@ -21,7 +21,6 @@ class RadioFatItem @JvmOverloads constructor(
     private val summaryView: TextView
     private val operationView: View
     private val radioView: MaterialRadioButton
-    private val dividerView: View
     private val clickable: View
     private val operationClickable: View
 
@@ -75,7 +74,6 @@ class RadioFatItem @JvmOverloads constructor(
             titleView = findViewById(R.id.view_radio_fat_item_title)
             summaryView = findViewById(R.id.view_radio_fat_item_summary)
             operationView = findViewById(R.id.view_radio_fat_item_operation)
-            dividerView = findViewById(R.id.view_radio_fat_item_divider)
             radioView = findViewById(R.id.view_radio_fat_item_radio)
             clickable = findViewById(R.id.view_radio_fat_item_clickable)
             operationClickable = findViewById(R.id.view_radio_fat_item_operation_clickable)
