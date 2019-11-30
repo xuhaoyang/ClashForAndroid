@@ -8,6 +8,7 @@
         android:id="@+id/adapter_proxy_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
         app:cardUseCompatPadding="true"
         app:cardElevation="2dp"
         app:cardCornerRadius="5dp">
@@ -19,10 +20,11 @@
             <TextView
                 android:id="@+id/adapter_proxy_name"
                 android:textColor="@android:color/black"
-                android:text="@string/app_name"
                 android:maxLines="1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/adapter_proxy_delay"
+                android:layout_alignParentStart="true"/>
 
             <TextView
                 android:id="@+id/adapter_proxy_type"
@@ -30,7 +32,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:text="@string/app_name"
                 android:maxLines="1"/>
 
             <TextView
@@ -39,11 +40,9 @@
                 android:textSize="12sp"
                 android:id="@+id/adapter_proxy_delay"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/adapter_proxy_name"
                 android:layout_marginStart="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="30dp"/>
+                android:layout_height="wrap_content" />
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>

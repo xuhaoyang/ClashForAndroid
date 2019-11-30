@@ -21,13 +21,27 @@ class ProxyActivity : BaseActivity() {
             it.visibility = View.GONE
         }
 
+        activity_proxies_swipe.setOnRefreshListener {
+            refreshList()
+        }
+
+        refreshList()
+    }
+
+    private fun refreshList() {
+        if (!activity_proxies_swipe.isRefreshing)
+            activity_proxies_swipe.isRefreshing = true
+
         runClash { clash ->
-            val proxies = clash.queryAllProxies().proxies
+            val packet = clash.queryAllProxies()
+            val proxies = packet.proxies
             val adapterProxies = proxies
                 .mapValues {
-                    ListProxyGroup.ListProxy(it.value.name,
+                    ListProxyGroup.ListProxy(
+                        it.value.name,
                         it.value.type.toString(),
-                        it.value.delay)
+                        it.value.delay
+                    )
                 }
 
             val listData = proxies
@@ -41,16 +55,24 @@ class ProxyActivity : BaseActivity() {
                         else -> false
                     }
                 }
+                .filter {
+                    when (packet.mode) {
+                        "Global" -> it.value.name == "GLOBAL"
+                        "Rule" -> it.value.name != "GLOBAL"
+                        else -> false
+                    }
+                }
                 .sortedWith(compareBy(
                     {
                         it.value.type != ProxyPacket.Type.SELECT
                     }, {
                         it.value.name
-                    }))
+                    })
+                )
                 .map {
                     ListProxyGroup(
                         it.value.name,
-                        it.value.type.toString(),
+                        it.value.type,
                         it.value.all.mapNotNull { hash ->
                             adapterProxies[hash]
                         },
@@ -65,6 +87,7 @@ class ProxyActivity : BaseActivity() {
                     notifyDataSetChanged()
                 }
                 activity_proxies_list.visibility = View.VISIBLE
+                activity_proxies_swipe.isRefreshing = false
             }
         }
     }

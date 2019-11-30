@@ -2,22 +2,22 @@ package com.github.kr328.clash.service
 
 import android.net.LocalSocket
 import com.github.kr328.clash.core.Clash
+import com.github.kr328.clash.core.event.BandwidthEvent
 import com.github.kr328.clash.core.event.LogEvent
-import com.github.kr328.clash.core.event.ProxyChangedEvent
-import com.github.kr328.clash.core.event.TrafficEvent
+import com.github.kr328.clash.core.event.SpeedEvent
 import com.github.kr328.clash.core.utils.Log
 import kotlin.concurrent.thread
 
 class ClashEventPuller(private val clash: Clash, private val master: Master) {
     interface Master {
         fun onLogPulled(event: LogEvent)
-        fun onTrafficPulled(event: TrafficEvent)
-        fun onProxyChangedPulled(event: ProxyChangedEvent)
+        fun onSpeedPulled(event: SpeedEvent)
+        fun onBandwidthPulled(event: BandwidthEvent)
     }
 
     private var logSocket: LocalSocket? = null
-    private var trafficSocket: LocalSocket? = null
-    private var proxyChangedSocket: LocalSocket? = null
+    private var speedSocket: LocalSocket? = null
+    private var bandwidthSocket: LocalSocket? = null
 
     fun startLogPuller() {
         synchronized(LogEvent::class) {
@@ -47,45 +47,81 @@ class ClashEventPuller(private val clash: Clash, private val master: Master) {
         }
     }
 
+    fun startSpeedPull() {
+        synchronized(SpeedEvent::class) {
+            if (speedSocket != null)
+                return
+        }
+
+        thread {
+            clash.pullSpeedEvent({
+                synchronized(SpeedEvent::class) {
+                    if (speedSocket != null) {
+                        it.close()
+                        return@pullSpeedEvent
+                    } else {
+                        speedSocket = it
+                        Log.i("Speed puller started")
+                    }
+
+                }
+            }) {
+                master.onSpeedPulled(it)
+            }
+
+            synchronized(SpeedEvent::class) {
+                Log.i("Speed puller stopped")
+
+                speedSocket = null
+            }
+        }
+    }
+
+    fun startBandwidthPull() {
+        synchronized(BandwidthEvent::class) {
+            if (bandwidthSocket != null)
+                return
+        }
+
+        thread {
+            clash.pullBandwidthEvent({
+                synchronized(BandwidthEvent::class) {
+                    if (bandwidthSocket != null) {
+                        it.close()
+                        return@pullBandwidthEvent
+                    } else {
+                        bandwidthSocket = it
+                        Log.i("Bandwidth puller started")
+                    }
+
+                }
+            }) {
+                master.onBandwidthPulled(it)
+            }
+
+            synchronized(BandwidthEvent::class) {
+                Log.i("Bandwidth puller stopped")
+
+                bandwidthSocket = null
+            }
+        }
+    }
+
     fun stopLogPull() {
         synchronized(LogEvent::class) {
             logSocket.closeSilent()
         }
     }
 
-    fun startTrafficPull() {
-        synchronized(TrafficEvent::class) {
-            if (trafficSocket != null)
-                return
-        }
-
-        thread {
-            clash.pullTrafficEvent({
-                synchronized(TrafficEvent::class) {
-                    if (trafficSocket != null) {
-                        it.close()
-                        return@pullTrafficEvent
-                    } else {
-                        trafficSocket = it
-                        Log.i("Traffic puller started")
-                    }
-
-                }
-            }) {
-                master.onTrafficPulled(it)
-            }
-
-            synchronized(TrafficEvent::class) {
-                Log.i("Traffic puller stopped")
-
-                trafficSocket = null
-            }
+    fun stopSpeedPull() {
+        synchronized(SpeedEvent::class) {
+            speedSocket.closeSilent()
         }
     }
 
-    fun stopTrafficPull() {
-        synchronized(TrafficEvent::class) {
-            trafficSocket.closeSilent()
+    fun stopBandwidthPull() {
+        synchronized(BandwidthEvent::class) {
+            bandwidthSocket.closeSilent()
         }
     }
 

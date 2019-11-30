@@ -3,7 +3,7 @@ package com.github.kr328.clash.core.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RawProxyPacket(val proxies: Map<String, RawProxy>) {
+data class RawProxyPacket(val mode: String, val proxies: Map<String, RawProxy>) {
     @Serializable
     data class RawProxy(val type: String,
                         val all: List<String> = emptyList(),

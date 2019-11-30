@@ -11,7 +11,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
 
     companion object {
         private val EVENT_SET =
-            setOf(Event.EVENT_LOG, Event.EVENT_TRAFFIC, Event.EVENT_PROXY_CHANGED)
+            setOf(Event.EVENT_LOG, Event.EVENT_SPEED, Event.EVENT_BANDWIDTH)
     }
 
     private data class EventObserverRecord(
@@ -23,7 +23,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     private val handler = Executors.newSingleThreadExecutor()
 
     private var currentProcessEvent = ProcessEvent.STOPPED
-    private var currentTrafficEvent = TrafficEvent(0, 0, 0)
+    private var currentBandwidthEvent = BandwidthEvent(0)
 
     fun preformProcessEvent(event: ProcessEvent) {
         handler.submit {
@@ -44,22 +44,22 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    fun preformProxyChangedEvent(event: ProxyChangedEvent) {
+    fun preformSpeedEvent(event: SpeedEvent) {
         handler.submit {
             observers.values.forEach {
-                if (it.acquiredEvent.contains(Event.EVENT_PROXY_CHANGED))
-                    it.observer.onProxyChangedEvent(event)
+                if (it.acquiredEvent.contains(Event.EVENT_SPEED))
+                    it.observer.onSpeedEvent(event)
             }
         }
     }
 
-    fun preformTrafficEvent(event: TrafficEvent) {
+    fun preformBandwidthEvent(event: BandwidthEvent) {
         handler.submit {
-            currentTrafficEvent = event
+            currentBandwidthEvent = event
 
             observers.values.forEach {
-                if (it.acquiredEvent.contains(Event.EVENT_TRAFFIC))
-                    it.observer.onTrafficEvent(event)
+                if ( it.acquiredEvent.contains(Event.EVENT_BANDWIDTH) )
+                    it.observer.onBandwidthEvent(event)
             }
         }
     }
@@ -111,8 +111,8 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
             if (initial) {
                 observer.onProcessEvent(currentProcessEvent)
 
-                if (events.contains(Event.EVENT_TRAFFIC))
-                    observer.onTrafficEvent(currentTrafficEvent)
+                if (events.contains(Event.EVENT_BANDWIDTH))
+                    observer.onBandwidthEvent(currentBandwidthEvent)
             }
         }
     }

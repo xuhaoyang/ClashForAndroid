@@ -12,9 +12,11 @@ func handleQueryProxies(client *net.UnixConn) {
 	proxies := tunnel.Instance().Proxies()
 
 	var root struct {
+		Mode    string                 `json:"mode"`
 		Proxies map[string]interface{} `json:"proxies"`
 	}
 
+	root.Mode = tunnel.Instance().Mode().String()
 	root.Proxies = make(map[string]interface{})
 
 	for k, p := range proxies {

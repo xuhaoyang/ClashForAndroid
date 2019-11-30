@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adapter_proxy_group_root"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingTop="12dp">
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:paddingTop="15dp">
 
     <TextView
         android:padding="2dp"
@@ -18,19 +18,14 @@
         android:layout_height="wrap_content" />
 
     <View
+        android:id="@+id/adapter_proxy_group_url_test"
+        android:focusable="true"
+        android:clickable="true"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginEnd="5dp"
-        android:background="@drawable/ic_url_test"
-        android:layout_toStartOf="@id/adapter_proxy_group_expand"/>
-
-    <View
-        android:id="@+id/adapter_proxy_group_expand"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="5dp"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:background="@drawable/ic_expand_more"/>
+        android:background="@drawable/ic_url_test" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/adapter_proxy_group_list"

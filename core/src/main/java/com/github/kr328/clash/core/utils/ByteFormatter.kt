@@ -10,7 +10,7 @@ object ByteFormatter {
             bytes > 1024 ->
                 String.format("%.2f KB", (bytes.toDouble() / 1024))
             else ->
-                "$bytes Byte"
+                "$bytes Bytes"
         }
     }
 

@@ -2,14 +2,10 @@ package com.github.kr328.clash
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.VpnService
 import android.os.Bundle
 import android.view.View
-import com.github.kr328.clash.core.event.Event
-import com.github.kr328.clash.core.event.ProcessEvent
-import com.github.kr328.clash.core.event.ProfileChangedEvent
-import com.github.kr328.clash.core.event.TrafficEvent
+import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.utils.ByteFormatter
 import com.github.kr328.clash.service.TunService
 import kotlinx.android.synthetic.main.activity_main.*
@@ -92,7 +88,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onTrafficEvent(event: TrafficEvent?) {
+    override fun onBandwidthEvent(event: BandwidthEvent?) {
         runOnUiThread {
             if (lastEvent == ProcessEvent.STARTED) {
                 activity_main_clash_status_summary.text =
@@ -115,7 +111,7 @@ class MainActivity : BaseActivity() {
             it.eventService.registerEventObserver(
                 MainActivity::class.java.simpleName,
                 this,
-                intArrayOf(Event.EVENT_TRAFFIC)
+                intArrayOf(Event.EVENT_BANDWIDTH)
             )
         }
 

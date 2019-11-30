@@ -142,11 +142,11 @@ class TunService : VpnService(), IClashEventObserver {
         return this
     }
 
+    override fun onSpeedEvent(event: SpeedEvent?) {}
+    override fun onBandwidthEvent(event: BandwidthEvent?) {}
     override fun onLogEvent(event: LogEvent?) {}
     override fun onErrorEvent(event: ErrorEvent?) {}
     override fun onProfileChanged(event: ProfileChangedEvent?) {}
-    override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
-    override fun onTrafficEvent(event: TrafficEvent?) {}
     override fun asBinder(): IBinder = object : Binder() {
         override fun queryLocalInterface(descriptor: String): IInterface? {
             return this@TunService

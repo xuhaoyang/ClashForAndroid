@@ -12,7 +12,6 @@ import android.os.ParcelFileDescriptor
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.ProxyPacket
-import com.github.kr328.clash.core.model.RawProxyPacket
 import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.data.ClashDatabase
 import java.io.File
@@ -45,7 +44,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 this@ClashService.eventService.preformErrorEvent(
                     ErrorEvent(ErrorEvent.Type.QUERY_PROXY_FAILURE, e.toString())
                 )
-                ProxyPacket(emptyMap())
+                ProxyPacket("Unknown", emptyMap())
             }
         }
 
@@ -100,7 +99,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                     eventService.registerEventObserver(
                         ClashService::class.java.name,
                         this@ClashService,
-                        intArrayOf(Event.EVENT_TRAFFIC)
+                        intArrayOf(Event.EVENT_SPEED)
                     )
                 Intent.ACTION_SCREEN_OFF ->
                     eventService.registerEventObserver(
@@ -117,10 +116,12 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             return
 
         when (event) {
-            Event.EVENT_TRAFFIC ->
-                puller.startTrafficPull()
+            Event.EVENT_SPEED ->
+                puller.startSpeedPull()
             Event.EVENT_LOG ->
                 puller.startLogPuller()
+            Event.EVENT_BANDWIDTH ->
+                puller.startBandwidthPull()
         }
     }
 
@@ -129,10 +130,12 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             return
 
         when (event) {
-            Event.EVENT_TRAFFIC ->
-                puller.stopTrafficPull()
+            Event.EVENT_SPEED ->
+                puller.stopSpeedPull()
             Event.EVENT_LOG ->
                 puller.stopLogPull()
+            Event.EVENT_BANDWIDTH ->
+                puller.stopBandwidthPull()
         }
     }
 
@@ -155,7 +158,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
         eventService.registerEventObserver(
             ClashService::class.java.name,
             this@ClashService,
-            intArrayOf(Event.EVENT_TRAFFIC)
+            intArrayOf(Event.EVENT_SPEED)
         )
 
         registerReceiver(screenReceiver, IntentFilter().apply {
@@ -201,7 +204,8 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 eventService.recastEventRequirement()
             }
             ProcessEvent.STOPPED -> {
-                eventService.preformTrafficEvent(TrafficEvent(0, 0, 0))
+                eventService.preformSpeedEvent(SpeedEvent(0, 0))
+                eventService.preformBandwidthEvent(BandwidthEvent(0))
 
                 notification.cancel()
             }
@@ -230,7 +234,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
         }
     }
 
-    override fun onTrafficEvent(event: TrafficEvent?) {
+    override fun onSpeedEvent(event: SpeedEvent?) {
         notification.setSpeed(event?.up ?: 0, event?.down ?: 0)
     }
 
@@ -242,15 +246,15 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
         eventService.preformLogEvent(event)
     }
 
-    override fun onTrafficPulled(event: TrafficEvent) {
-        eventService.preformTrafficEvent(event)
+    override fun onSpeedPulled(event: SpeedEvent) {
+        eventService.preformSpeedEvent(event)
     }
 
-    override fun onProxyChangedPulled(event: ProxyChangedEvent) {
-        eventService.preformProxyChangedEvent(event)
+    override fun onBandwidthPulled(event: BandwidthEvent) {
+        eventService.preformBandwidthEvent(event)
     }
 
-    override fun onProxyChangedEvent(event: ProxyChangedEvent?) {}
+    override fun onBandwidthEvent(event: BandwidthEvent?) {}
     override fun onLogEvent(event: LogEvent?) {}
     override fun onErrorEvent(event: ErrorEvent?) {}
     override fun asBinder(): IBinder = object : Binder() {

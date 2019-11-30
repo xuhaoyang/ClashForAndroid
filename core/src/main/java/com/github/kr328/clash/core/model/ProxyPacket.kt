@@ -6,7 +6,7 @@ import com.github.kr328.clash.core.serialization.Parcels
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ProxyPacket(val proxies: Map<Int, Proxy>): Parcelable {
+data class ProxyPacket(val mode: String, val proxies: Map<Int, Proxy>): Parcelable {
     @Serializable
     data class Proxy(val name: String, val type: Type, val now: Int, val all: Set<Int>, val delay: Long)
 
@@ -84,7 +84,7 @@ data class ProxyPacket(val proxies: Map<Int, Proxy>): Parcelable {
                 entry.value.first to Proxy(entry.key, type, now, all, delay)
             }
 
-            return ProxyPacket(proxies.toMap())
+            return ProxyPacket(rawProxy.mode, proxies.toMap())
         }
 
         @JvmField

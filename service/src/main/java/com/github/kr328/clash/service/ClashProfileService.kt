@@ -10,7 +10,7 @@ class ClashProfileService(context: Context, private val master: Master) :
         fun preformProfileChanged()
     }
 
-    val database by lazy {
+    private val database by lazy {
         ClashDatabase.getInstance(context).openClashProfileDao()
     }
 
