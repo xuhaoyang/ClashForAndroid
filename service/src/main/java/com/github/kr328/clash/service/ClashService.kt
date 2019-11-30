@@ -27,7 +27,6 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
     private lateinit var clash: Clash
     private lateinit var puller: ClashEventPuller
-    private lateinit var database: ClashDatabase
     private lateinit var notification: ClashNotification
 
     private val clashService = object : IClashService.Stub() {
@@ -35,6 +34,23 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             notification.setVpn(false)
 
             clash.stopTunDevice()
+        }
+
+        override fun setSelectProxy(proxy: String?, selected: String?) {
+            require(proxy != null && selected != null)
+
+            try {
+                clash.setSelectProxy(proxy, selected)
+
+                this@ClashService.profileService.setCurrentProfileProxy(proxy, selected)
+            }
+            catch (e: IOException) {
+                Log.w("Set proxy failure", e)
+
+                this@ClashService.eventService.preformErrorEvent(
+                    ErrorEvent(ErrorEvent.Type.SET_PROXY_SELECTED, e.toString())
+                )
+            }
         }
 
         override fun queryAllProxies(): ProxyPacket {
@@ -142,8 +158,6 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
     override fun onCreate() {
         super.onCreate()
 
-        database = ClashDatabase.getInstance(this)
-
         clash = Clash(
             this,
             filesDir.resolve("clash"),
@@ -214,7 +228,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
     private fun reloadProfile() {
         executor.submit {
-            val active = database.openClashProfileDao().queryActiveProfile()
+            val active = profileService.queryActiveProfile()
 
             if (active == null) {
                 clash.process.stop()
@@ -224,7 +238,10 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             Log.i("Loading profile ${active.cache}")
 
             try {
-                clash.loadProfile(File(active.cache))
+                val remove = clash.loadProfile(File(active.cache),
+                    profileService.queryProfileSelected(active.id))
+
+                profileService.removeCurrentProfileProxy(remove)
 
                 notification.setProfile(active.name)
             } catch (e: IOException) {

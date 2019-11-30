@@ -61,8 +61,9 @@ abstract class BaseClash(private val controllerPath: File) {
     }
 
     protected fun DataOutputStream.writeString(string: String) {
-        this.writeInt(string.length)
-        this.writeBytes(string)
+        val buffer = string.toByteArray(Charsets.UTF_8)
+        this.writeInt(buffer.size)
+        this.write(buffer)
     }
 
     protected fun DataInputStream.readString(): String {

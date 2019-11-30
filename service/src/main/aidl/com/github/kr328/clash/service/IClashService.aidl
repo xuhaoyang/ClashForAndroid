@@ -15,6 +15,7 @@ interface IClashService {
     ProcessEvent getCurrentProcessStatus();
 
     // Control
+    void setSelectProxy(String proxy, String selected);
     void startTunDevice(in ParcelFileDescriptor fd, int mtu);
     void stopTunDevice();
     void start();

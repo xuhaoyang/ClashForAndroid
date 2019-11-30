@@ -3,6 +3,7 @@ package com.github.kr328.clash
 import android.os.Bundle
 import com.github.kr328.clash.adapter.ProxyAdapter
 import com.github.kr328.clash.core.model.ProxyPacket
+import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.model.ListProxy
 import kotlinx.android.synthetic.main.activity_proxies.*
 
@@ -14,7 +15,11 @@ class ProxyActivity : BaseActivity() {
         setSupportActionBar(activity_proxies_toolbar)
 
         activity_proxies_list.also {
-            it.adapter = ProxyAdapter(this)
+            it.adapter = ProxyAdapter(this) {p, s ->
+                runClash { clash ->
+                    clash.setSelectProxy(p, s)
+                }
+            }
             it.layoutManager = (it.adapter!! as ProxyAdapter).getLayoutManager()
         }
 
@@ -89,20 +94,19 @@ class ProxyActivity : BaseActivity() {
                 .filterIsInstance(ListProxy.ListProxyHeader::class.java)
                 .map { it.now }
 
-            val listDataChanged = listData.filterIsInstance<ListProxy.ListProxyHeader>()
+            val listDataChanged = listData
+                .filterIsInstance<ListProxy.ListProxyHeader>()
                 .map { it.now }
 
-            val changed = if ( listDataChanged.size != listDataChanged.size )
+            val changed = if ( listDataOldChanged.size != listDataChanged.size )
                 (0..listData.size).toList()
             else {
                 listDataChanged.mapIndexed { index, i ->
-                    if ( listDataOldChanged[index] != i )
-                        -1
+                    if ( i == listDataOldChanged[index] )
+                        emptyList()
                     else
-                        index
-                }.filterNot {
-                    it < 0
-                }
+                        listOf(listDataOldChanged[index], i)
+                }.flatten()
             }
 
             runOnUiThread {
@@ -111,7 +115,7 @@ class ProxyActivity : BaseActivity() {
                 (activity_proxies_list.adapter!! as ProxyAdapter).apply {
                     elements = listData
 
-                    changed.forEach {
+                    changed.toSet().forEach {
                         notifyItemChanged(it)
                     }
                 }

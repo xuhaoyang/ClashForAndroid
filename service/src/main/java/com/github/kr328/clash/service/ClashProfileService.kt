@@ -3,6 +3,7 @@ package com.github.kr328.clash.service
 import android.content.Context
 import com.github.kr328.clash.service.data.ClashDatabase
 import com.github.kr328.clash.service.data.ClashProfileEntity
+import com.github.kr328.clash.service.data.ClashProfileProxyEntity
 
 class ClashProfileService(context: Context, private val master: Master) :
     IClashProfileService.Stub() {
@@ -10,12 +11,15 @@ class ClashProfileService(context: Context, private val master: Master) :
         fun preformProfileChanged()
     }
 
-    private val database by lazy {
+    private val profileDao by lazy {
         ClashDatabase.getInstance(context).openClashProfileDao()
+    }
+    private val profileProxyDao by lazy {
+        ClashDatabase.getInstance(context).openClashProfileProxyDao()
     }
 
     override fun removeProfile(id: Int) {
-        database.removeProfile(id)
+        profileDao.removeProfile(id)
 
         master.preformProfileChanged()
     }
@@ -23,22 +27,40 @@ class ClashProfileService(context: Context, private val master: Master) :
     override fun addProfile(profile: ClashProfileEntity?) {
         require(profile != null)
 
-        database.addProfile(profile)
+        profileDao.addProfile(profile)
 
         master.preformProfileChanged()
     }
 
     override fun queryActiveProfile(): ClashProfileEntity? {
-        return database.queryActiveProfile()
+        return profileDao.queryActiveProfile()
     }
 
     override fun setActiveProfile(id: Int) {
-        database.setActiveProfile(id)
+        profileDao.setActiveProfile(id)
 
         master.preformProfileChanged()
     }
 
     override fun queryProfiles(): Array<ClashProfileEntity> {
-        return database.queryProfiles()
+        return profileDao.queryProfiles()
+    }
+
+    fun queryProfileSelected(id: Int): Map<String, String> {
+        return profileProxyDao.querySelectedForProfile(id).map {
+            it.proxy to it.selected
+        }.toMap()
+    }
+
+    fun setCurrentProfileProxy(proxy: String, selected: String) {
+        val active = profileDao.queryActiveProfile() ?: return
+
+        profileProxyDao.setSelectedForProfile(ClashProfileProxyEntity(active.id, proxy, selected))
+    }
+
+    fun removeCurrentProfileProxy(proxies: List<String>) {
+        val active = profileDao.queryActiveProfile() ?: return
+
+        profileProxyDao.removeSelectedForProfile(active.id, proxies)
     }
 }

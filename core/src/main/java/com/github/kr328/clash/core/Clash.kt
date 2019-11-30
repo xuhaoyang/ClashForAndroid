@@ -8,7 +8,9 @@ import com.github.kr328.clash.core.event.BandwidthEvent
 import com.github.kr328.clash.core.event.LogEvent
 import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.core.event.SpeedEvent
+import com.github.kr328.clash.core.model.LoadProfilePacket
 import com.github.kr328.clash.core.model.RawProxyPacket
+import com.github.kr328.clash.core.model.SetProxyPacket
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONObject
@@ -44,16 +46,21 @@ class Clash(
         } ?: false
     }
 
-    fun loadProfile(file: File) {
-        runControl(COMMAND_PROFILE_RELOAD) { _, input, output ->
-            output.writeString(JSONObject().apply {
-                put("path", file.absolutePath)
-            }.toString())
+    fun loadProfile(file: File, selected: Map<String, String>): List<String> {
+        return runControl(COMMAND_PROFILE_RELOAD) { _, input, output ->
+            output.writeString(Json(JsonConfiguration.Stable)
+                .stringify(LoadProfilePacket.Request.serializer(),
+                    LoadProfilePacket.Request(file.absolutePath, selected)))
 
-            val result = input.readString()
-            if (result.isNotEmpty()) {
-                throw IOException(JSONObject(result).getString("error"))
+            val result = Json(JsonConfiguration.Stable)
+                .parse(LoadProfilePacket.Response.serializer(),
+                    input.readString())
+
+            if (result.error.isNotEmpty()) {
+                throw IOException(result.error)
             }
+
+            return@runControl result.invalidSelected
         }
     }
 
@@ -63,6 +70,20 @@ class Clash(
 
             Json(JsonConfiguration.Stable.copy(strictMode = false))
                 .parse(RawProxyPacket.serializer(), data)
+        }
+    }
+
+    fun setSelectProxy(key: String, value: String) {
+        runControl(COMMAND_SET_PROXY) {_, input, output ->
+            output.writeString(Json(JsonConfiguration.Stable)
+                .stringify(SetProxyPacket.Request.serializer(),
+                    SetProxyPacket.Request(key, value)))
+
+            val response = Json(JsonConfiguration.Stable).parse(SetProxyPacket.Response.serializer(),
+                input.readString())
+
+            if ( response.error.isNotEmpty() )
+                throw IOException(response.error)
         }
     }
 

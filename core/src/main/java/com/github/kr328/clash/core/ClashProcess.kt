@@ -108,7 +108,11 @@ class ClashProcess(
             ProcessEvent.STOPPED
     }
 
+    @Synchronized
     fun stop() {
+        if ( getProcessStatus() == ProcessEvent.STOPPED )
+            listener(ProcessEvent.STOPPED)
+
         android.os.Process.killProcess(pid)
     }
 

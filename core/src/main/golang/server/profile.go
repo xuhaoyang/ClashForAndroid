@@ -1,11 +1,12 @@
 package server
 
 import (
-	"encoding/binary"
 	"encoding/json"
 	"net"
 
+	A "github.com/Dreamacro/clash/adapters/outbound"
 	"github.com/Dreamacro/clash/log"
+	"github.com/Dreamacro/clash/tunnel"
 	"github.com/kr328/cfa/profile"
 )
 
@@ -23,8 +24,20 @@ func handleProfileReload(client *net.UnixConn) {
 	}
 
 	var payload struct {
-		Path string `json:"path"`
+		Path     string            `json:"path"`
+		Selected map[string]string `json:"selected"`
 	}
+
+	var response struct {
+		Error           string   `json:"error"`
+		InvalidSelected []string `json:"invalidSelected"`
+	}
+
+	defer func() {
+		buf, _ := json.Marshal(&response)
+
+		writeCommandPacket(client, buf)
+	}()
 
 	err = json.Unmarshal(packet, &payload)
 	if err != nil {
@@ -35,18 +48,35 @@ func handleProfileReload(client *net.UnixConn) {
 	err = profile.LoadFromFile(payload.Path)
 
 	if err != nil {
-		var reply struct {
-			Err string `json:"error"`
+		response.Error = err.Error()
+		return
+	}
+
+	proxies := tunnel.Instance().Proxies()
+
+	for k, v := range payload.Selected {
+		p := proxies[k]
+
+		if p == nil {
+			response.InvalidSelected = append(response.InvalidSelected, k)
+			continue
 		}
 
-		reply.Err = err.Error()
+		proxy, ok := p.(*A.Proxy)
+		if !ok {
+			response.InvalidSelected = append(response.InvalidSelected, k)
+			continue
+		}
 
-		buffer, _ := json.Marshal(&reply)
+		selector, ok := proxy.ProxyAdapter.(*A.Selector)
+		if !ok {
+			response.InvalidSelected = append(response.InvalidSelected, k)
+			continue
+		}
 
-		writeCommandPacket(client, buffer)
-	} else {
-		binary.Write(client, binary.BigEndian, uint32(0))
-		return
+		log.Infoln("Set selector " + k + " -> " + v)
+
+		selector.Set(v)
 	}
 
 	log.Infoln("Profile " + payload.Path + " loaded")

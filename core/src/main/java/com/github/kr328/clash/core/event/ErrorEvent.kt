@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 data class ErrorEvent(val type: Type, val message: String) : Event, Parcelable {
     enum class Type {
         START_FAILURE,
-        QUERY_PROXY_FAILURE
+        QUERY_PROXY_FAILURE,
+        SET_PROXY_SELECTED
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

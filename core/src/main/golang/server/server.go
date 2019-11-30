@@ -32,6 +32,7 @@ func init() {
 	handlers[commandPullTraffic] = handlePullTrafficEvent     // event.go
 	handlers[commandPullLog] = nil                            // event.go
 	handlers[commandPullBandwidth] = handlePullBandwidthEvent // event.go
+	handlers[commandSetProxy] = handleSetProxy                // proxies.go
 }
 
 // Start local control server

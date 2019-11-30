@@ -15,7 +15,7 @@ import com.github.kr328.clash.model.ListProxy
 import com.google.android.material.card.MaterialCardView
 import java.lang.IllegalArgumentException
 
-class ProxyAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProxyAdapter(private val context: Context, val listener: (String, String) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var elements: List<ListProxy> = emptyList()
     var clickable: Boolean = false
 
@@ -90,9 +90,13 @@ class ProxyAdapter(private val context: Context) : RecyclerView.Adapter<Recycler
             holder.card.isFocusable = true
             holder.card.isClickable = true
             holder.card.setOnClickListener {
-                notifyItemChanged(current.header.now)
-                notifyItemChanged(position)
+                val old = current.header.now
                 current.header.now = position
+
+                notifyItemChanged(old)
+                notifyItemChanged(position)
+
+                listener(current.header.name, current.name)
             }
         }
         else {
