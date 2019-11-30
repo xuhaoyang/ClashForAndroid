@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/adapter_proxy_group_root"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingStart="15dp"
-    android:paddingEnd="15dp"
     android:paddingTop="15dp">
 
     <TextView
@@ -13,12 +10,12 @@
         android:layout_marginStart="2dp"
         android:textColor="@color/colorAccent"
         android:text="@string/app_name"
-        android:id="@+id/adapter_proxy_group_name"
+        android:id="@+id/adapter_proxy_header_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <View
-        android:id="@+id/adapter_proxy_group_url_test"
+        android:id="@+id/adapter_proxy_header_url_test"
         android:focusable="true"
         android:clickable="true"
         android:layout_width="22dp"
@@ -26,11 +23,4 @@
         android:layout_marginEnd="5dp"
         android:layout_alignParentEnd="true"
         android:background="@drawable/ic_url_test" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/adapter_proxy_group_list"
-        android:layout_below="@id/adapter_proxy_group_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

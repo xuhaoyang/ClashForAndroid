@@ -1,11 +1,9 @@
 package com.github.kr328.clash
 
 import android.os.Bundle
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.kr328.clash.adapter.ProxyGroupAdapter
+import com.github.kr328.clash.adapter.ProxyAdapter
 import com.github.kr328.clash.core.model.ProxyPacket
-import com.github.kr328.clash.model.ListProxyGroup
+import com.github.kr328.clash.model.ListProxy
 import kotlinx.android.synthetic.main.activity_proxies.*
 
 class ProxyActivity : BaseActivity() {
@@ -16,9 +14,8 @@ class ProxyActivity : BaseActivity() {
         setSupportActionBar(activity_proxies_toolbar)
 
         activity_proxies_list.also {
-            it.layoutManager = LinearLayoutManager(this)
-            it.adapter = ProxyGroupAdapter(this)
-            it.visibility = View.GONE
+            it.adapter = ProxyAdapter(this)
+            it.layoutManager = (it.adapter!! as ProxyAdapter).getLayoutManager()
         }
 
         activity_proxies_swipe.setOnRefreshListener {
@@ -35,14 +32,6 @@ class ProxyActivity : BaseActivity() {
         runClash { clash ->
             val packet = clash.queryAllProxies()
             val proxies = packet.proxies
-            val adapterProxies = proxies
-                .mapValues {
-                    ListProxyGroup.ListProxy(
-                        it.value.name,
-                        it.value.type.toString(),
-                        it.value.delay
-                    )
-                }
 
             val listData = proxies
                 .asSequence()
@@ -69,25 +58,63 @@ class ProxyActivity : BaseActivity() {
                         it.value.name
                     })
                 )
-                .map {
-                    ListProxyGroup(
-                        it.value.name,
-                        it.value.type,
-                        it.value.all.mapNotNull { hash ->
-                            adapterProxies[hash]
-                        },
-                        adapterProxies[it.value.now]
-                    )
+                .flatMap {
+                    val header = ListProxy.ListProxyHeader(it.value.name, it.value.type, it.value.now)
+
+                    sequenceOf(header) +
+                            it.value.all
+                                .mapNotNull {
+                                    proxies[it]
+                                }
+                                .map { item ->
+                                    ListProxy.ListProxyItem(
+                                        item.name,
+                                        item.type.toString(),
+                                        item.delay, header
+                                    )
+                                }
+                                .asSequence()
+                }
+                .mapIndexed { index, listProxy ->
+                    if ( listProxy is ListProxy.ListProxyItem ) {
+                        if ( listProxy.name.hashCode() == listProxy.header.now )
+                            listProxy.header.now = index
+                    }
+                    listProxy
                 }
                 .toList()
 
-            runOnUiThread {
-                (activity_proxies_list.adapter!! as ProxyGroupAdapter).apply {
-                    data = listData
-                    notifyDataSetChanged()
+            val listDataOldChanged = (activity_proxies_list.adapter!! as ProxyAdapter)
+                .elements
+                .filterIsInstance(ListProxy.ListProxyHeader::class.java)
+                .map { it.now }
+
+            val listDataChanged = listData.filterIsInstance<ListProxy.ListProxyHeader>()
+                .map { it.now }
+
+            val changed = if ( listDataChanged.size != listDataChanged.size )
+                (0..listData.size).toList()
+            else {
+                listDataChanged.mapIndexed { index, i ->
+                    if ( listDataOldChanged[index] != i )
+                        -1
+                    else
+                        index
+                }.filterNot {
+                    it < 0
                 }
-                activity_proxies_list.visibility = View.VISIBLE
+            }
+
+            runOnUiThread {
                 activity_proxies_swipe.isRefreshing = false
+
+                (activity_proxies_list.adapter!! as ProxyAdapter).apply {
+                    elements = listData
+
+                    changed.forEach {
+                        notifyItemChanged(it)
+                    }
+                }
             }
         }
     }
