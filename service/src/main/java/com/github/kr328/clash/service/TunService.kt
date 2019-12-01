@@ -14,7 +14,7 @@ class TunService : VpnService(), IClashEventObserver {
     companion object {
         // from https://github.com/shadowsocks/shadowsocks-android/blob/master/core/src/main/java/com/github/shadowsocks/bg/VpnService.kt
         private const val VPN_MTU = 1500
-        private const val PRIVATE_VLAN_REDIRECT_DNS = "119.29.29.29" // sync with tun/tun.go/dnsRedirectAddr
+        private const val PRIVATE_DEFAULT_DNS = "119.29.29.29" // sync with tun/tun.go/dnsRedirectAddr
         private const val PRIVATE_VLAN4_CLIENT = "172.19.0.1"
         private const val PRIVATE_VLAN6_CLIENT = "fdfe:dcba:9876::1"
     }
@@ -45,7 +45,6 @@ class TunService : VpnService(), IClashEventObserver {
         }
     }
 
-
     override fun onCreate() {
         super.onCreate()
 
@@ -57,7 +56,7 @@ class TunService : VpnService(), IClashEventObserver {
         fileDescriptor = Builder()
             .addAddress(PRIVATE_VLAN4_CLIENT, 30)
             .addAddress(PRIVATE_VLAN6_CLIENT, 126)
-            .addDnsServer(PRIVATE_VLAN_REDIRECT_DNS)
+            .addDnsServer(PRIVATE_DEFAULT_DNS)
             .addBypassApplications()
             .addBypassPrivateRoute()
             .setMtu(VPN_MTU)

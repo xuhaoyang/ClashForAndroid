@@ -12,7 +12,7 @@ type handler struct {
 	tunAdapter *T.TunAdapter
 }
 
-const dnsRedirectAddr = "119.29.29.29"
+const dnsRedirectAddr = "0.0.0.0"
 
 var (
 	instance *handler
