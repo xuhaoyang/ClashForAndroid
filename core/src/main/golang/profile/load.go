@@ -2,7 +2,6 @@ package profile
 
 import (
 	"net"
-	"strings"
 
 	adapters "github.com/Dreamacro/clash/adapters/outbound"
 	"github.com/Dreamacro/clash/component/auth"
@@ -63,7 +62,7 @@ func LoadDefault() {
 	defaultC.Proxies["REJECT"] = reject
 	defaultC.Proxies["GLOBAL"] = adapters.NewProxy(global)
 
-	tun.SetDNSRedirect(nil)
+	tun.ResetDnsRedirect()
 
 	executor.ApplyConfig(defaultC, true)
 }
@@ -77,20 +76,7 @@ func LoadFromFile(path string) error {
 
 	executor.ApplyConfig(cfg, true)
 
-	if cfg.DNS != nil && cfg.DNS.Enable && dns.DefaultResolver != nil && dns.ReCreateServer(cfg.DNS.Listen, dns.DefaultResolver) == nil {
-		addr := cfg.DNS.Listen
-		addr = strings.ReplaceAll(addr, "0.0.0.0", "127.0.0.1")
-		addr = strings.ReplaceAll(addr, "::", "::1")
-
-		listen, err := net.ResolveUDPAddr("udp", addr)
-		if err != nil {
-			log.Errorln("Unable to parse dns address" + err.Error())
-		}
-
-		tun.SetDNSRedirect(listen)
-	} else {
-		tun.SetDNSRedirect(nil)
-	}
+	tun.ResetDnsRedirect()
 
 	return nil
 }
