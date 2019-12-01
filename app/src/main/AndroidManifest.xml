@@ -47,5 +47,17 @@
             android:label="@string/clash_proxy_manage"
             android:exported="false"
             android:screenOrientation="portrait"/>
+        <activity android:name=".SettingMainActivity"
+            android:label="@string/application_setting_title"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SettingProxyActivity"
+            android:label="@string/application_setting_proxy"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SettingAccessActivity"
+            android:label="@string/proxy_setting_vpn_setting_access_control"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

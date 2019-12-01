@@ -79,7 +79,7 @@ class RadioFatItem @JvmOverloads constructor(
             operationClickable = findViewById(R.id.view_radio_fat_item_operation_clickable)
         }
 
-        context.theme.obtainStyledAttributes(attributeSet, R.styleable.FatItem, 0, 0).apply {
+        context.theme.obtainStyledAttributes(attributeSet, R.styleable.RadioFatItem, 0, 0).apply {
             try {
                 title = getString(R.styleable.FatItem_title)
                 summary = getString(R.styleable.FatItem_summary)

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="@string/proxy_setting_vpn_setting">
+        <CheckBoxPreference
+            android:title="@string/proxy_setting_vpn_setting_ipv6"
+            android:summary="@string/proxy_setting_vpn_setting_ipv6_summary" />
+        <Preference
+            android:layout="@layout/preference_proxy_item"
+            android:title="@string/proxy_setting_vpn_setting_access_control"
+            android:summary="@string/proxy_setting_vpn_setting_access_control_summary">
+            <intent android:targetPackage="com.github.kr328.clash"
+                android:targetClass="com.github.kr328.clash.SettingAccessActivity" />
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

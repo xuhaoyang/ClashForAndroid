@@ -36,6 +36,10 @@ class MainActivity : BaseActivity() {
             startActivity(Intent(this, ProfilesActivity::class.java))
         }
 
+        activity_main_clash_settings.setOnClickListener {
+            startActivity(Intent(this, SettingMainActivity::class.java))
+        }
+
         activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
         activity_main_clash_status_title.text = getString(R.string.clash_status_stopped)
         activity_main_clash_status_summary.text = getString(R.string.clash_status_click_to_start)

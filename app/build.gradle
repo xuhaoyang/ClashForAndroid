@@ -45,6 +45,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
     implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.preference:preference-ktx:1.1.0"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0"
     implementation "com.charleskorn.kaml:kaml:0.14.0"
     implementation "com.google.android.material:material:1.2.0-alpha02"

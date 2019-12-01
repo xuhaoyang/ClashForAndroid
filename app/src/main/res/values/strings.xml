@@ -43,4 +43,25 @@
     <string name="clash_import_file_invalid">Invalid Config: %s</string>
 
     <string name="clash_proxy_group_title">%s - %s</string>
+
+    <string name="application_setting_title">Setting</string>
+    <string name="application_setting_application">Application</string>
+    <string name="application_setting_proxy">Proxy</string>
+
+    <string name="proxy_setting_vpn_mode">VPN Mode</string>
+    <string name="proxy_setting_vpn_mode_summary">Handle all system traffic</string>
+    <string name="proxy_setting_proxy_mode">Proxy Only Mode</string>
+    <string name="proxy_setting_proxy_mode_summary">Start clash core only</string>
+    <string name="proxy_setting_vpn_setting">VPN Settings</string>
+    <string name="proxy_setting_vpn_setting_access_control">Access Control</string>
+    <string name="proxy_setting_vpn_setting_access_control_summary">Configure access permission for apps</string>
+    <string name="proxy_setting_vpn_setting_ipv6">IPv6 Support</string>
+    <string name="proxy_setting_vpn_setting_ipv6_summary">Routing IPv6 traffic</string>
+
+    <string name="access_setting_allow_all">Allow All</string>
+    <string name="access_setting_allow_all_summary">Allow all apps access vpn</string>
+    <string name="access_setting_allow">Allow</string>
+    <string name="access_setting_allow_summary">Allow follow apps access vpn</string>
+    <string name="access_setting_disallow">Disallow</string>
+    <string name="access_setting_disallow_summary">Disallow follow apps access vpn</string>
 </resources>
