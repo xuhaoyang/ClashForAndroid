@@ -244,7 +244,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 profileService.removeCurrentProfileProxy(remove)
 
                 notification.setProfile(active.name)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 clash.process.stop()
                 Log.w("Load profile failure", e)
             }

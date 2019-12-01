@@ -33,6 +33,8 @@ func handleProfileReload(client *net.UnixConn) {
 		InvalidSelected []string `json:"invalidSelected"`
 	}
 
+	response.InvalidSelected = make([]string, 0)
+
 	defer func() {
 		buf, _ := json.Marshal(&response)
 

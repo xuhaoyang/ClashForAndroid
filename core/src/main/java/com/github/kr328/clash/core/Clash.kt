@@ -2,8 +2,6 @@ package com.github.kr328.clash.core
 
 import android.content.Context
 import android.net.LocalSocket
-import android.util.Log
-import com.github.kr328.clash.core.Constants.TAG
 import com.github.kr328.clash.core.event.BandwidthEvent
 import com.github.kr328.clash.core.event.LogEvent
 import com.github.kr328.clash.core.event.ProcessEvent
@@ -11,9 +9,9 @@ import com.github.kr328.clash.core.event.SpeedEvent
 import com.github.kr328.clash.core.model.LoadProfilePacket
 import com.github.kr328.clash.core.model.RawProxyPacket
 import com.github.kr328.clash.core.model.SetProxyPacket
+import com.github.kr328.clash.core.utils.Log
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
-import org.json.JSONObject
 import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException
@@ -53,8 +51,7 @@ class Clash(
                     LoadProfilePacket.Request(file.absolutePath, selected)))
 
             val result = Json(JsonConfiguration.Stable)
-                .parse(LoadProfilePacket.Response.serializer(),
-                    input.readString())
+                .parse(LoadProfilePacket.Response.serializer(), input.readString())
 
             if (result.error.isNotEmpty()) {
                 throw IOException(result.error)
