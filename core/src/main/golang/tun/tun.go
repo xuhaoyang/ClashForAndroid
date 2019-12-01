@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Dreamacro/clash/dns"
+	"github.com/Dreamacro/clash/log"
 	T "github.com/Dreamacro/clash/proxy/tun"
 )
 
@@ -53,8 +54,11 @@ func ResetDnsRedirect() {
 
 	resolver := dns.DefaultResolver
 	if resolver != nil {
-		(*instance.tunAdapter).CreateDNSServer(resolver, dnsRedirectAddr+":53")
+		err := (*instance.tunAdapter).ReCreateDNSServer(resolver, dnsRedirectAddr+":53")
+		if err != nil {
+			log.Errorln("Can't create DNSServer on tun: %v", err)
+		}
 	} else {
-		(*instance.tunAdapter).DestroyDNSSerrvice()
+		(*instance.tunAdapter).ReCreateDNSServer(nil, "")
 	}
 }
