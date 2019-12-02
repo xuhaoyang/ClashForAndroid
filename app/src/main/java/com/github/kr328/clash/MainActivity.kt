@@ -1,8 +1,10 @@
 package com.github.kr328.clash
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.VpnService
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.github.kr328.clash.core.event.BandwidthEvent
@@ -10,6 +12,7 @@ import com.github.kr328.clash.core.event.Event
 import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.core.event.ProfileChangedEvent
 import com.github.kr328.clash.core.utils.ByteFormatter
+import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.TunService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_clash_status.*
@@ -56,9 +59,40 @@ class MainActivity : BaseActivity() {
                         it.stop()
                     }
                     else -> runOnUiThread {
-                        VpnService.prepare(this@MainActivity)?.apply {
-                            startActivityForResult(this, VPN_REQUEST_CODE)
-                        } ?: startService(Intent(this@MainActivity, TunService::class.java))
+                        getSharedPreferences("application", Context.MODE_PRIVATE).apply {
+                            when (getString(
+                                MainApplication.KEY_PROXY_MODE,
+                                MainApplication.PROXY_MODE_VPN
+                            )) {
+                                MainApplication.PROXY_MODE_VPN -> {
+                                    VpnService.prepare(this@MainActivity)?.apply {
+                                        startActivityForResult(this, VPN_REQUEST_CODE)
+                                    } ?: startService(
+                                        Intent(
+                                            this@MainActivity,
+                                            TunService::class.java
+                                        )
+                                    )
+                                }
+                                MainApplication.PROXY_MODE_PROXY_ONLY -> {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        startForegroundService(
+                                            Intent(
+                                                this@MainActivity,
+                                                ClashService::class.java
+                                            )
+                                        )
+                                    } else {
+                                        startService(
+                                            Intent(
+                                                this@MainActivity,
+                                                ClashService::class.java
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

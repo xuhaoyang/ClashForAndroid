@@ -9,15 +9,15 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/activity_setting_main_toolbar"
+            android:id="@+id/activity_setting_application_toolbar"
             android:elevation="4dp"
             android:layout_width="match_parent"
             android:layout_height="60dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/activity_setting_main_content"
-        android:name="com.github.kr328.clash.SettingMainActivity$Fragment"
+        android:id="@+id/activity_setting_application_content"
+        android:name="com.github.kr328.clash.SettingApplicationActivity$Fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

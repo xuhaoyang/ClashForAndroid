@@ -85,13 +85,15 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 notification.setVpn(true)
 
                 clash.startTunDevice(fd.fileDescriptor, mtu)
-                fd.close()
             } catch (e: Exception) {
                 Log.e("Start tun failure", e)
 
                 this@ClashService.eventService.preformErrorEvent(
                     ErrorEvent(ErrorEvent.Type.START_FAILURE, e.toString())
                 )
+            }
+            finally {
+                fd.close()
             }
         }
 
@@ -226,6 +228,8 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 eventService.preformBandwidthEvent(BandwidthEvent(0))
 
                 notification.cancel()
+
+                stopSelf()
             }
         }
     }

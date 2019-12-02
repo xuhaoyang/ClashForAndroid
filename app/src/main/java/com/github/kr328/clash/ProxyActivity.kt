@@ -14,7 +14,7 @@ class ProxyActivity : BaseActivity() {
         setSupportActionBar(activity_proxies_toolbar)
 
         activity_proxies_list.also {
-            it.adapter = ProxyAdapter(this) {p, s ->
+            it.adapter = ProxyAdapter(this) { p, s ->
                 runClash { clash ->
                     clash.setSelectProxy(p, s)
                 }
@@ -63,7 +63,8 @@ class ProxyActivity : BaseActivity() {
                     })
                 )
                 .flatMap {
-                    val header = ListProxy.ListProxyHeader(it.value.name, it.value.type, it.value.now)
+                    val header =
+                        ListProxy.ListProxyHeader(it.value.name, it.value.type, it.value.now)
 
                     sequenceOf(header) +
                             it.value.all
@@ -80,8 +81,8 @@ class ProxyActivity : BaseActivity() {
                                 .asSequence()
                 }
                 .mapIndexed { index, listProxy ->
-                    if ( listProxy is ListProxy.ListProxyItem ) {
-                        if ( listProxy.name.hashCode() == listProxy.header.now )
+                    if (listProxy is ListProxy.ListProxyItem) {
+                        if (listProxy.name.hashCode() == listProxy.header.now)
                             listProxy.header.now = index
                     }
                     listProxy
@@ -97,11 +98,11 @@ class ProxyActivity : BaseActivity() {
                 .filterIsInstance<ListProxy.ListProxyHeader>()
                 .map { it.now }
 
-            val changed = if ( listDataOldChanged.size != listDataChanged.size )
+            val changed = if (listDataOldChanged.size != listDataChanged.size)
                 (0..listData.size).toList()
             else {
                 listDataChanged.mapIndexed { index, i ->
-                    if ( i == listDataOldChanged[index] )
+                    if (i == listDataOldChanged[index])
                         emptyList()
                     else
                         listOf(listDataOldChanged[index], i)

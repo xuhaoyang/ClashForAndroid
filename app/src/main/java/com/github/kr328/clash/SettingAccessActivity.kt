@@ -16,7 +16,7 @@ import kotlin.concurrent.thread
 class SettingAccessActivity : BaseActivity() {
     private data class AppInfo(val packageName: String, val name: String, val icon: Drawable)
 
-    private class AppListAdapter(val context: Context):
+    private class AppListAdapter(val context: Context) :
         RecyclerView.Adapter<AppListAdapter.Holder>() {
 
         var applications: List<AppInfo> = emptyList()
@@ -30,8 +30,10 @@ class SettingAccessActivity : BaseActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return Holder(LayoutInflater.from(context)
-                .inflate(R.layout.adapter_access_app, parent, false))
+            return Holder(
+                LayoutInflater.from(context)
+                    .inflate(R.layout.adapter_access_app, parent, false)
+            )
         }
 
         override fun getItemCount(): Int {
@@ -47,7 +49,7 @@ class SettingAccessActivity : BaseActivity() {
             holder.checkbox.isChecked = current.packageName in selected
 
             holder.view.setOnClickListener {
-                if ( holder.checkbox.isChecked )
+                if (holder.checkbox.isChecked)
                     selected.remove(current.packageName)
                 else
                     selected.add(current.packageName)
@@ -107,7 +109,7 @@ class SettingAccessActivity : BaseActivity() {
             val settings = it.settingService
 
             runOnUiThread {
-                when ( settings.accessControlMode ) {
+                when (settings.accessControlMode) {
                     ClashSettingService.ACCESS_CONTROL_MODE_ALLOW_ALL ->
                         activity_setting_access_allow_all.performClick()
                     ClashSettingService.ACCESS_CONTROL_MODE_ALLOW ->
@@ -124,9 +126,11 @@ class SettingAccessActivity : BaseActivity() {
                     exclude.contains(it.packageName)
                 }
                 .map { app ->
-                    AppInfo(app.packageName,
+                    AppInfo(
+                        app.packageName,
                         app.loadLabel(packageManager).toString(),
-                        app.loadIcon(packageManager))
+                        app.loadIcon(packageManager)
+                    )
                 }
                 .sortedBy { app ->
                     app.name
@@ -164,10 +168,12 @@ class SettingAccessActivity : BaseActivity() {
                 else -> return@runClash
             }
 
-            if ( listLoaded )
-                it.settingService.setAccessControl(mode,
+            if (listLoaded)
+                it.settingService.setAccessControl(
+                    mode,
                     (activity_setting_access_app_list.adapter as AppListAdapter)
-                        .selected.toTypedArray())
+                        .selected.toTypedArray()
+                )
         }
     }
 
@@ -177,9 +183,9 @@ class SettingAccessActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when ( item.itemId ) {
+        when (item.itemId) {
             R.id.menu_setting_access_hide -> {
-                if ( hidden ) {
+                if (hidden) {
                     activity_setting_access_allow_all.visibility = View.VISIBLE
                     activity_setting_access_allow.visibility = View.VISIBLE
                     activity_setting_access_disallow.visibility = View.VISIBLE
@@ -187,13 +193,12 @@ class SettingAccessActivity : BaseActivity() {
                     item.title = getString(R.string.access_setting_hide_header)
 
                     hidden = false
-                }
-                else {
-                    if ( !activity_setting_access_allow_all.isChecked )
+                } else {
+                    if (!activity_setting_access_allow_all.isChecked)
                         activity_setting_access_allow_all.visibility = View.GONE
-                    if ( !activity_setting_access_allow.isChecked )
+                    if (!activity_setting_access_allow.isChecked)
                         activity_setting_access_allow.visibility = View.GONE
-                    if ( !activity_setting_access_disallow.isChecked )
+                    if (!activity_setting_access_disallow.isChecked)
                         activity_setting_access_disallow.visibility = View.GONE
 
                     item.title = getString(R.string.access_setting_show_header)
@@ -218,7 +223,8 @@ class SettingAccessActivity : BaseActivity() {
             R.id.menu_setting_access_select_invert -> {
                 thread {
                     (activity_setting_access_app_list.adapter as AppListAdapter).apply {
-                        selected = (applications.map { it.packageName }.toSet() - selected).toMutableSet()
+                        selected =
+                            (applications.map { it.packageName }.toSet() - selected).toMutableSet()
                     }
 
                     runOnUiThread {
@@ -242,23 +248,22 @@ class SettingAccessActivity : BaseActivity() {
     }
 
     private fun updateListStatus() {
-        if ( showList )
+        if (showList)
             activity_setting_access_divider.visibility = View.VISIBLE
         else
             activity_setting_access_divider.visibility = View.GONE
 
 
-        if ( showList ) {
-            if ( listLoaded )
+        if (showList) {
+            if (listLoaded)
                 activity_setting_access_loading.visibility = View.GONE
             else
                 activity_setting_access_loading.visibility = View.VISIBLE
-        }
-        else
+        } else
             activity_setting_access_loading.visibility = View.GONE
 
 
-        if ( showList && listLoaded )
+        if (showList && listLoaded)
             activity_setting_access_app_list.visibility = View.VISIBLE
         else
             activity_setting_access_app_list.visibility = View.GONE

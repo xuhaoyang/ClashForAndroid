@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/activity_setting_access_toolbar"
             android:elevation="4dp"
@@ -17,27 +18,26 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-
     <com.github.kr328.clash.view.RadioFatItem
         app:title="@string/access_setting_allow_all"
         app:summary="@string/access_setting_allow_all_summary"
         android:id="@+id/activity_setting_access_allow_all"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.github.kr328.clash.view.RadioFatItem
         app:title="@string/access_setting_allow"
         app:summary="@string/access_setting_allow_summary"
         android:id="@+id/activity_setting_access_allow"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.github.kr328.clash.view.RadioFatItem
         app:title="@string/access_setting_disallow"
         app:summary="@string/access_setting_disallow_summary"
         android:id="@+id/activity_setting_access_disallow"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <View
         android:id="@+id/activity_setting_access_divider"
@@ -45,12 +45,12 @@
         android:layout_marginBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/lightGray"/>
+        android:background="@color/lightGray" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_setting_access_app_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/activity_setting_access_loading"
@@ -60,5 +60,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginStart="70dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </LinearLayout>

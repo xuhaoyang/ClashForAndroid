@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
+        android:title="@string/application_setting_application"
+        android:icon="@drawable/ic_settings_color"
+        android:layout="@layout/preference_main_item">
+        <intent
+            android:targetClass="com.github.kr328.clash.SettingApplicationActivity"
+            android:targetPackage="com.github.kr328.clash" />
+    </Preference>
+    <Preference
         android:title="@string/application_setting_proxy"
         android:icon="@drawable/ic_cloud"
         android:layout="@layout/preference_main_item">
-        <intent android:targetClass="com.github.kr328.clash.SettingProxyActivity"
+        <intent
+            android:targetClass="com.github.kr328.clash.SettingProxyActivity"
             android:targetPackage="com.github.kr328.clash" />
     </Preference>
 </PreferenceScreen>

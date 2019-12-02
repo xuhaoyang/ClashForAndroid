@@ -30,7 +30,8 @@ class SettingProxyActivity : BaseActivity() {
 
                 requireActivity().runOnUiThread {
                     findPreference<CheckBoxPreference>(KEY_IPV6_SUPPORT)?.isChecked = ipv6
-                    findPreference<CheckBoxPreference>(KEY_BYPASS_PRIVATE_NETWORK)?.isChecked = privateNetwork
+                    findPreference<CheckBoxPreference>(KEY_BYPASS_PRIVATE_NETWORK)?.isChecked =
+                        privateNetwork
                 }
             }
         }
@@ -41,8 +42,11 @@ class SettingProxyActivity : BaseActivity() {
             (requireActivity() as SettingProxyActivity).runClash {
                 val settings = it.settingService
 
-                settings.isIPv6Enabled = findPreference<CheckBoxPreference>(KEY_IPV6_SUPPORT)?.isChecked ?: true
-                settings.isBypassPrivateNetwork = findPreference<CheckBoxPreference>(KEY_BYPASS_PRIVATE_NETWORK)?.isChecked ?: true
+                settings.isIPv6Enabled =
+                    findPreference<CheckBoxPreference>(KEY_IPV6_SUPPORT)?.isChecked ?: true
+                settings.isBypassPrivateNetwork =
+                    findPreference<CheckBoxPreference>(KEY_BYPASS_PRIVATE_NETWORK)?.isChecked
+                        ?: true
             }
         }
     }
@@ -70,7 +74,7 @@ class SettingProxyActivity : BaseActivity() {
         }
 
         getSharedPreferences("application", Context.MODE_PRIVATE).apply {
-            when ( getString(MainApplication.KEY_PROXY_MODE, MainApplication.PROXY_MODE_VPN) ) {
+            when (getString(MainApplication.KEY_PROXY_MODE, MainApplication.PROXY_MODE_VPN)) {
                 MainApplication.PROXY_MODE_VPN ->
                     activity_setting_proxy_vpn_mode.performClick()
                 MainApplication.PROXY_MODE_PROXY_ONLY ->
@@ -81,7 +85,7 @@ class SettingProxyActivity : BaseActivity() {
 
     override fun onStop() {
         super.onStop()
-        
+
         getSharedPreferences("application", Context.MODE_PRIVATE).edit {
             when {
                 activity_setting_proxy_vpn_mode.isChecked ->

@@ -4,6 +4,7 @@
     package="com.github.kr328.clash">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MainApplication"
@@ -59,5 +60,19 @@
             android:label="@string/proxy_setting_vpn_setting_access_control"
             android:exported="false"
             android:screenOrientation="portrait"/>
+        <activity android:name=".SettingApplicationActivity"
+            android:label="@string/application_setting_application"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <service android:name=".ClashStartService"
+            android:exported="false"/>
+        <receiver
+            android:name=".BootCompleteReceiver"
+            android:exported="true"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

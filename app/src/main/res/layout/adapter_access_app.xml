@@ -24,17 +24,19 @@
         android:layout_toStartOf="@id/adapter_access_app_checkbox"
         android:layout_centerVertical="true"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/adapter_access_app_name"
             android:textColor="@android:color/black"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/adapter_access_app_package_name"
             android:layout_marginTop="2dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -44,5 +46,5 @@
         android:layout_alignParentEnd="true"
         android:gravity="center"
         android:layout_width="50dp"
-        android:layout_height="70dp"/>
+        android:layout_height="70dp" />
 </RelativeLayout>

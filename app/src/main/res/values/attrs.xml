@@ -13,9 +13,9 @@
     </declare-styleable>
 
     <declare-styleable name="RadioFatItem">
-        <attr name="icon"/>
-        <attr name="title"/>
-        <attr name="summary"/>
-        <attr name="operation"/>
+        <attr name="icon" />
+        <attr name="title" />
+        <attr name="summary" />
+        <attr name="operation" />
     </declare-styleable>
 </resources>

@@ -13,11 +13,12 @@ import com.github.kr328.clash.core.model.ProxyPacket
 import com.github.kr328.clash.model.ListProxy
 import com.google.android.material.card.MaterialCardView
 
-class ProxyAdapter(private val context: Context, val listener: (String, String) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProxyAdapter(private val context: Context, val listener: (String, String) -> Unit) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var elements: List<ListProxy> = emptyList()
     var clickable: Boolean = false
 
-    class HeaderHolder(view: View): RecyclerView.ViewHolder(view) {
+    class HeaderHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.adapter_proxy_header_name)
         val test: View = view.findViewById(R.id.adapter_proxy_header_url_test)
     }
@@ -30,7 +31,7 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when ( elements[position] ) {
+        return when (elements[position]) {
             is ListProxy.ListProxyItem -> 1
             is ListProxy.ListProxyHeader -> 2
             else -> throw IllegalArgumentException("Invalid type")
@@ -39,8 +40,20 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            1 -> ItemHolder(LayoutInflater.from(context).inflate(R.layout.adapter_proxy_item, parent, false))
-            2 -> HeaderHolder(LayoutInflater.from(context).inflate(R.layout.adapter_proxy_header, parent, false))
+            1 -> ItemHolder(
+                LayoutInflater.from(context).inflate(
+                    R.layout.adapter_proxy_item,
+                    parent,
+                    false
+                )
+            )
+            2 -> HeaderHolder(
+                LayoutInflater.from(context).inflate(
+                    R.layout.adapter_proxy_header,
+                    parent,
+                    false
+                )
+            )
             else -> throw IllegalArgumentException("Invalid type")
         }
     }
@@ -58,9 +71,9 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
 
     fun getLayoutManager(): GridLayoutManager {
         return GridLayoutManager(context, 2).apply {
-            spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return when ( elements[position] ) {
+                    return when (elements[position]) {
                         is ListProxy.ListProxyHeader -> 2
                         is ListProxy.ListProxyItem -> 1
                         else -> throw IllegalArgumentException("Invalid type")
@@ -71,20 +84,19 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
     }
 
     private fun bindItemView(holder: ItemHolder, current: ListProxy.ListProxyItem, position: Int) {
-        if ( position == current.header.now ) {
+        if (position == current.header.now) {
             holder.card.setCardBackgroundColor(context.getColor(R.color.colorAccent))
             holder.name.setTextColor(Color.WHITE)
             holder.type.setTextColor(Color.WHITE - 0x22222222)
             holder.delay.setTextColor(Color.WHITE - 0x11111111)
-        }
-        else {
+        } else {
             holder.card.setCardBackgroundColor(Color.WHITE)
             holder.name.setTextColor(Color.BLACK)
             holder.type.setTextColor(Color.LTGRAY)
             holder.delay.setTextColor(Color.DKGRAY)
         }
 
-        if ( current.header.type == ProxyPacket.Type.SELECT ) {
+        if (current.header.type == ProxyPacket.Type.SELECT) {
             holder.card.isFocusable = true
             holder.card.isClickable = true
             holder.card.setOnClickListener {
@@ -98,8 +110,7 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
 
                 listener(element.header.name, element.name)
             }
-        }
-        else {
+        } else {
             holder.card.setOnClickListener(null)
             holder.card.isFocusable = false
             holder.card.isClickable = false
@@ -111,7 +122,7 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
             if (current.delay > 0) {
                 current.delay.toString()
             } else {
-                if ( current.header.type != ProxyPacket.Type.SELECT )
+                if (current.header.type != ProxyPacket.Type.SELECT)
                     "N/A"
                 else
                     ""
@@ -121,6 +132,7 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
 
     private fun bindHeaderView(holder: HeaderHolder, current: ListProxy.ListProxyHeader) {
         holder.name.text = current.name
-        holder.test.visibility = if ( current.type == ProxyPacket.Type.SELECT ) View.VISIBLE else View.GONE
+        holder.test.visibility =
+            if (current.type == ProxyPacket.Type.SELECT) View.VISIBLE else View.GONE
     }
 }

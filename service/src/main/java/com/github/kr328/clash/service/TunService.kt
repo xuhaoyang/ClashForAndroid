@@ -107,10 +107,14 @@ class TunService : VpnService(), IClashEventObserver {
                     clash.start()
                 else
                     stopSelf()
+
+                Log.i("STOPPED")
             }
             ProcessEvent.STARTED -> {
                 start = false
                 clash.startTunDevice(fileDescriptor, VPN_MTU)
+
+                Log.i("STARTED")
             }
         }
     }

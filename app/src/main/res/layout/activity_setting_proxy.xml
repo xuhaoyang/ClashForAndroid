@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/activity_setting_proxy_toolbar"
             android:elevation="4dp"
@@ -22,25 +23,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/proxy_setting_vpn_mode"
-        app:summary="@string/proxy_setting_vpn_mode_summary"/>
+        app:summary="@string/proxy_setting_vpn_mode_summary" />
 
     <com.github.kr328.clash.view.RadioFatItem
         android:id="@+id/activity_setting_proxy_proxy_only_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/proxy_setting_proxy_mode"
-        app:summary="@string/proxy_setting_proxy_mode_summary"/>
+        app:summary="@string/proxy_setting_proxy_mode_summary" />
 
     <View
         android:id="@+id/activity_setting_proxy_divider"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/lightGray"/>
+        android:background="@color/lightGray" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/activity_setting_proxy_content"
         android:name="com.github.kr328.clash.SettingProxyActivity$Fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 </LinearLayout>

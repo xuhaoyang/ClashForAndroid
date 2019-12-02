@@ -72,4 +72,11 @@
     <string name="access_setting_select_all">Select All</string>
     <string name="access_setting_select_invert">Select Invert</string>
     <string name="access_setting_clean_selection">Clear Selection</string>
+
+    <string name="application_setting_behavior">Behavior</string>
+    <string name="application_setting_start_on_boot">Start on Boot</string>
+    <string name="application_setting_start_on_boot_summary">Start clash on system boot</string>
+
+    <string name="clash_start_service_notification_channel">Clash Start Service</string>
+    <string name="clash_start_service_notification">Starting Clash</string>
 </resources>

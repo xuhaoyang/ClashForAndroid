@@ -4,7 +4,7 @@
         <CheckBoxPreference
             android:key="key_vpn_setting_bypass_private_network"
             android:title="@string/proxy_setting_vpn_setting_bypass_private_network"
-            android:summary="@string/proxy_setting_vpn_setting_bypass_private_network_summary"/>
+            android:summary="@string/proxy_setting_vpn_setting_bypass_private_network_summary" />
         <CheckBoxPreference
             android:key="key_vpn_setting_ipv6_support"
             android:title="@string/proxy_setting_vpn_setting_ipv6"
@@ -13,7 +13,8 @@
             android:layout="@layout/preference_proxy_item"
             android:title="@string/proxy_setting_vpn_setting_access_control"
             android:summary="@string/proxy_setting_vpn_setting_access_control_summary">
-            <intent android:targetPackage="com.github.kr328.clash"
+            <intent
+                android:targetPackage="com.github.kr328.clash"
                 android:targetClass="com.github.kr328.clash.SettingAccessActivity" />
         </Preference>
     </PreferenceCategory>

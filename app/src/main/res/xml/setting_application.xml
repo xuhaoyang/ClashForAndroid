@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/application_setting_behavior">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_boot"
+            android:key="key_application_start_on_boot"
+            android:summary="@string/application_setting_start_on_boot_summary"
+            android:title="@string/application_setting_start_on_boot" />
+    </PreferenceCategory>
+</PreferenceScreen>
