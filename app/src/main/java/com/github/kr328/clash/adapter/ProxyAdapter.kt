@@ -2,7 +2,6 @@ package com.github.kr328.clash.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.github.kr328.clash.R
 import com.github.kr328.clash.core.model.ProxyPacket
 import com.github.kr328.clash.model.ListProxy
 import com.google.android.material.card.MaterialCardView
-import java.lang.IllegalArgumentException
 
 class ProxyAdapter(private val context: Context, val listener: (String, String) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var elements: List<ListProxy> = emptyList()
@@ -90,13 +88,15 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
             holder.card.isFocusable = true
             holder.card.isClickable = true
             holder.card.setOnClickListener {
-                val old = current.header.now
-                current.header.now = position
+                val element = (elements[position] as ListProxy.ListProxyItem)
+
+                val old = element.header.now
+                element.header.now = position
 
                 notifyItemChanged(old)
                 notifyItemChanged(position)
 
-                listener(current.header.name, current.name)
+                listener(element.header.name, element.name)
             }
         }
         else {

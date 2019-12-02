@@ -5,7 +5,10 @@ import android.content.Intent
 import android.net.VpnService
 import android.os.Bundle
 import android.view.View
-import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.event.BandwidthEvent
+import com.github.kr328.clash.core.event.Event
+import com.github.kr328.clash.core.event.ProcessEvent
+import com.github.kr328.clash.core.event.ProfileChangedEvent
 import com.github.kr328.clash.core.utils.ByteFormatter
 import com.github.kr328.clash.service.TunService
 import kotlinx.android.synthetic.main.activity_main.*

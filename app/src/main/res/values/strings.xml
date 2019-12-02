@@ -55,6 +55,8 @@
     <string name="proxy_setting_vpn_setting">VPN Settings</string>
     <string name="proxy_setting_vpn_setting_access_control">Access Control</string>
     <string name="proxy_setting_vpn_setting_access_control_summary">Configure access permission for apps</string>
+    <string name="proxy_setting_vpn_setting_bypass_private_network">Bypass Private Network</string>
+    <string name="proxy_setting_vpn_setting_bypass_private_network_summary">Bypass private network subnet</string>
     <string name="proxy_setting_vpn_setting_ipv6">IPv6 Support</string>
     <string name="proxy_setting_vpn_setting_ipv6_summary">Routing IPv6 traffic</string>
 

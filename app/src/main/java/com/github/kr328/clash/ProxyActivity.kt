@@ -3,7 +3,6 @@ package com.github.kr328.clash
 import android.os.Bundle
 import com.github.kr328.clash.adapter.ProxyAdapter
 import com.github.kr328.clash.core.model.ProxyPacket
-import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.model.ListProxy
 import kotlinx.android.synthetic.main.activity_proxies.*
 

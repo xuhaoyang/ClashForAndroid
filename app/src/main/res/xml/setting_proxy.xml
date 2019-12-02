@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/proxy_setting_vpn_setting">
         <CheckBoxPreference
+            android:key="key_vpn_setting_bypass_private_network"
+            android:title="@string/proxy_setting_vpn_setting_bypass_private_network"
+            android:summary="@string/proxy_setting_vpn_setting_bypass_private_network_summary"/>
+        <CheckBoxPreference
+            android:key="key_vpn_setting_ipv6_support"
             android:title="@string/proxy_setting_vpn_setting_ipv6"
             android:summary="@string/proxy_setting_vpn_setting_ipv6_summary" />
         <Preference
