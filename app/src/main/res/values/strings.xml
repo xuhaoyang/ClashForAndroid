@@ -64,4 +64,10 @@
     <string name="access_setting_allow_summary">Allow follow apps access vpn</string>
     <string name="access_setting_disallow">Disallow</string>
     <string name="access_setting_disallow_summary">Disallow follow apps access vpn</string>
+    <string name="access_setting_loading">Loading</string>
+    <string name="access_setting_show_header">Show Header</string>
+    <string name="access_setting_hide_header">Hide Header</string>
+    <string name="access_setting_select_all">Select All</string>
+    <string name="access_setting_select_invert">Select Invert</string>
+    <string name="access_setting_clean_selection">Clear Selection</string>
 </resources>

@@ -16,6 +16,8 @@
             android:layout_height="60dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
+
+
     <com.github.kr328.clash.view.RadioFatItem
         app:title="@string/access_setting_allow_all"
         app:summary="@string/access_setting_allow_all_summary"
@@ -45,8 +47,18 @@
         android:layout_height="1dp"
         android:background="@color/lightGray"/>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_setting_access_app_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/activity_setting_access_loading"
+        android:text="@string/access_setting_loading"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="70dp"
+        android:visibility="gone"/>
 </LinearLayout>

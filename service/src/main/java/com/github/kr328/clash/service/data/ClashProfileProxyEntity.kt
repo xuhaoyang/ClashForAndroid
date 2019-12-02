@@ -1,11 +1,9 @@
 package com.github.kr328.clash.service.data
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(tableName = "profile_select_proxies",
+    indices = [Index("profile_id")],
     foreignKeys = [ForeignKey(entity = ClashProfileEntity::class,
         childColumns = ["profile_id"],
         parentColumns = ["id"],

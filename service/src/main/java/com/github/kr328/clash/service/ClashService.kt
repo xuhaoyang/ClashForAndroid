@@ -13,7 +13,6 @@ import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.ProxyPacket
 import com.github.kr328.clash.core.utils.Log
-import com.github.kr328.clash.service.data.ClashDatabase
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -24,6 +23,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
     private val eventService = ClashEventService(this)
     private val profileService = ClashProfileService(this, this)
+    private val settingService = ClashSettingService(this)
 
     private lateinit var clash: Clash
     private lateinit var puller: ClashEventPuller
@@ -101,6 +101,10 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
         override fun getProfileService(): IClashProfileService {
             return this@ClashService.profileService
+        }
+
+        override fun getSettingService(): IClashSettingService {
+            return this@ClashService.settingService
         }
 
         override fun getCurrentProcessStatus(): ProcessEvent {

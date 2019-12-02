@@ -69,6 +69,12 @@ class RadioFatItem @JvmOverloads constructor(
         operationClickable.setOnLongClickListener(l)
     }
 
+    override fun performClick(): Boolean {
+        super.performClick()
+
+        return clickable.performClick()
+    }
+
     init {
         with(LayoutInflater.from(context).inflate(R.layout.view_radio_fat_item, this, true)) {
             titleView = findViewById(R.id.view_radio_fat_item_title)

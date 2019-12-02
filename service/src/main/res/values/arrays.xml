@@ -40,7 +40,7 @@
         <item>224.0.0.0/3</item>
     </string-array>
 
-    <string-array name="default_bypass_application">
+    <string-array name="default_disallow_application">
         <item>com.github.kr328.clash</item>
         <item>com.android.networkstack</item>
     </string-array>

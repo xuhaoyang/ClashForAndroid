@@ -8,6 +8,7 @@ import android.content.ServiceConnection
 import android.net.VpnService
 import android.os.*
 import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.service.net.DefaultNetworkObserver
 
 class TunService : VpnService(), IClashEventObserver {
@@ -23,6 +24,7 @@ class TunService : VpnService(), IClashEventObserver {
     private lateinit var fileDescriptor: ParcelFileDescriptor
     private lateinit var clash: IClashService
     private lateinit var defaultNetworkObserver: DefaultNetworkObserver
+    private lateinit var settings: ClashSettingService
     private val connection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
             stopSelf()
@@ -53,9 +55,10 @@ class TunService : VpnService(), IClashEventObserver {
             return
         }
 
+        settings = ClashSettingService(this)
+
         fileDescriptor = Builder()
-            .addAddress(PRIVATE_VLAN4_CLIENT, 30)
-            .addAddress(PRIVATE_VLAN6_CLIENT, 126)
+            .addAddress()
             .addDnsServer(PRIVATE_DEFAULT_DNS)
             .addBypassApplications()
             .addBypassPrivateRoute()
@@ -120,22 +123,65 @@ class TunService : VpnService(), IClashEventObserver {
 
     private fun Builder.addBypassPrivateRoute(): Builder {
         // IPv4
-        resources.getStringArray(R.array.bypass_private_route).forEach {
-            val address = it.split("/")
-            addRoute(address[0], address[1].toInt())
+        if ( settings.isBypassPrivateNetwork ) {
+            resources.getStringArray(R.array.bypass_private_route).forEach {
+                val address = it.split("/")
+                addRoute(address[0], address[1].toInt())
+            }
+        }
+        else {
+            addRoute("0.0.0.0", 0)
         }
 
         // IPv6
-        addRoute("::", 0)
+        if ( settings.isIPv6Enabled ) {
+
+            addRoute("::", 0)
+        }
 
         return this
     }
 
     private fun Builder.addBypassApplications(): Builder {
-        resources.getStringArray(R.array.default_bypass_application)
-            .forEach {
-                runCatching { this.addDisallowedApplication(it) }
+        when ( settings.accessControlMode ) {
+            ClashSettingService.ACCESS_CONTROL_MODE_ALLOW_ALL -> {
+                for ( app in resources.getStringArray(R.array.default_disallow_application) ) {
+                    runCatching {
+                        addDisallowedApplication(app)
+                    }
+                }
             }
+            ClashSettingService.ACCESS_CONTROL_MODE_ALLOW -> {
+                for ( app in (settings.accessControlApps.toSet() -
+                        resources.getStringArray(R.array.default_disallow_application)) ) {
+                    runCatching {
+                        addAllowedApplication(app)
+                    }.onFailure {
+                        Log.w("Package $app not found")
+                    }
+                }
+            }
+            ClashSettingService.ACCESS_CONTROL_MODE_DISALLOW -> {
+                for ( app in (settings.accessControlApps.toSet() +
+                        resources.getStringArray(R.array.default_disallow_application)) ) {
+                    runCatching {
+                        addDisallowedApplication(app)
+                    }.onFailure {
+                        Log.w("Package $app not found")
+                    }
+                }
+            }
+        }
+
+        return this
+    }
+
+    private fun Builder.addAddress(): Builder {
+        addAddress(PRIVATE_VLAN4_CLIENT, 30)
+
+        if ( settings.isIPv6Enabled )
+            addAddress(PRIVATE_VLAN6_CLIENT, 126)
+
         return this
     }
 
