@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--  exclude 10.0.0.0/8 192.168.0.0/16 172.18.0.0/16  -->
+    <!--  exclude 127.0.0.0/8 10.0.0.0/8 192.168.0.0/16 172.18.0.0/16  -->
     <string-array name="bypass_private_route" translatable="false">
         <item>0.0.0.0/5</item>
         <item>8.0.0.0/7</item>
@@ -8,7 +8,12 @@
         <item>12.0.0.0/6</item>
         <item>16.0.0.0/4</item>
         <item>32.0.0.0/3</item>
-        <item>64.0.0.0/2</item>
+        <item>64.0.0.0/3</item>
+        <item>96.0.0.0/4</item>
+        <item>112.0.0.0/5</item>
+        <item>120.0.0.0/6</item>
+        <item>124.0.0.0/7</item>
+        <item>126.0.0.0/8</item>
         <item>128.0.0.0/3</item>
         <item>160.0.0.0/5</item>
         <item>168.0.0.0/6</item>
