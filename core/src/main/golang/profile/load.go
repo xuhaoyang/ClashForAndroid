@@ -16,6 +16,25 @@ import (
 	"github.com/kr328/cfa/tun"
 )
 
+var defaultDNSResolver = dns.New(dns.Config{
+	Main: []dns.NameServer{
+		dns.NameServer{Net: "tcp", Addr: "1.1.1.1"},
+		dns.NameServer{Net: "tcp", Addr: "8.8.8.8"},
+		dns.NameServer{Net: "tcp", Addr: "208.67.222.222"},
+		dns.NameServer{Net: "", Addr: "119.29.29.29"},
+		dns.NameServer{Net: "", Addr: "223.5.5.5"},
+		dns.NameServer{Net: "", Addr: "114.114.114.114"},
+	},
+	Fallback:     make([]dns.NameServer, 0),
+	IPv6:         true,
+	EnhancedMode: dns.MAPPING,
+	Pool:         nil,
+	FallbackFilter: dns.FallbackFilter{
+		GeoIP:  false,
+		IPCIDR: make([]*net.IPNet, 0),
+	},
+})
+
 // LoadDefault - load default configure
 func LoadDefault() {
 	defaultC := &config.Config{
@@ -75,6 +94,28 @@ func LoadFromFile(path string) error {
 	}
 
 	executor.ApplyConfig(cfg, true)
+
+	if dns.DefaultResolver == nil && cfg.DNS.Enable {
+		c := cfg.DNS
+
+		r := dns.New(dns.Config{
+			Main:         c.NameServer,
+			Fallback:     c.Fallback,
+			IPv6:         c.IPv6,
+			EnhancedMode: c.EnhancedMode,
+			Pool:         c.FakeIPRange,
+			FallbackFilter: dns.FallbackFilter{
+				GeoIP:  c.FallbackFilter.GeoIP,
+				IPCIDR: c.FallbackFilter.IPCIDR,
+			},
+		})
+
+		dns.DefaultResolver = r
+	}
+
+	if dns.DefaultResolver == nil {
+		dns.DefaultResolver = defaultDNSResolver
+	}
 
 	tun.ResetDnsRedirect()
 

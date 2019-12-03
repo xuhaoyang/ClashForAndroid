@@ -12,7 +12,7 @@ type handler struct {
 	tunAdapter *T.TunAdapter
 }
 
-const dnsRedirectAddr = "0.0.0.0"
+const dnsServerAddress = "172.19.0.2:53"
 
 var (
 	instance *handler
@@ -51,10 +51,5 @@ func ResetDnsRedirect() {
 		return
 	}
 
-	resolver := dns.DefaultResolver
-	if resolver != nil {
-		(*instance.tunAdapter).CreateDNSServer(resolver, dnsRedirectAddr+":53")
-	} else {
-		(*instance.tunAdapter).DestroyDNSSerrvice()
-	}
+	(*instance.tunAdapter).ReCreateDNSServer(dns.DefaultResolver, dnsServerAddress)
 }
