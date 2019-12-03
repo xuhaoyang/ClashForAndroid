@@ -60,15 +60,15 @@
     <string name="proxy_setting_vpn_setting_ipv6">IPv6 Support</string>
     <string name="proxy_setting_vpn_setting_ipv6_summary">Routing IPv6 traffic</string>
 
-    <string name="access_setting_allow_all">Allow All</string>
+    <string name="access_setting_allow_all">Global</string>
     <string name="access_setting_allow_all_summary">Allow all apps access vpn</string>
-    <string name="access_setting_allow">Allow</string>
+    <string name="access_setting_allow">Whitelist</string>
     <string name="access_setting_allow_summary">Allow follow apps access vpn</string>
-    <string name="access_setting_disallow">Disallow</string>
+    <string name="access_setting_disallow">Blacklist</string>
     <string name="access_setting_disallow_summary">Disallow follow apps access vpn</string>
     <string name="access_setting_loading">Loading</string>
-    <string name="access_setting_show_header">Show Header</string>
-    <string name="access_setting_hide_header">Hide Header</string>
+    <string name="access_setting_show_header">Show Mode</string>
+    <string name="access_setting_hide_header">Hide Mode</string>
     <string name="access_setting_select_all">Select All</string>
     <string name="access_setting_select_invert">Select Invert</string>
     <string name="access_setting_clean_selection">Clear Selection</string>
