@@ -28,12 +28,16 @@
     <string name="clash_new_profile_url_summary">From Internet</string>
 
     <string name="clash_import_from_file">Import From File</string>
+    <string name="clash_import_from_url">Import From URL</string>
 
     <string name="clash_profile_name">Name</string>
     <string name="clash_profile_name_hint">Unlabeled</string>
 
     <string name="clash_profile_file">File</string>
     <string name="clash_profile_file_hint">content://</string>
+
+    <string name="clash_profile_url">URL</string>
+    <string name="clash_profile_url_hint">https://</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

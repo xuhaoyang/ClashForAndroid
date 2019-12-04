@@ -63,13 +63,22 @@ class CreateProfileActivity : BaseActivity() {
             adapter = Adapter(this@CreateProfileActivity)
             setOnItemClickListener { _, _, index, _ ->
                 when (index) {
-                    0 ->
+                    0 -> {
                         startActivity(
                             Intent(
                                 this@CreateProfileActivity,
                                 ImportFileActivity::class.java
                             )
                         )
+                    }
+                    1 -> {
+                        startActivity(
+                            Intent(
+                                this@CreateProfileActivity,
+                                ImportUrlActivity::class.java
+                            )
+                        )
+                    }
                 }
             }
         }

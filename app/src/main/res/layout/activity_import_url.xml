@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_import_file_root"
+    android:id="@+id/activity_import_url_root"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +10,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/activity_import_file_toolbar"
+            android:id="@+id/activity_import_url_toolbar"
             android:layout_width="match_parent"
             android:layout_height="60dp">
 
@@ -22,7 +22,7 @@
                 android:layout_gravity="end">
 
                 <ImageView
-                    android:id="@+id/activity_import_file_save"
+                    android:id="@+id/activity_import_url_save"
                     android:padding="10dp"
                     android:src="@drawable/ic_save"
                     android:contentDescription="@string/app_name"
@@ -34,7 +34,7 @@
                     android:foreground="?attr/selectableItemBackground" />
 
                 <ProgressBar
-                    android:id="@+id/activity_import_file_saving"
+                    android:id="@+id/activity_import_url_saving"
                     android:visibility="gone"
                     android:layout_gravity="center"
                     android:layout_width="40dp"
@@ -44,7 +44,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_import_file_form"
+        android:id="@+id/activity_import_url_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

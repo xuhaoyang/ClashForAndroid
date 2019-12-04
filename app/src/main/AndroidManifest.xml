@@ -40,6 +40,10 @@
             android:label="@string/clash_import_from_file"
             android:exported="false"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ImportUrlActivity"
+            android:label="@string/clash_import_from_url"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <activity
             android:name=".ClashStatusActivity"
             android:exported="false"
