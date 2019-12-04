@@ -18,12 +18,16 @@ import kotlin.concurrent.thread
 
 class ImportFileActivity : BaseActivity() {
     private val elements: List<FormAdapter.Type> = listOf(
-        FormAdapter.TextType(R.drawable.ic_about,
+        FormAdapter.TextType(
+            R.drawable.ic_about,
             R.string.clash_profile_name,
-            R.string.clash_profile_name_hint),
-        FormAdapter.FilePickerType(R.drawable.ic_new_profile_file,
+            R.string.clash_profile_name_hint
+        ),
+        FormAdapter.FilePickerType(
+            R.drawable.ic_new_profile_file,
             R.string.clash_profile_file,
-            R.string.clash_profile_file_hint)
+            R.string.clash_profile_file_hint
+        )
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +52,12 @@ class ImportFileActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && (activity_import_file_form.adapter as FormAdapter).onActivityResult(requestCode, resultCode, data) )
+        if (data != null && (activity_import_file_form.adapter as FormAdapter).onActivityResult(
+                requestCode,
+                resultCode,
+                data
+            )
+        )
             return
 
         super.onActivityResult(requestCode, resultCode, data)
@@ -59,20 +68,28 @@ class ImportFileActivity : BaseActivity() {
             val name = elements[0] as FormAdapter.TextType
             val file = elements[1] as FormAdapter.FilePickerType
 
-            if ( name.content.isEmpty() ) {
+            if (name.content.isEmpty()) {
                 runOnUiThread {
                     activity_import_file_save.visibility = View.VISIBLE
                     activity_import_file_saving.visibility = View.GONE
-                    Snackbar.make(activity_import_file_root, R.string.clash_import_file_empty_name, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        activity_import_file_root,
+                        R.string.clash_import_file_empty_name,
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
                 return
             }
 
-            if ( file.content == null || file.content == Uri.EMPTY ) {
+            if (file.content == null || file.content == Uri.EMPTY) {
                 runOnUiThread {
                     activity_import_file_save.visibility = View.VISIBLE
                     activity_import_file_saving.visibility = View.GONE
-                    Snackbar.make(activity_import_file_root, R.string.clash_import_file_empty_path, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        activity_import_file_root,
+                        R.string.clash_import_file_empty_path,
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
                 return
             }

@@ -24,9 +24,13 @@ class ClashStartService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         NotificationManagerCompat.from(this).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel(NotificationChannel(NOTIFICATION_CHANNEL_ID,
-                    getString(R.string.clash_start_service_notification_channel),
-                    NotificationManager.IMPORTANCE_DEFAULT))
+                createNotificationChannel(
+                    NotificationChannel(
+                        NOTIFICATION_CHANNEL_ID,
+                        getString(R.string.clash_start_service_notification_channel),
+                        NotificationManager.IMPORTANCE_DEFAULT
+                    )
+                )
             }
         }
 

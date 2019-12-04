@@ -2,6 +2,7 @@ package com.github.kr328.clash.utils
 
 import java.io.File
 import java.security.SecureRandom
+import kotlin.math.absoluteValue
 
 object FileUtils {
     private val random = SecureRandom()
@@ -12,7 +13,7 @@ object FileUtils {
         var file: File
 
         do {
-            file = dir.resolve(random.nextLong().toString() + suffix)
+            file = dir.resolve(random.nextLong().absoluteValue.toString() + suffix)
         } while (file.exists())
 
         return file

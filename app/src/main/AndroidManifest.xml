@@ -34,42 +34,50 @@
             android:name=".CreateProfileActivity"
             android:label="@string/clash_new_profile"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ImportFileActivity"
             android:label="@string/clash_import_from_file"
             android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ImportUrlActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ImportUrlActivity"
             android:label="@string/clash_import_from_url"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ClashStatusActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ProxyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProxyActivity"
             android:label="@string/clash_proxy_manage"
             android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SettingMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingMainActivity"
             android:label="@string/application_setting_title"
             android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SettingProxyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingProxyActivity"
             android:label="@string/application_setting_proxy"
             android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SettingAccessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingAccessActivity"
             android:label="@string/proxy_setting_vpn_setting_access_control"
             android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SettingApplicationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingApplicationActivity"
             android:label="@string/application_setting_application"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <service android:name=".ClashStartService"
-            android:exported="false"/>
+
+        <service
+            android:name=".ClashStartService"
+            android:exported="false" />
         <receiver
             android:name=".BootCompleteReceiver"
             android:exported="true"

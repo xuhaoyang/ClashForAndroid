@@ -11,7 +11,8 @@ class ImportUrlActivity : BaseActivity() {
         FormAdapter.TextType(
             R.drawable.ic_about,
             R.string.clash_profile_name,
-            R.string.clash_profile_name_hint),
+            R.string.clash_profile_name_hint
+        ),
         FormAdapter.TextType(
             R.drawable.ic_link,
             R.string.clash_profile_url,
@@ -33,7 +34,8 @@ class ImportUrlActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null && (activity_import_url_form.adapter as FormAdapter)
-                .onActivityResult(requestCode, resultCode, data))
+                .onActivityResult(requestCode, resultCode, data)
+        )
             return
 
         super.onActivityResult(requestCode, resultCode, data)
