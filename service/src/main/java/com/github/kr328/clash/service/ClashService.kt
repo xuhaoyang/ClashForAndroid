@@ -5,10 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Binder
-import android.os.IBinder
-import android.os.IInterface
-import android.os.ParcelFileDescriptor
+import android.os.*
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.GeneralPacket
@@ -44,8 +41,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 clash.setSelectProxy(proxy, selected)
 
                 this@ClashService.profileService.setCurrentProfileProxy(proxy, selected)
-            }
-            catch (e: IOException) {
+            } catch (e: IOException) {
                 Log.w("Set proxy failure", e)
 
                 this@ClashService.eventService.performErrorEvent(
@@ -96,8 +92,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 this@ClashService.eventService.performErrorEvent(
                     ErrorEvent(ErrorEvent.Type.START_FAILURE, e.toString())
                 )
-            }
-            finally {
+            } finally {
                 fd.close()
             }
         }
@@ -150,6 +145,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             Event.EVENT_BANDWIDTH ->
                 puller.startBandwidthPull()
         }
+
     }
 
     override fun releaseEvent(event: Int) {
@@ -251,8 +247,10 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             Log.i("Loading profile ${active.cache}")
 
             try {
-                val remove = clash.loadProfile(File(active.cache),
-                    profileService.queryProfileSelected(active.id))
+                val remove = clash.loadProfile(
+                    File(active.cache),
+                    profileService.queryProfileSelected(active.id)
+                )
 
                 profileService.removeCurrentProfileProxy(remove)
 

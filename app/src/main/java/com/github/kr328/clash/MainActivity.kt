@@ -12,6 +12,7 @@ import com.github.kr328.clash.core.model.GeneralPacket
 import com.github.kr328.clash.core.utils.ByteFormatter
 import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.TunService
+import com.github.kr328.clash.utils.ServiceUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_clash_status.*
 import kotlinx.android.synthetic.main.activity_main_profiles.*
@@ -57,39 +58,8 @@ class MainActivity : BaseActivity() {
                         it.stop()
                     }
                     else -> runOnUiThread {
-                        getSharedPreferences("application", Context.MODE_PRIVATE).apply {
-                            when (getString(
-                                MainApplication.KEY_PROXY_MODE,
-                                MainApplication.PROXY_MODE_VPN
-                            )) {
-                                MainApplication.PROXY_MODE_VPN -> {
-                                    VpnService.prepare(this@MainActivity)?.apply {
-                                        startActivityForResult(this, VPN_REQUEST_CODE)
-                                    } ?: startService(
-                                        Intent(
-                                            this@MainActivity,
-                                            TunService::class.java
-                                        )
-                                    )
-                                }
-                                MainApplication.PROXY_MODE_PROXY_ONLY -> {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        startForegroundService(
-                                            Intent(
-                                                this@MainActivity,
-                                                ClashService::class.java
-                                            )
-                                        )
-                                    } else {
-                                        startService(
-                                            Intent(
-                                                this@MainActivity,
-                                                ClashService::class.java
-                                            )
-                                        )
-                                    }
-                                }
-                            }
+                        ServiceUtils.startProxyService(this)?.also {
+                            startActivityForResult(it, VPN_REQUEST_CODE)
                         }
                     }
                 }

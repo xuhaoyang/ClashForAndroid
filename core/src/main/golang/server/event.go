@@ -98,9 +98,7 @@ func handlePullBandwidthEvent(client *net.UnixConn) {
 		return writeCommandPacket(client, buf.Bytes())
 	}
 
-	if tick() != nil {
-		return
-	}
+	tick()
 
 	for {
 		select {

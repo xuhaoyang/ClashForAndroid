@@ -3,16 +3,13 @@ package com.github.kr328.clash
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.net.VpnService
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.github.kr328.clash.service.ClashService
-import com.github.kr328.clash.service.TunService
+import com.github.kr328.clash.utils.ServiceUtils
 import kotlin.concurrent.thread
 
 class ClashStartService : Service() {
@@ -43,39 +40,7 @@ class ClashStartService : Service() {
         startForeground(NOTIFICATION_ID, notification)
 
         thread {
-            getSharedPreferences("application", Context.MODE_PRIVATE).apply {
-                when (getString(
-                    MainApplication.KEY_PROXY_MODE,
-                    MainApplication.PROXY_MODE_VPN
-                )) {
-                    MainApplication.PROXY_MODE_VPN -> {
-                        if (VpnService.prepare(this@ClashStartService) == null)
-                            startService(
-                                Intent(
-                                    this@ClashStartService,
-                                    TunService::class.java
-                                )
-                            )
-                    }
-                    MainApplication.PROXY_MODE_PROXY_ONLY -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            startForegroundService(
-                                Intent(
-                                    this@ClashStartService,
-                                    ClashService::class.java
-                                )
-                            )
-                        } else {
-                            startService(
-                                Intent(
-                                    this@ClashStartService,
-                                    ClashService::class.java
-                                )
-                            )
-                        }
-                    }
-                }
-            }
+            ServiceUtils.startProxyService(this)
 
             stopSelf()
         }
