@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.kr328.clash.adapter.FormAdapter
 import kotlinx.android.synthetic.main.activity_import_url.*
+import java.lang.Exception
+import java.net.HttpURLConnection
+import java.net.URL
 
 class ImportUrlActivity : BaseActivity() {
     private val elements = listOf<FormAdapter.Type>(
@@ -39,5 +42,23 @@ class ImportUrlActivity : BaseActivity() {
             return
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun checkAndInsert() {
+        try {
+            val name = elements[0] as FormAdapter.TextType
+            val url = elements[1] as FormAdapter.TextType
+
+            if ( name.content.isEmpty() ) {
+
+
+                return
+            }
+
+            URL(url.content).openConnection()
+        }
+        catch (e: Exception) {
+
+        }
     }
 }

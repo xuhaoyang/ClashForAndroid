@@ -9,4 +9,5 @@ interface IClashEventObserver {
     void onSpeedEvent(in SpeedEvent event);
     void onBandwidthEvent(in BandwidthEvent event);
     void onProfileChanged(in ProfileChangedEvent event);
+    void onProfileReloaded(in ProfileReloadEvent event);
 }

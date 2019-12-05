@@ -6,3 +6,4 @@ parcelable SpeedEvent;
 parcelable BandwidthEvent;
 parcelable ErrorEvent;
 parcelable ProfileChangedEvent;
+parcelable ProfileReloadEvent;

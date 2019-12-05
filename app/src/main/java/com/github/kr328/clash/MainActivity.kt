@@ -7,10 +7,8 @@ import android.net.VpnService
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import com.github.kr328.clash.core.event.BandwidthEvent
-import com.github.kr328.clash.core.event.Event
-import com.github.kr328.clash.core.event.ProcessEvent
-import com.github.kr328.clash.core.event.ProfileChangedEvent
+import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.model.GeneralPacket
 import com.github.kr328.clash.core.utils.ByteFormatter
 import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.TunService
@@ -129,6 +127,26 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    override fun onProfileReloaded(event: ProfileReloadEvent?) {
+        runClash {
+            val general = it.queryGeneral()
+
+            runOnUiThread {
+                when ( general.mode ) {
+                    GeneralPacket.Mode.DIRECT ->
+                        activity_main_clash_proxies_summary.text =
+                            getText(R.string.clash_proxy_manage_summary_direct)
+                    GeneralPacket.Mode.GLOBAL ->
+                        activity_main_clash_proxies_summary.text =
+                            getText(R.string.clash_proxy_manage_summary_global)
+                    GeneralPacket.Mode.RULE ->
+                        activity_main_clash_proxies_summary.text =
+                            getText(R.string.clash_proxy_manage_summary_rule)
+                }
+            }
+        }
+    }
+
     override fun onBandwidthEvent(event: BandwidthEvent?) {
         runOnUiThread {
             if (lastEvent == ProcessEvent.STARTED) {
@@ -156,7 +174,8 @@ class MainActivity : BaseActivity() {
             )
         }
 
-        loadActiveProfile()
+        onProfileReloaded(ProfileReloadEvent())
+        onProfileChanged(ProfileChangedEvent())
     }
 
     override fun onStop() {
@@ -184,13 +203,9 @@ class MainActivity : BaseActivity() {
 
             runOnUiThread {
                 if (profile != null) {
-                    activity_main_clash_proxies_summary.text =
-                        getString(R.string.clash_proxy_manage_summary, profile.proxies)
                     activity_main_clash_profiles_summary.text =
                         getString(R.string.clash_profiles_summary_selected, profile.name)
                 } else {
-                    activity_main_clash_proxies_summary.text =
-                        getString(R.string.clash_proxy_manage_summary, 0)
                     activity_main_clash_profiles_summary.text =
                         getString(R.string.clash_profiles_summary_unselected)
                 }

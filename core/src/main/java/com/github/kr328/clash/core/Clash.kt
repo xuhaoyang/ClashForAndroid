@@ -6,10 +6,10 @@ import com.github.kr328.clash.core.event.BandwidthEvent
 import com.github.kr328.clash.core.event.LogEvent
 import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.core.event.SpeedEvent
+import com.github.kr328.clash.core.model.GeneralPacket
 import com.github.kr328.clash.core.model.LoadProfilePacket
 import com.github.kr328.clash.core.model.RawProxyPacket
 import com.github.kr328.clash.core.model.SetProxyPacket
-import com.github.kr328.clash.core.utils.Log
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import java.io.File
@@ -32,6 +32,7 @@ class Clash(
         const val COMMAND_PULL_LOG = 7
         const val COMMAND_PULL_BANDWIDTH = 8
         const val COMMAND_SET_PROXY = 9
+        const val COMMAND_QUERY_GENERAL = 10
 
         const val PING_REPLY = 233
     }
@@ -46,9 +47,13 @@ class Clash(
 
     fun loadProfile(file: File, selected: Map<String, String>): List<String> {
         return runControl(COMMAND_PROFILE_RELOAD) { _, input, output ->
-            output.writeString(Json(JsonConfiguration.Stable)
-                .stringify(LoadProfilePacket.Request.serializer(),
-                    LoadProfilePacket.Request(file.absolutePath, selected)))
+            output.writeString(
+                Json(JsonConfiguration.Stable)
+                    .stringify(
+                        LoadProfilePacket.Request.serializer(),
+                        LoadProfilePacket.Request(file.absolutePath, selected)
+                    )
+            )
 
             val result = Json(JsonConfiguration.Stable)
                 .parse(LoadProfilePacket.Response.serializer(), input.readString())
@@ -61,6 +66,19 @@ class Clash(
         }
     }
 
+    fun queryGeneral(): GeneralPacket {
+        return runCatching {
+            runControl(COMMAND_QUERY_GENERAL) { _, input, _ ->
+                Json(JsonConfiguration.Stable).parse(GeneralPacket.serializer(), input.readString())
+            }
+        }.getOrDefault(
+            GeneralPacket(
+                GeneralPacket.Ports(0, 0, 0, 0),
+                GeneralPacket.Mode.DIRECT
+            )
+        )
+    }
+
     fun queryProxies(): RawProxyPacket {
         return runControl(COMMAND_QUERY_PROXIES) { _, input, _ ->
             val data = input.readString()
@@ -71,15 +89,21 @@ class Clash(
     }
 
     fun setSelectProxy(key: String, value: String) {
-        runControl(COMMAND_SET_PROXY) {_, input, output ->
-            output.writeString(Json(JsonConfiguration.Stable)
-                .stringify(SetProxyPacket.Request.serializer(),
-                    SetProxyPacket.Request(key, value)))
+        runControl(COMMAND_SET_PROXY) { _, input, output ->
+            output.writeString(
+                Json(JsonConfiguration.Stable)
+                    .stringify(
+                        SetProxyPacket.Request.serializer(),
+                        SetProxyPacket.Request(key, value)
+                    )
+            )
 
-            val response = Json(JsonConfiguration.Stable).parse(SetProxyPacket.Response.serializer(),
-                input.readString())
+            val response = Json(JsonConfiguration.Stable).parse(
+                SetProxyPacket.Response.serializer(),
+                input.readString()
+            )
 
-            if ( response.error.isNotEmpty() )
+            if (response.error.isNotEmpty())
                 throw IOException(response.error)
         }
     }

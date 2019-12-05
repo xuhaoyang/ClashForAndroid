@@ -18,6 +18,7 @@ const (
 	commandPullLog        uint32 = 7
 	commandPullBandwidth  uint32 = 8
 	commandSetProxy       uint32 = 9
+	commandQueryGeneral   uint32 = 10
 )
 
 var handlers map[uint32]func(*net.UnixConn) = make(map[uint32]func(*net.UnixConn))
@@ -30,13 +31,16 @@ func init() {
 	handlers[commandProfileReload] = handleProfileReload      // profile.go
 	handlers[commandQueryProxies] = handleQueryProxies        // proxies.go
 	handlers[commandPullTraffic] = handlePullTrafficEvent     // event.go
-	handlers[commandPullLog] = nil                            // event.go
+	handlers[commandPullLog] = handlePullLogEvent             // event.go
 	handlers[commandPullBandwidth] = handlePullBandwidthEvent // event.go
 	handlers[commandSetProxy] = handleSetProxy                // proxies.go
+	handlers[commandQueryGeneral] = handleQueryGeneral        // proxies.go
 }
 
 // Start local control server
 func Start(path string) error {
+	startRandomHttpPort()
+
 	address, _ := net.ResolveUnixAddr("unix", path)
 
 	listener, err := net.ListenUnix("unix", address)

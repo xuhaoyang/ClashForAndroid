@@ -7,7 +7,9 @@
     <string name="clash_status_forwarded_traffic">%s Forwarded</string>
 
     <string name="clash_proxy_manage">Proxy</string>
-    <string name="clash_proxy_manage_summary">%d Items</string>
+    <string name="clash_proxy_manage_summary_rule">Rule Mode</string>
+    <string name="clash_proxy_manage_summary_direct">Direct Mode</string>
+    <string name="clash_proxy_manage_summary_global">Global Mode</string>
 
     <string name="clash_profiles">Profiles</string>
     <string name="clash_profiles_summary_selected">%s Activated</string>

@@ -3,12 +3,64 @@ package server
 import (
 	"encoding/json"
 	"net"
+	"strconv"
 
 	"github.com/Dreamacro/clash/log"
+	"github.com/Dreamacro/clash/proxy"
 	"github.com/Dreamacro/clash/tunnel"
 
 	A "github.com/Dreamacro/clash/adapters/outbound"
 )
+
+const (
+	modeDirect = 1
+	modeGlobal = 2
+	modeRule   = 3
+)
+
+func handleQueryGeneral(client *net.UnixConn) {
+	var payload struct {
+		Ports struct {
+			Http           int `json:"http"`
+			Socks          int `json:"socks"`
+			Redirect       int `json:"redirect"`
+			RandomHttpPort int `json:"randomHttp"`
+		} `json:"ports"`
+		Mode int `json:"mode"`
+	}
+
+	mode := tunnel.Instance().Mode()
+	ports := proxy.GetPorts()
+
+	payload.Ports.Http = ports.Port
+	payload.Ports.Socks = ports.SocksPort
+	payload.Ports.Redirect = ports.RedirPort
+
+	if httpListener != nil {
+		addr := httpListener.Addr().String()
+
+		_, port, _ := net.SplitHostPort(addr)
+		p, _ := strconv.Atoi(port)
+
+		payload.Ports.RandomHttpPort = p
+	}
+
+	switch mode {
+	case tunnel.Direct:
+		payload.Mode = modeDirect
+		break
+	case tunnel.Global:
+		payload.Mode = modeGlobal
+		break
+	case tunnel.Rule:
+		payload.Mode = modeRule
+		break
+	}
+
+	buf, _ := json.Marshal(&payload)
+
+	writeCommandPacket(client, buf)
+}
 
 func handleQueryProxies(client *net.UnixConn) {
 	proxies := tunnel.Instance().Proxies()

@@ -6,6 +6,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/tunnel"
 )
 
@@ -46,7 +47,9 @@ func handlePullTrafficEvent(client *net.UnixConn) {
 			Packet.Up = up
 			Packet.Down = down
 
-			json.NewEncoder(buf).Encode(&Packet)
+			if json.NewEncoder(buf).Encode(&Packet) != nil {
+				return
+			}
 
 			if writeCommandPacket(client, buf.Bytes()) != nil {
 				return
@@ -67,7 +70,6 @@ func handlePullBandwidthEvent(client *net.UnixConn) {
 	defer ticker.Stop()
 
 	go func() {
-
 		for {
 			var buf [4]byte
 
@@ -80,24 +82,93 @@ func handlePullBandwidthEvent(client *net.UnixConn) {
 		}
 	}()
 
+	tick := func() error {
+		buf.Reset()
+
+		var Packet struct {
+			Total int64 `json:"total"`
+		}
+
+		sp := mgr.Snapshot()
+
+		Packet.Total = sp.DownloadTotal + sp.UploadTotal
+
+		json.NewEncoder(buf).Encode(&Packet)
+
+		return writeCommandPacket(client, buf.Bytes())
+	}
+
+	if tick() != nil {
+		return
+	}
+
 	for {
 		select {
 		case <-ticker.C:
-			buf.Reset()
+			if tick() != nil {
+				return
+			}
+		case <-bandWidthExit:
+			return
+		}
+	}
+}
 
-			var Packet struct {
-				Total int64 `json:"total"`
+func handlePullLogEvent(client *net.UnixConn) {
+	logExit := make(chan int)
+
+	subseribe := log.Subscribe()
+	buf := &bytes.Buffer{}
+
+	go func() {
+		var buf [4]byte
+
+		for {
+			_, err := client.Read(buf[:])
+
+			if err != nil {
+				close(logExit)
+				return
+			}
+		}
+	}()
+
+	for {
+		select {
+		case elm := <-subseribe:
+			buf.Reset()
+			msg := elm.(*log.Event)
+
+			var payload struct {
+				Level   int    `json:"level"`
+				Messgae string `json:"message"`
 			}
 
-			sp := mgr.Snapshot()
+			switch msg.LogLevel {
+			case log.DEBUG:
+				payload.Level = 1
+				break
+			case log.INFO:
+				payload.Level = 2
+				break
+			case log.WARNING:
+				payload.Level = 3
+				break
+			case log.ERROR:
+				payload.Level = 4
+			}
 
-			Packet.Total = sp.DownloadTotal + sp.UploadTotal
+			payload.Messgae = msg.Payload
 
-			json.NewEncoder(buf).Encode(&Packet)
+			if err := json.NewEncoder(buf).Encode(&payload); err != nil {
+				return
+			}
 
 			if writeCommandPacket(client, buf.Bytes()) != nil {
 				return
 			}
+		case <-logExit:
+			return
 		}
 	}
 }

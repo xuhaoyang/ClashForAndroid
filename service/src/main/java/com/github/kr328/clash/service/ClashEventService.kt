@@ -23,9 +23,8 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
     private val handler = Executors.newSingleThreadExecutor()
 
     private var currentProcessEvent = ProcessEvent.STOPPED
-    private var currentBandwidthEvent = BandwidthEvent(0)
 
-    fun preformProcessEvent(event: ProcessEvent) {
+    fun performProcessEvent(event: ProcessEvent) {
         handler.submit {
             currentProcessEvent = event
 
@@ -35,7 +34,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    fun preformLogEvent(event: LogEvent) {
+    fun performLogEvent(event: LogEvent) {
         handler.submit {
             observers.values.forEach {
                 if (it.acquiredEvent.contains(Event.EVENT_LOG))
@@ -44,7 +43,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    fun preformSpeedEvent(event: SpeedEvent) {
+    fun performSpeedEvent(event: SpeedEvent) {
         handler.submit {
             observers.values.forEach {
                 if (it.acquiredEvent.contains(Event.EVENT_SPEED))
@@ -53,10 +52,8 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    fun preformBandwidthEvent(event: BandwidthEvent) {
+    fun performBandwidthEvent(event: BandwidthEvent) {
         handler.submit {
-            currentBandwidthEvent = event
-
             observers.values.forEach {
                 if ( it.acquiredEvent.contains(Event.EVENT_BANDWIDTH) )
                     it.observer.onBandwidthEvent(event)
@@ -64,7 +61,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    fun preformErrorEvent(event: ErrorEvent) {
+    fun performErrorEvent(event: ErrorEvent) {
         handler.submit {
             observers.values.forEach {
                 it.observer.onErrorEvent(event)
@@ -72,10 +69,18 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
         }
     }
 
-    fun preformProfileChangedEvent(event: ProfileChangedEvent) {
+    fun performProfileChangedEvent(event: ProfileChangedEvent) {
         handler.submit {
             observers.values.forEach {
                 it.observer.onProfileChanged(event)
+            }
+        }
+    }
+
+    fun performProfileReloadEvent(event: ProfileReloadEvent) {
+        handler.submit {
+            observers.values.forEach {
+                it.observer.onProfileReloaded(event)
             }
         }
     }
@@ -110,9 +115,6 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
 
             if (initial) {
                 observer.onProcessEvent(currentProcessEvent)
-
-                if (events.contains(Event.EVENT_BANDWIDTH))
-                    observer.onBandwidthEvent(currentBandwidthEvent)
             }
         }
     }

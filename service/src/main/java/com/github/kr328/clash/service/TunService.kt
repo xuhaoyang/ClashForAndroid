@@ -194,6 +194,7 @@ class TunService : VpnService(), IClashEventObserver {
     override fun onLogEvent(event: LogEvent?) {}
     override fun onErrorEvent(event: ErrorEvent?) {}
     override fun onProfileChanged(event: ProfileChangedEvent?) {}
+    override fun onProfileReloaded(event: ProfileReloadEvent?) {}
     override fun asBinder(): IBinder = object : Binder() {
         override fun queryLocalInterface(descriptor: String): IInterface? {
             return this@TunService

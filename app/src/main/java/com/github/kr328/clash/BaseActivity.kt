@@ -118,6 +118,10 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
 
         override fun onProfileChanged(event: ProfileChangedEvent?) =
             this@BaseActivity.onProfileChanged(event)
+
+        override fun onProfileReloaded(event: ProfileReloadEvent?) {
+            this@BaseActivity.onProfileReloaded(event)
+        }
     }
 
     override fun onLogEvent(event: LogEvent?) {}
@@ -126,6 +130,7 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
     override fun onProcessEvent(event: ProcessEvent?) {}
     override fun onSpeedEvent(event: SpeedEvent?) {}
     override fun onBandwidthEvent(event: BandwidthEvent?) {}
+    override fun onProfileReloaded(event: ProfileReloadEvent?) {}
     override fun asBinder(): IBinder {
         return observerBinder
     }

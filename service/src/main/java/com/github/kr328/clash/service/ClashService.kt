@@ -11,6 +11,7 @@ import android.os.IInterface
 import android.os.ParcelFileDescriptor
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.event.*
+import com.github.kr328.clash.core.model.GeneralPacket
 import com.github.kr328.clash.core.model.ProxyPacket
 import com.github.kr328.clash.core.utils.Log
 import java.io.File
@@ -47,17 +48,21 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             catch (e: IOException) {
                 Log.w("Set proxy failure", e)
 
-                this@ClashService.eventService.preformErrorEvent(
+                this@ClashService.eventService.performErrorEvent(
                     ErrorEvent(ErrorEvent.Type.SET_PROXY_SELECTED, e.toString())
                 )
             }
+        }
+
+        override fun queryGeneral(): GeneralPacket {
+            return clash.queryGeneral()
         }
 
         override fun queryAllProxies(): ProxyPacket {
             return try {
                 ProxyPacket.fromRawProxy(clash.queryProxies())
             } catch (e: Exception) {
-                this@ClashService.eventService.preformErrorEvent(
+                this@ClashService.eventService.performErrorEvent(
                     ErrorEvent(ErrorEvent.Type.QUERY_PROXY_FAILURE, e.toString())
                 )
                 ProxyPacket("Unknown", emptyMap())
@@ -70,7 +75,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             } catch (e: Exception) {
                 Log.e("Start failure", e)
 
-                this@ClashService.eventService.preformErrorEvent(
+                this@ClashService.eventService.performErrorEvent(
                     ErrorEvent(ErrorEvent.Type.START_FAILURE, e.toString())
                 )
             }
@@ -88,7 +93,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             } catch (e: Exception) {
                 Log.e("Start tun failure", e)
 
-                this@ClashService.eventService.preformErrorEvent(
+                this@ClashService.eventService.performErrorEvent(
                     ErrorEvent(ErrorEvent.Type.START_FAILURE, e.toString())
                 )
             }
@@ -168,7 +173,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             this,
             filesDir.resolve("clash"),
             cacheDir.resolve("clash_controller"),
-            eventService::preformProcessEvent
+            eventService::performProcessEvent
         )
 
         puller = ClashEventPuller(clash, this)
@@ -224,8 +229,8 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 eventService.recastEventRequirement()
             }
             ProcessEvent.STOPPED -> {
-                eventService.preformSpeedEvent(SpeedEvent(0, 0))
-                eventService.preformBandwidthEvent(BandwidthEvent(0))
+                eventService.performSpeedEvent(SpeedEvent(0, 0))
+                eventService.performBandwidthEvent(BandwidthEvent(0))
 
                 notification.cancel()
 
@@ -252,6 +257,8 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 profileService.removeCurrentProfileProxy(remove)
 
                 notification.setProfile(active.name)
+
+                eventService.performProfileReloadEvent(ProfileReloadEvent())
             } catch (e: Exception) {
                 clash.process.stop()
                 Log.w("Load profile failure", e)
@@ -264,24 +271,25 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
     }
 
     override fun preformProfileChanged() {
-        eventService.preformProfileChangedEvent(ProfileChangedEvent())
+        eventService.performProfileChangedEvent(ProfileChangedEvent())
     }
 
     override fun onLogPulled(event: LogEvent) {
-        eventService.preformLogEvent(event)
+        eventService.performLogEvent(event)
     }
 
     override fun onSpeedPulled(event: SpeedEvent) {
-        eventService.preformSpeedEvent(event)
+        eventService.performSpeedEvent(event)
     }
 
     override fun onBandwidthPulled(event: BandwidthEvent) {
-        eventService.preformBandwidthEvent(event)
+        eventService.performBandwidthEvent(event)
     }
 
     override fun onBandwidthEvent(event: BandwidthEvent?) {}
     override fun onLogEvent(event: LogEvent?) {}
     override fun onErrorEvent(event: ErrorEvent?) {}
+    override fun onProfileReloaded(event: ProfileReloadEvent?) {}
     override fun asBinder(): IBinder = object : Binder() {
         override fun queryLocalInterface(descriptor: String): IInterface? {
             return this@ClashService

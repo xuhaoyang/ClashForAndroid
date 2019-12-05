@@ -5,7 +5,7 @@ import com.github.kr328.clash.service.IClashEventService;
 import com.github.kr328.clash.service.IClashProfileService;
 import com.github.kr328.clash.service.IClashSettingService;
 import com.github.kr328.clash.core.event.Event;
-import com.github.kr328.clash.core.model.ProxyPacket;
+import com.github.kr328.clash.core.model.Packet;
 
 interface IClashService {
     // Services
@@ -25,4 +25,5 @@ interface IClashService {
 
     // Query
     ProxyPacket queryAllProxies();
+    GeneralPacket queryGeneral();
 }
