@@ -70,33 +70,15 @@ class SettingAccessActivity : BaseActivity() {
         setSupportActionBar(activity_setting_access_toolbar)
 
         activity_setting_access_allow_all.setOnClickListener {
-            activity_setting_access_allow_all.isChecked = true
-            activity_setting_access_allow.isChecked = false
-            activity_setting_access_disallow.isChecked = false
-
-            showList = false
-
-            updateListStatus()
+            updateSelectedMode(0)
         }
 
         activity_setting_access_allow.setOnClickListener {
-            activity_setting_access_allow_all.isChecked = false
-            activity_setting_access_allow.isChecked = true
-            activity_setting_access_disallow.isChecked = false
-
-            showList = true
-
-            updateListStatus()
+            updateSelectedMode(1)
         }
 
         activity_setting_access_disallow.setOnClickListener {
-            activity_setting_access_allow_all.isChecked = false
-            activity_setting_access_allow.isChecked = false
-            activity_setting_access_disallow.isChecked = true
-
-            showList = true
-
-            updateListStatus()
+            updateSelectedMode(2)
         }
 
         activity_setting_access_app_list.apply {
@@ -111,11 +93,11 @@ class SettingAccessActivity : BaseActivity() {
             runOnUiThread {
                 when (settings.accessControlMode) {
                     ClashSettingService.ACCESS_CONTROL_MODE_ALLOW_ALL ->
-                        activity_setting_access_allow_all.performClick()
+                        updateSelectedMode(0)
                     ClashSettingService.ACCESS_CONTROL_MODE_ALLOW ->
-                        activity_setting_access_allow.performClick()
+                        updateSelectedMode(1)
                     ClashSettingService.ACCESS_CONTROL_MODE_DISALLOW ->
-                        activity_setting_access_disallow.performClick()
+                        updateSelectedMode(2)
                 }
             }
 
@@ -245,6 +227,34 @@ class SettingAccessActivity : BaseActivity() {
         }
 
         return true
+    }
+
+    private fun updateSelectedMode(mode: Int) {
+        when ( mode ) {
+            0 -> {
+                activity_setting_access_allow_all.isChecked = true
+                activity_setting_access_allow.isChecked = false
+                activity_setting_access_disallow.isChecked = false
+
+                showList = false
+            }
+            1 -> {
+                activity_setting_access_allow_all.isChecked = false
+                activity_setting_access_allow.isChecked = true
+                activity_setting_access_disallow.isChecked = false
+
+                showList = true
+            }
+            2 -> {
+                activity_setting_access_allow_all.isChecked = false
+                activity_setting_access_allow.isChecked = false
+                activity_setting_access_disallow.isChecked = true
+
+                showList = true
+            }
+        }
+
+        updateListStatus()
     }
 
     private fun updateListStatus() {
