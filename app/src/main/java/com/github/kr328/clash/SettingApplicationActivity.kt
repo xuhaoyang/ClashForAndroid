@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.annotation.Keep
 import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -16,6 +17,7 @@ class SettingApplicationActivity : BaseActivity() {
         const val KEY_START_ON_BOOT = "key_application_start_on_boot"
     }
 
+    @Keep
     class Fragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.setting_application, rootKey)

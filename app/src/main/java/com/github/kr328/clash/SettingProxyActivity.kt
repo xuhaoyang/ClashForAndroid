@@ -3,6 +3,7 @@ package com.github.kr328.clash
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.Keep
 import androidx.core.content.edit
 import androidx.preference.CheckBoxPreference
 import androidx.preference.PreferenceFragmentCompat
@@ -14,6 +15,7 @@ class SettingProxyActivity : BaseActivity() {
         private const val KEY_IPV6_SUPPORT = "key_vpn_setting_ipv6_support"
     }
 
+    @Keep
     class Fragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.setting_proxy, rootKey)

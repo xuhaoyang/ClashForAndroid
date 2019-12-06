@@ -14,7 +14,7 @@ import java.util.*
 
 class LogAdapter(private val content: Context,
                  private val buffer: CircularArray<LogEvent>) : RecyclerView.Adapter<LogAdapter.Holder>() {
-    private val formatter = SimpleDateFormat("hh:MM:ss", Locale.getDefault())
+    private val formatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val type: TextView = view.findViewById(R.id.adapter_log_type)
