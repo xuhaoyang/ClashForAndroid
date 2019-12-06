@@ -17,6 +17,7 @@ import com.github.kr328.clash.model.ClashProfile
 import com.github.kr328.clash.service.data.ClashProfileEntity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_profiles.*
+import java.io.File
 import java.io.FileOutputStream
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -140,6 +141,8 @@ class ProfilesActivity : BaseActivity() {
     private fun removeProfile(profile: ClashProfileEntity) {
         runClash {
             it.profileService.removeProfile(profile.id)
+
+            File(profile.file).delete()
         }
     }
 
