@@ -6,22 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
-import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.github.kr328.clash.adapter.ProfileAdapter
-import com.github.kr328.clash.core.Clash
+import com.github.kr328.clash.core.event.ErrorEvent
 import com.github.kr328.clash.core.event.ProfileChangedEvent
 import com.github.kr328.clash.model.ClashProfile
 import com.github.kr328.clash.service.data.ClashProfileEntity
-import com.github.kr328.clash.utils.FileUtils
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_import_url.*
 import kotlinx.android.synthetic.main.activity_profiles.*
 import java.io.FileOutputStream
-import java.lang.Exception
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.URL
@@ -200,5 +196,9 @@ class ProfilesActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    override fun onErrorEvent(event: ErrorEvent?) {
+        Snackbar.make(activity_profiles_root, event?.message ?: "Unknown", Snackbar.LENGTH_LONG).show()
     }
 }

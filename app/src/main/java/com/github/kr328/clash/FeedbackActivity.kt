@@ -3,7 +3,6 @@ package com.github.kr328.clash
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import kotlinx.android.synthetic.main.activity_feedback.*
-import kotlinx.android.synthetic.main.activity_main.*
 
 class FeedbackActivity : BaseActivity() {
     class Fragment : PreferenceFragmentCompat() {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.VpnService
 import android.os.Build
-import com.github.kr328.clash.MainActivity
 import com.github.kr328.clash.MainApplication
 import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.TunService

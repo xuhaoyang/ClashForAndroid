@@ -263,6 +263,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             val active = profileService.queryActiveProfile()
 
             if (active == null) {
+                eventService.performErrorEvent(ErrorEvent(ErrorEvent.Type.PROFILE_LOAD, "No profile activated"))
                 clash.process.stop()
                 return@submit
             }
@@ -282,6 +283,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 eventService.performProfileReloadEvent(ProfileReloadEvent())
             } catch (e: Exception) {
                 clash.process.stop()
+                eventService.performErrorEvent(ErrorEvent(ErrorEvent.Type.PROFILE_LOAD, e.message ?: "Unknown"))
                 Log.w("Load profile failure", e)
             }
         }

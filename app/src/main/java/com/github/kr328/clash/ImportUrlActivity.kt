@@ -11,11 +11,11 @@ import com.github.kr328.clash.model.ClashProfile
 import com.github.kr328.clash.service.data.ClashProfileEntity
 import com.github.kr328.clash.utils.FileUtils
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_import_file.*
 import kotlinx.android.synthetic.main.activity_import_url.*
 import java.io.FileOutputStream
-import java.lang.Exception
-import java.net.*
+import java.net.InetSocketAddress
+import java.net.Proxy
+import java.net.URL
 import kotlin.concurrent.thread
 
 class ImportUrlActivity : BaseActivity() {

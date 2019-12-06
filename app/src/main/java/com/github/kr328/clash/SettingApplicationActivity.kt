@@ -2,7 +2,6 @@ package com.github.kr328.clash
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.preference.CheckBoxPreference
@@ -10,7 +9,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.kr328.clash.core.utils.Log
 import kotlinx.android.synthetic.main.activity_setting_application.*
-import java.lang.Exception
 import kotlin.concurrent.thread
 
 class SettingApplicationActivity : BaseActivity() {

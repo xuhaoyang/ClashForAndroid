@@ -2,19 +2,15 @@ package com.github.kr328.clash
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
-import android.net.VpnService
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.GeneralPacket
 import com.github.kr328.clash.core.utils.ByteFormatter
-import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.TunService
 import com.github.kr328.clash.utils.ServiceUtils
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_clash_status.*
 import kotlinx.android.synthetic.main.activity_main_profiles.*
@@ -199,5 +195,9 @@ class MainActivity : BaseActivity() {
 
     private fun showAboutDialog() {
         AlertDialog.Builder(this).setView(R.layout.dialog_about).show()
+    }
+
+    override fun onErrorEvent(event: ErrorEvent?) {
+        Snackbar.make(activity_main_root, event?.message ?: "Unknown", Snackbar.LENGTH_LONG).show()
     }
 }

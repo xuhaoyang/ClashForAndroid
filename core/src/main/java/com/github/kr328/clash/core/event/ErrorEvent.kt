@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ErrorEvent(val type: Type, val message: String) : Event, Parcelable {
     enum class Type {
+        PROFILE_LOAD,
         START_FAILURE,
         QUERY_PROXY_FAILURE,
         SET_PROXY_SELECTED

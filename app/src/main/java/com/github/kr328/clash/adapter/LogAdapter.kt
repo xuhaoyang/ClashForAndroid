@@ -9,7 +9,6 @@ import androidx.collection.CircularArray
 import androidx.recyclerview.widget.RecyclerView
 import com.github.kr328.clash.R
 import com.github.kr328.clash.core.event.LogEvent
-import kotlinx.android.synthetic.main.adapter_log.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 

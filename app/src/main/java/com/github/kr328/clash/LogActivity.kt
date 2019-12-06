@@ -5,11 +5,9 @@ import android.os.Handler
 import androidx.collection.CircularArray
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.kr328.clash.adapter.LogAdapter
 import com.github.kr328.clash.core.event.Event
 import com.github.kr328.clash.core.event.LogEvent
-import com.github.kr328.clash.core.utils.Log
 import kotlinx.android.synthetic.main.activity_logs.*
 
 

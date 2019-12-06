@@ -3,9 +3,10 @@ package com.github.kr328.clash
 import android.os.Bundle
 import com.github.kr328.clash.adapter.ProxyAdapter
 import com.github.kr328.clash.callback.IUrlTestCallback
+import com.github.kr328.clash.core.event.ErrorEvent
 import com.github.kr328.clash.core.model.ProxyPacket
-import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.model.ListProxy
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_proxies.*
 
 class ProxyActivity : BaseActivity() {
@@ -162,5 +163,9 @@ class ProxyActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    override fun onErrorEvent(event: ErrorEvent?) {
+        Snackbar.make(activity_proxies_root, event?.message ?: "Unknown", Snackbar.LENGTH_LONG).show()
     }
 }
