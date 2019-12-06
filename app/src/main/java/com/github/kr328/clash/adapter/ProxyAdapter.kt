@@ -13,7 +13,9 @@ import com.github.kr328.clash.core.model.ProxyPacket
 import com.github.kr328.clash.model.ListProxy
 import com.google.android.material.card.MaterialCardView
 
-class ProxyAdapter(private val context: Context, val listener: (String, String) -> Unit) :
+class ProxyAdapter(private val context: Context,
+                   private val onSelect: (String, String) -> Unit,
+                   private val onUrlTest: (Int, Int) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var elements: List<ListProxy> = emptyList()
     var clickable: Boolean = false
@@ -108,7 +110,7 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
                 notifyItemChanged(old)
                 notifyItemChanged(position)
 
-                listener(element.header.name, element.name)
+                onSelect(element.header.name, element.name)
             }
         } else {
             holder.card.setOnClickListener(null)
@@ -119,20 +121,45 @@ class ProxyAdapter(private val context: Context, val listener: (String, String) 
         holder.name.text = current.name
         holder.type.text = current.type
         holder.delay.text =
-            if (current.delay > 0) {
-                current.delay.toString()
-            } else {
-                if (current.header.type != ProxyPacket.Type.SELECT)
-                    "N/A"
-                else
-                    ""
+            when {
+                current.header.urlTest && current.delay < 0 -> "..."
+                current.delay < 0 -> "N/A"
+                current.delay > 0 -> {
+                    current.delay.toString()
+                }
+                else -> {
+                    if (current.header.type != ProxyPacket.Type.SELECT)
+                        "N/A"
+                    else
+                        ""
+                }
             }
-
     }
 
     private fun bindHeaderView(holder: HeaderHolder, current: ListProxy.ListProxyHeader) {
         holder.name.text = current.name
         holder.test.visibility =
             if (current.type == ProxyPacket.Type.SELECT) View.VISIBLE else View.GONE
+        holder.test.setOnClickListener {
+            if ( current.urlTest )
+                return@setOnClickListener
+
+            val indexed = elements.withIndex()
+                .filter { it.value is ListProxy.ListProxyHeader }
+                .filterIsInstance<IndexedValue<ListProxy.ListProxyHeader>>()
+
+            val headerIndex = indexed.indexOfFirst {
+                it.value === current
+            }.takeIf { it >= 0 } ?: return@setOnClickListener
+            val header = indexed[headerIndex]
+
+            indexed[headerIndex].value.urlTest = true
+
+            val position = header.index
+            val size = (indexed.getOrNull(headerIndex + 1)?.index ?: elements.size) - header.index
+
+            notifyItemRangeChanged(position, size)
+            onUrlTest(position, size)
+        }
     }
 }

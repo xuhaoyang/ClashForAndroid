@@ -4,6 +4,7 @@ import com.github.kr328.clash.service.IClashEventObserver;
 import com.github.kr328.clash.service.IClashEventService;
 import com.github.kr328.clash.service.IClashProfileService;
 import com.github.kr328.clash.service.IClashSettingService;
+import com.github.kr328.clash.callback.IUrlTestCallback;
 import com.github.kr328.clash.core.event.Event;
 import com.github.kr328.clash.core.model.Packet;
 
@@ -26,4 +27,5 @@ interface IClashService {
     // Query
     ProxyPacket queryAllProxies();
     GeneralPacket queryGeneral();
+    void startUrlTest(in String[] proxies, IUrlTestCallback callback);
 }

@@ -19,6 +19,7 @@ const (
 	commandPullBandwidth  uint32 = 8
 	commandSetProxy       uint32 = 9
 	commandQueryGeneral   uint32 = 10
+	commandUrlTest        uint32 = 11
 )
 
 var handlers map[uint32]func(*net.UnixConn) = make(map[uint32]func(*net.UnixConn))
@@ -35,6 +36,7 @@ func init() {
 	handlers[commandPullBandwidth] = handlePullBandwidthEvent // event.go
 	handlers[commandSetProxy] = handleSetProxy                // proxies.go
 	handlers[commandQueryGeneral] = handleQueryGeneral        // proxies.go
+	handlers[commandUrlTest] = handleUrlTest                  // proxies.go
 }
 
 // Start local control server

@@ -1,9 +1,12 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"net"
 	"strconv"
+	"time"
 
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/proxy"
@@ -95,8 +98,6 @@ func handleQueryProxies(client *net.UnixConn) {
 }
 
 func handleSetProxy(client *net.UnixConn) {
-	proxies := tunnel.Instance().Proxies()
-
 	var Request struct {
 		Key   string `json:"key"`
 		Value string `json:"value"`
@@ -119,28 +120,101 @@ func handleSetProxy(client *net.UnixConn) {
 
 	json.Unmarshal(buf, &Request)
 
-	p := proxies[Request.Key]
+	if err := setProxySelect(Request.Key, Request.Value); err != nil {
+		Response.Error = err.Error()
+	}
+}
+
+func handleUrlTest(client *net.UnixConn) {
+	var request struct {
+		URL     string   `json:"url"`
+		Timeout int      `json:"timeout"`
+		Proxies []string `json:"proxies"`
+	}
+
+	request.Proxies = make([]string, 0)
+
+	buf, err := readCommandPacket(client)
+	if err != nil {
+		return
+	}
+
+	if json.Unmarshal(buf, &request) != nil {
+		return
+	}
+
+	type Response struct {
+		Name  string `json:"name"`
+		Delay int    `json:"delay"`
+	}
+
+	proxies := tunnel.Instance().Proxies()
+	channel := make(chan *Response, len(request.Proxies))
+
+	for _, p := range request.Proxies {
+		go func(p string) {
+			proxy := proxies[p]
+			if proxy == nil {
+				channel <- nil
+				return
+			}
+
+			ctx, cancel := context.WithTimeout(context.Background(), time.Duration(request.Timeout)*time.Millisecond)
+
+			defer cancel()
+
+			delay, err := proxies[p].URLTest(ctx, request.URL)
+			if err != nil {
+				channel <- nil
+				return
+			}
+
+			channel <- &Response{
+				Name:  p,
+				Delay: int(delay),
+			}
+		}(p)
+	}
+
+	for range request.Proxies {
+		response := <-channel
+
+		if response != nil {
+			buf, _ := json.Marshal(&response)
+
+			writeCommandPacket(client, buf)
+		}
+	}
+
+	writeCommandPacket(client, nil)
+
+	log.Infoln("URLTest exited")
+}
+
+func setProxySelect(name, selected string) error {
+	proxies := tunnel.Instance().Proxies()
+
+	p := proxies[name]
 
 	if p == nil {
-		Response.Error = "Unknown proxy " + Request.Key
-		return
+		return errors.New("Unknown proxy " + name)
 	}
 
 	proxy, ok := p.(*A.Proxy)
 	if !ok {
-		Response.Error = "Invalid proxy " + Request.Key
-		return
+		return errors.New("Invalid proxy " + name)
 	}
 
 	selector, ok := proxy.ProxyAdapter.(*A.Selector)
 	if !ok {
-		Response.Error = "Not selector"
-		return
+		return errors.New("Not selector")
 	}
 
-	log.Infoln("Set selector " + Request.Key + " -> " + Request.Value)
+	log.Infoln("Set selector " + name + " -> " + selected)
 
-	if err := selector.Set(Request.Value); err != nil {
-		Response.Error = err.Error()
+	if err := selector.Set(selected); err != nil {
+		return err
 	}
+
+	return nil
 }

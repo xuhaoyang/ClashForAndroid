@@ -6,12 +6,11 @@ import com.github.kr328.clash.core.event.BandwidthEvent
 import com.github.kr328.clash.core.event.LogEvent
 import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.core.event.SpeedEvent
-import com.github.kr328.clash.core.model.GeneralPacket
-import com.github.kr328.clash.core.model.LoadProfilePacket
-import com.github.kr328.clash.core.model.RawProxyPacket
-import com.github.kr328.clash.core.model.SetProxyPacket
+import com.github.kr328.clash.core.model.*
+import com.github.kr328.clash.core.utils.Log
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.stringify
 import java.io.File
 import java.io.FileDescriptor
 import java.io.IOException
@@ -33,8 +32,12 @@ class Clash(
         const val COMMAND_PULL_BANDWIDTH = 8
         const val COMMAND_SET_PROXY = 9
         const val COMMAND_QUERY_GENERAL = 10
+        const val COMMAND_URL_TEST = 11
 
         const val PING_REPLY = 233
+
+        const val DEFAULT_URL_TEST_TIMEOUT = 5000
+        const val DEFAULT_URL_TEST_URL = "https://www.gstatic.com/generate_204"
     }
 
     val process = ClashProcess(context, clashDir, controllerPath, listener)
@@ -151,6 +154,27 @@ class Clash(
                 )
             }
         }
+    }
+
+    fun startUrlTest(proxies: List<String>, callback: (String, Long) -> Unit) {
+        runControl(COMMAND_URL_TEST) { _, input, output ->
+            output.writeString(Json(JsonConfiguration.Stable)
+                .stringify(UrlTestPacket.Request.serializer(),
+                    UrlTestPacket.Request(proxies, DEFAULT_URL_TEST_TIMEOUT, DEFAULT_URL_TEST_URL)))
+
+            while ( true ) {
+                val data = input.readString()
+                if ( data.isEmpty() )
+                    return@runControl
+
+                val response = Json(JsonConfiguration.Stable)
+                    .parse(UrlTestPacket.Response.serializer(), data)
+
+                callback(response.name, response.delay)
+            }
+        }
+
+        Log.i("Url test exited")
     }
 
     fun startTunDevice(fd: FileDescriptor, mtu: Int) {

@@ -5,7 +5,7 @@ import java.util.concurrent.Executors
 
 class ClashEventService(private val master: Master) : IClashEventService.Stub() {
     interface Master {
-        fun requireEvent(event: Int)
+        fun acquireEvent(event: Int)
         fun releaseEvent(event: Int)
     }
 
@@ -130,7 +130,7 @@ class ClashEventService(private val master: Master) : IClashEventService.Stub() 
             }.toSet()
             val rel = EVENT_SET - req
 
-            req.forEach(master::requireEvent)
+            req.forEach(master::acquireEvent)
             rel.forEach(master::releaseEvent)
         }
     }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.*
+import com.github.kr328.clash.callback.IUrlTestCallback
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.ClashProcess
 import com.github.kr328.clash.core.event.*
@@ -15,6 +16,7 @@ import com.github.kr328.clash.core.utils.Log
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
+import kotlin.concurrent.thread
 
 class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
     ClashProfileService.Master, ClashEventPuller.Master {
@@ -63,6 +65,24 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                     ErrorEvent(ErrorEvent.Type.QUERY_PROXY_FAILURE, e.toString())
                 )
                 ProxyPacket("Unknown", emptyMap())
+            }
+        }
+
+        override fun startUrlTest(proxies: Array<out String>?, callback: IUrlTestCallback?) {
+            require(proxies != null && callback != null)
+
+            thread {
+                try {
+                    clash.startUrlTest(proxies.toList()) { name, delay ->
+                        callback.onResult(name, delay)
+                    }
+                }
+                catch (e: Exception) {
+                    Log.w("Url test failure", e)
+                }
+
+                callback.onResult(null, -1)
+                // Ignore exceptions
             }
         }
 
@@ -134,7 +154,7 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
         }
     }
 
-    override fun requireEvent(event: Int) {
+    override fun acquireEvent(event: Int) {
         if (clash.process.getProcessStatus() == ProcessEvent.STOPPED)
             return
 
@@ -146,7 +166,6 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
             Event.EVENT_BANDWIDTH ->
                 puller.startBandwidthPull()
         }
-
     }
 
     override fun releaseEvent(event: Int) {

@@ -2,7 +2,9 @@ package com.github.kr328.clash
 
 import android.os.Bundle
 import com.github.kr328.clash.adapter.ProxyAdapter
+import com.github.kr328.clash.callback.IUrlTestCallback
 import com.github.kr328.clash.core.model.ProxyPacket
+import com.github.kr328.clash.core.utils.Log
 import com.github.kr328.clash.model.ListProxy
 import kotlinx.android.synthetic.main.activity_proxies.*
 
@@ -14,11 +16,7 @@ class ProxyActivity : BaseActivity() {
         setSupportActionBar(activity_proxies_toolbar)
 
         activity_proxies_list.also {
-            it.adapter = ProxyAdapter(this) { p, s ->
-                runClash { clash ->
-                    clash.setSelectProxy(p, s)
-                }
-            }
+            it.adapter = ProxyAdapter(this, this::setProxySelected, this::urlTest)
             it.layoutManager = (it.adapter!! as ProxyAdapter).getLayoutManager()
         }
 
@@ -27,6 +25,51 @@ class ProxyActivity : BaseActivity() {
         }
 
         refreshList()
+    }
+
+    private fun setProxySelected(name: String, selected: String) {
+        runClash {
+            it.setSelectProxy(name, selected)
+        }
+    }
+
+    private fun urlTest(position: Int, size: Int) {
+        val adapter = (activity_proxies_list.adapter as ProxyAdapter)
+
+        runClash {
+            val proxies = adapter.elements.subList(position, position+size)
+                .filterIsInstance<ListProxy.ListProxyItem>()
+                .mapIndexed { index, proxy -> proxy.name to IndexedValue(index, proxy)}
+                .toMap()
+
+            for ((_, p) in proxies) {
+                Log.i("$p -> ${p.index}")
+
+                p.value.delay = -1
+            }
+
+            it.startUrlTest(proxies.keys.toTypedArray(), object: IUrlTestCallback.Stub() {
+                override fun onResult(proxy: String?, delay: Long) {
+                    if ( proxy == null ) {
+                        (adapter.elements[position] as ListProxy.ListProxyHeader).urlTest = false
+
+                        runOnUiThread {
+                            adapter.notifyItemRangeChanged(position, size)
+                        }
+
+                        return
+                    }
+
+                    val p = proxies[proxy] ?: return
+
+                    p.value.delay = delay
+
+                    runOnUiThread {
+                        adapter.notifyItemChanged(position + p.index + 1)
+                    }
+                }
+            })
+        }
     }
 
     private fun refreshList() {

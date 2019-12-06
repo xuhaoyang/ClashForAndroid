@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"net"
 
-	A "github.com/Dreamacro/clash/adapters/outbound"
 	"github.com/Dreamacro/clash/log"
-	"github.com/Dreamacro/clash/tunnel"
 	"github.com/kr328/cfa/profile"
 )
 
@@ -54,31 +52,8 @@ func handleProfileReload(client *net.UnixConn) {
 		return
 	}
 
-	proxies := tunnel.Instance().Proxies()
-
 	for k, v := range payload.Selected {
-		p := proxies[k]
-
-		if p == nil {
-			response.InvalidSelected = append(response.InvalidSelected, k)
-			continue
-		}
-
-		proxy, ok := p.(*A.Proxy)
-		if !ok {
-			response.InvalidSelected = append(response.InvalidSelected, k)
-			continue
-		}
-
-		selector, ok := proxy.ProxyAdapter.(*A.Selector)
-		if !ok {
-			response.InvalidSelected = append(response.InvalidSelected, k)
-			continue
-		}
-
-		log.Infoln("Set selector " + k + " -> " + v)
-
-		selector.Set(v)
+		setProxySelect(k, v)
 	}
 
 	log.Infoln("Profile " + payload.Path + " loaded")
