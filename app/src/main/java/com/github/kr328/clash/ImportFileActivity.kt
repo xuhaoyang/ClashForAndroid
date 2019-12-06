@@ -99,7 +99,7 @@ class ImportFileActivity : BaseActivity() {
                     it.readBytes().toString(Charsets.UTF_8)
                 } ?: throw NullPointerException("Unable to open config file")
 
-            val parsed = Yaml(configuration = YamlConfiguration(strictMode = false)).parse(
+            Yaml(configuration = YamlConfiguration(strictMode = false)).parse(
                 ClashProfile.serializer(),
                 data
             )
@@ -114,12 +114,9 @@ class ImportFileActivity : BaseActivity() {
                 it.profileService.addProfile(
                     ClashProfileEntity(
                         name = name.content,
-                        token = "file|" + file.content!!.toString(),
-                        cache = cache.absolutePath,
+                        token = ClashProfileEntity.fileToken(file.content!!.toString()),
+                        file = cache.absolutePath,
                         active = false,
-                        proxies = parsed.proxies.size,
-                        proxyGroups = parsed.proxyGroups.size,
-                        rules = parsed.rules.size,
                         lastUpdate = System.currentTimeMillis()
                     )
                 )
@@ -129,7 +126,7 @@ class ImportFileActivity : BaseActivity() {
         } catch (e: Exception) {
             Snackbar.make(
                 activity_import_file_root,
-                getString(R.string.clash_import_file_invalid, e.toString()),
+                getString(R.string.clash_profile_invalid, e.toString()),
                 Snackbar.LENGTH_LONG
             ).show()
         }

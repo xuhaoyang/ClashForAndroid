@@ -61,11 +61,11 @@ class RadioFatItem @JvmOverloads constructor(
         clickable.setOnLongClickListener(l)
     }
 
-    fun setOperationOnClickListener(l: OnClickListener?) {
+    fun setOnOperationOnClickListener(l: OnClickListener?) {
         operationClickable.setOnClickListener(l)
     }
 
-    fun setOperationOnLongClickListener(l: OnLongClickListener?) {
+    fun setOnOperationOnLongClickListener(l: OnLongClickListener?) {
         operationClickable.setOnLongClickListener(l)
     }
 

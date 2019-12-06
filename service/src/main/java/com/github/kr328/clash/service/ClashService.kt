@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.*
 import com.github.kr328.clash.core.Clash
+import com.github.kr328.clash.core.ClashProcess
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.GeneralPacket
 import com.github.kr328.clash.core.model.ProxyPacket
@@ -237,6 +238,9 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
 
     private fun reloadProfile() {
         executor.submit {
+            if ( clash.process.getProcessStatus() != ProcessEvent.STARTED)
+                return@submit
+
             val active = profileService.queryActiveProfile()
 
             if (active == null) {
@@ -244,11 +248,11 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 return@submit
             }
 
-            Log.i("Loading profile ${active.cache}")
+            Log.i("Loading profile ${active.file}")
 
             try {
                 val remove = clash.loadProfile(
-                    File(active.cache),
+                    File(active.file),
                     profileService.queryProfileSelected(active.id)
                 )
 

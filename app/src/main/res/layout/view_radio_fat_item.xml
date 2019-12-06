@@ -54,10 +54,17 @@
         android:layout_alignBottom="@id/view_radio_fat_item_text_container">
 
         <View
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/lightGray"/>
+
+        <View
             android:id="@+id/view_radio_fat_item_operation"
             android:layout_gravity="center"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
     </FrameLayout>
 
 
