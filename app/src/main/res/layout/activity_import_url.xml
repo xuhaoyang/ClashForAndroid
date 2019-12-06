@@ -25,7 +25,7 @@
                     android:id="@+id/activity_import_url_save"
                     android:padding="10dp"
                     android:src="@drawable/ic_save"
-                    android:contentDescription="@string/app_name"
+                    android:contentDescription="@string/launch_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+    <ImageView
+        android:id="@android:id/icon"
+        android:src="@drawable/ic_logo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/launch_name" />
+    <TextView
+        android:id="@android:id/title"
+        android:layout_marginStart="10dp"
+        android:text="@string/application_name"
+        android:textColor="@color/colorAccent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@android:id/icon" />
+    <TextView
+        android:layout_alignStart="@android:id/title"
+        android:layout_below="@android:id/title"
+        android:text="@string/about_power_by_clash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

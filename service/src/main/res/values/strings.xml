@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Clash</string>
+    <string name="launch_name">Clash</string>
 
     <string name="clash_service_status_channel">Clash Status</string>
     <string name="clash_service_running">Running</string>

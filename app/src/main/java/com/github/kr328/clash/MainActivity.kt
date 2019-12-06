@@ -1,6 +1,8 @@
 package com.github.kr328.clash
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.VpnService
@@ -47,6 +49,14 @@ class MainActivity : BaseActivity() {
 
         activity_main_clash_logs.setOnClickListener {
             startActivity(Intent(this, LogActivity::class.java))
+        }
+
+        activity_main_clash_feedback.setOnClickListener {
+            startActivity(Intent(this, FeedbackActivity::class.java))
+        }
+
+        activity_main_clash_about.setOnClickListener {
+            showAboutDialog()
         }
 
         activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
@@ -185,5 +195,9 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun showAboutDialog() {
+        AlertDialog.Builder(this).setView(R.layout.dialog_about).show()
     }
 }

@@ -9,7 +9,7 @@
         android:padding="2dp"
         android:layout_marginStart="2dp"
         android:textColor="@color/colorAccent"
-        android:text="@string/app_name"
+        android:text="@string/launch_name"
         android:id="@+id/adapter_proxy_header_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

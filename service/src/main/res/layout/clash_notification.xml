@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:text="@string/app_name"
+        android:text="@string/launch_name"
         android:id="@+id/clash_notification_title"
         android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
         android:textColor="@android:color/black"

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/feedback_source">
+        <Preference android:title="@string/feedback_upstream"
+            android:summary="@string/feedback_upstream_url">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="@string/feedback_upstream_url" />
+        </Preference>
+        <Preference android:title="@string/feedback_github_repo"
+            android:summary="@string/feedback_github_repo_url">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="@string/feedback_github_repo_url" />
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

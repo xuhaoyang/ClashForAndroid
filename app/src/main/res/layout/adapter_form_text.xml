@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/adapter_form_text_icon"
         android:src="@drawable/ic_about"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/launch_name"
         android:layout_width="25dp"
         android:layout_height="25dp" />
 

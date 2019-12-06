@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Clash</string>
+    <string name="launch_name">Clash</string>
+    <string name="application_name">Clash for Android</string>
 
     <string name="clash_status_stopped">Stopped</string>
     <string name="clash_status_click_to_start">Click here to start</string>
@@ -90,4 +91,19 @@
     <string name="clash_start_service_notification">Starting Clash</string>
     
     <string name="not_implemented">Not Implemented</string>
+
+    <string name="feedback_source">Source &amp; Issues</string>
+    <string name="feedback_upstream">Upstream</string>
+    <string name="feedback_github_repo">Github</string>
+
+    <string name="feedback_group">Groups</string>
+    <string name="feedback_telegram_channel">Telegram Channel</string>
+    <string name="feedback_telegram_group">Telegram Group</string>
+
+    <string name="feedback_upstream_url" translatable="false">https://github.com/Dreamacro/clash</string>
+    <string name="feedback_github_repo_url" translatable="false">https://github.com/Kr328/ClashForAndroid</string>
+    <string name="feedback_telegram_group_url" translatable="false">https://t.me/clash_for_android</string>
+    <string name="feedback_telegram_channel_url" translatable="false">https://t.me/clash_for_android_channel</string>
+
+    <string name="about_power_by_clash">Power by Clash</string>
 </resources>
