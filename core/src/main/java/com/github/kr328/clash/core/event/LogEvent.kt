@@ -7,7 +7,7 @@ import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
 
 @Serializable
-data class LogEvent(val level: Level, val message: String) :
+data class LogEvent(val level: Level, val message: String, val time: Long = System.currentTimeMillis()) :
     Event, Parcelable {
     companion object {
         const val DEBUG_VALUE = 1

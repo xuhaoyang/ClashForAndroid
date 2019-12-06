@@ -127,6 +127,7 @@ class ClashEventPuller(private val clash: Clash, private val master: Master) {
 
     private fun LocalSocket?.closeSilent() {
         runCatching {
+            this?.outputStream?.write(0)
             this?.close()
         }
     }

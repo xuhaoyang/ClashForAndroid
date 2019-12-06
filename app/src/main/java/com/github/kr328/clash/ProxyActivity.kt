@@ -43,8 +43,6 @@ class ProxyActivity : BaseActivity() {
                 .toMap()
 
             for ((_, p) in proxies) {
-                Log.i("$p -> ${p.index}")
-
                 p.value.delay = -1
             }
 

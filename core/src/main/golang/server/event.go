@@ -18,17 +18,16 @@ func handlePullTrafficEvent(client *net.UnixConn) {
 	buf := &bytes.Buffer{}
 
 	defer ticker.Stop()
+	defer client.Close()
 
 	go func() {
 		for {
 			var buf [4]byte
 
-			_, err := client.Read(buf[:])
+			client.Read(buf[:])
 
-			if err != nil {
-				close(trafficExit)
-				return
-			}
+			close(trafficExit)
+			return
 		}
 	}()
 
@@ -68,17 +67,16 @@ func handlePullBandwidthEvent(client *net.UnixConn) {
 	buf := &bytes.Buffer{}
 
 	defer ticker.Stop()
+	defer client.Close()
 
 	go func() {
 		for {
 			var buf [4]byte
 
-			_, err := client.Read(buf[:])
+			client.Read(buf[:])
 
-			if err != nil {
-				close(bandWidthExit)
-				return
-			}
+			close(bandWidthExit)
+			return
 		}
 	}()
 
@@ -118,16 +116,18 @@ func handlePullLogEvent(client *net.UnixConn) {
 	subseribe := log.Subscribe()
 	buf := &bytes.Buffer{}
 
+	defer log.UnSubscribe(subseribe)
+	defer client.Close()
+
 	go func() {
 		var buf [4]byte
 
 		for {
-			_, err := client.Read(buf[:])
+			client.Read(buf[:])
 
-			if err != nil {
-				close(logExit)
-				return
-			}
+			logExit <- 0
+			close(logExit)
+			return
 		}
 	}()
 

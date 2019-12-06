@@ -74,7 +74,11 @@
             android:label="@string/application_setting_application"
             android:exported="false"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".LogActivity"
+            android:label="@string/clash_logs"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <service
             android:name=".ClashStartService"
             android:exported="false" />
