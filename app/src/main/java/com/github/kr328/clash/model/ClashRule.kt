@@ -11,6 +11,7 @@ data class ClashRule(val matcher: Matcher, val pattern: String, val target: Stri
         DOMAIN_KEYWORD,
         DOMAIN,
         IP_CIDR,
+        IP_CIDR6,
         SRC_IP_CIDR,
         GEOIP,
         DST_PORT,
@@ -23,6 +24,7 @@ data class ClashRule(val matcher: Matcher, val pattern: String, val target: Stri
                 DOMAIN_KEYWORD -> "DOMAIN-KEYWORD"
                 DOMAIN -> "DOMAIN"
                 IP_CIDR -> "IP-CIDR"
+                IP_CIDR6 -> "IP-CIDR6"
                 SRC_IP_CIDR -> "SRC-IP-CIDR"
                 GEOIP -> "GEOIP"
                 DST_PORT -> "DST-PORT"
@@ -38,6 +40,7 @@ data class ClashRule(val matcher: Matcher, val pattern: String, val target: Stri
                     "DOMAIN-KEYWORD" -> DOMAIN_KEYWORD
                     "DOMAIN" -> DOMAIN
                     "IP-CIDR" -> IP_CIDR
+                    "IP-CIDR6" -> IP_CIDR6
                     "SRC-IP-CIDR" -> SRC_IP_CIDR
                     "GEOIP" -> GEOIP
                     "DST-PORT" -> DST_PORT

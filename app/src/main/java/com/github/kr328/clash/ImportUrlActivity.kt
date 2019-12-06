@@ -6,6 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
+import com.charleskorn.kaml.YamlException
 import com.github.kr328.clash.adapter.FormAdapter
 import com.github.kr328.clash.model.ClashProfile
 import com.github.kr328.clash.service.data.ClashProfileEntity
@@ -122,7 +123,7 @@ class ImportUrlActivity : BaseActivity() {
                         runOnUiThread {
                             Snackbar.make(
                                 activity_import_url_root,
-                                getString(R.string.clash_profile_invalid, e.toString()),
+                                getString(R.string.clash_profile_invalid, e.message?.replace(YamlException::class.java.name + ":", "") ?: "Unknown"),
                                 Snackbar.LENGTH_LONG
                             ).show()
 
