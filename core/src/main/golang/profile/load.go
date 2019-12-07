@@ -18,12 +18,12 @@ import (
 
 var defaultDNSResolver = dns.New(dns.Config{
 	Main: []dns.NameServer{
-		dns.NameServer{Net: "tcp", Addr: "1.1.1.1"},
-		dns.NameServer{Net: "tcp", Addr: "8.8.8.8"},
-		dns.NameServer{Net: "tcp", Addr: "208.67.222.222"},
-		dns.NameServer{Net: "", Addr: "119.29.29.29"},
-		dns.NameServer{Net: "", Addr: "223.5.5.5"},
-		dns.NameServer{Net: "", Addr: "114.114.114.114"},
+		dns.NameServer{Net: "tcp", Addr: "1.1.1.1:53"},
+		dns.NameServer{Net: "tcp", Addr: "8.8.8.8:53"},
+		dns.NameServer{Net: "tcp", Addr: "208.67.222.222:53"},
+		dns.NameServer{Net: "", Addr: "119.29.29.29:53"},
+		dns.NameServer{Net: "", Addr: "223.5.5.5:53"},
+		dns.NameServer{Net: "", Addr: "114.114.114.114:53"},
 	},
 	Fallback:     make([]dns.NameServer, 0),
 	IPv6:         true,
