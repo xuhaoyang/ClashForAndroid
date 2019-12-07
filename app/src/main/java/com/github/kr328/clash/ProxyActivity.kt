@@ -101,7 +101,7 @@ class ProxyActivity : BaseActivity() {
                     {
                         it.value.type != ProxyPacket.Type.SELECT
                     }, {
-                        it.value.order
+                        it.value.name
                     })
                 )
                 .flatMap {
