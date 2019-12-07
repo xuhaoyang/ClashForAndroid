@@ -76,6 +76,8 @@ func handleQueryProxies(client *net.UnixConn) {
 	root.Mode = tunnel.Instance().Mode().String()
 	root.Proxies = make(map[string]interface{})
 
+	var order int = 0
+
 	for k, p := range proxies {
 		inner, err := p.MarshalJSON()
 
@@ -86,6 +88,11 @@ func handleQueryProxies(client *net.UnixConn) {
 
 		mapping := map[string]interface{}{}
 		json.Unmarshal(inner, &mapping)
+
+		mapping["order"] = order
+
+		order += 1
+
 		root.Proxies[k] = mapping
 	}
 
