@@ -5,7 +5,7 @@ import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
 
 @Serializable(ClashRule.Serializer::class)
-data class ClashRule(val matcher: Matcher, val pattern: String, val target: String) {
+data class ClashRule(val matcher: Matcher, val pattern: String, val target: String, val extras: List<String>) {
     enum class Matcher {
         DOMAIN_SUFFIX,
         DOMAIN_KEYWORD,
@@ -60,16 +60,21 @@ data class ClashRule(val matcher: Matcher, val pattern: String, val target: Stri
             val rule = decoder.decodeString().split(",")
 
             return when (rule.size) {
-                3 -> {
-                    ClashRule(Matcher.fromString(rule[0]), rule[1], rule[2])
+                0, 1 -> {
+                    throw YamlException("Invalid rule $rule", 0, 0)
                 }
                 2 -> {
                     if (Matcher.fromString(rule[0]) != Matcher.MATCH)
                         throw YamlException("Invalid rule $rule", 0, 0)
 
-                    ClashRule(Matcher.MATCH, "", rule[1])
+                    ClashRule(Matcher.MATCH, "", rule[1], emptyList())
                 }
-                else -> throw YamlException("Invalid rule $rule", 0, 0)
+                3 -> {
+                    ClashRule(Matcher.fromString(rule[0]), rule[1], rule[2], emptyList())
+                }
+                else -> {
+                    ClashRule(Matcher.fromString(rule[0]), rule[1], rule[2], rule.subList(3, rule.size))
+                }
             }
         }
 
@@ -77,7 +82,7 @@ data class ClashRule(val matcher: Matcher, val pattern: String, val target: Stri
             if (obj.matcher == Matcher.MATCH) {
                 encoder.encodeString("${obj.matcher},${obj.target}")
             } else {
-                encoder.encodeString("${obj.matcher},${obj.pattern},${obj.target}")
+                encoder.encodeString("${obj.matcher},${obj.pattern},${obj.target},${obj.extras.joinToString(",")}")
             }
         }
     }
