@@ -78,6 +78,8 @@ class ProxyActivity : BaseActivity() {
         runClash { clash ->
             val packet = clash.queryAllProxies()
             val proxies = packet.proxies
+            val order = (proxies["GLOBAL".hashCode()] ?: error("GLOBAL not found")).all
+                .mapIndexed { index, i -> i to index }.toMap()
 
             val listData = proxies
                 .asSequence()
@@ -101,7 +103,7 @@ class ProxyActivity : BaseActivity() {
                     {
                         it.value.type != ProxyPacket.Type.SELECT
                     }, {
-                        it.value.name
+                        order[it.key] ?: 0
                     })
                 )
                 .flatMap {

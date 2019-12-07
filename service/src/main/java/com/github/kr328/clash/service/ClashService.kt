@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.os.*
 import com.github.kr328.clash.callback.IUrlTestCallback
 import com.github.kr328.clash.core.Clash
-import com.github.kr328.clash.core.ClashProcess
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.model.GeneralPacket
 import com.github.kr328.clash.core.model.ProxyPacket
@@ -253,6 +252,8 @@ class ClashService : Service(), IClashEventObserver, ClashEventService.Master,
                 stopSelf()
             }
         }
+
+        sendBroadcast(Intent(Constants.CLASH_PROCESS_BROADCAST_ACTION).setPackage(packageName))
     }
 
     private fun reloadProfile() {
