@@ -1,6 +1,7 @@
 .gradle
 build/
 /app/release/
+/app/premium/
 /captures
 
 # Ignore Gradle GUI config
