@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.kr328.clash.common">
+
+    <permission
+        android:name="${applicationId}.permission.RECEIVE_BROADCASTS"
+        android:description="@string/receive_broadcasts_of_clash"
+        android:label="@string/receive_clash_broadcasts"
+        android:protectionLevel="privileged|signature" />
+    <uses-permission android:name="${applicationId}.permission.RECEIVE_BROADCASTS" />
+</manifest>

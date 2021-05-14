@@ -1,0 +1,3 @@
+[submodule "core/src/main/golang/clash"]
+	path = core/src/main/golang/clash
+	url = https://github.com/Kr328/clash.git

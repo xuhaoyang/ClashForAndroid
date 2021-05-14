@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.github.kr328.clash">
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
+    <application
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:banner="@mipmap/ic_banner"
+        android:fullBackupContent="@xml/full_backup_content"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/application_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/BootstrapTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="N">
+        <meta-data
+            android:name="releaseName"
+            android:value="@string/release_name" />
+        <meta-data
+            android:name="releaseCode"
+            android:value="@integer/release_code" />
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="uiMode"
+            android:exported="true"
+            android:label="@string/launch_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ExternalImportActivity"
+            android:exported="true"
+            android:label="@string/import_from_file"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="install-config"
+                    android:scheme="clash" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ApkBrokenActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/application_broken" />
+        <activity
+            android:name=".AppCrashedActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/application_crashed"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ProfilesActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/profiles" />
+        <activity
+            android:name=".NewProfileActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/create_profile" />
+        <activity
+            android:name=".PropertiesActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/profile" />
+        <activity
+            android:name=".ProxyActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/proxy" />
+        <activity
+            android:name=".ProvidersActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/providers" />
+        <activity
+            android:name=".LogsActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/logs" />
+        <activity
+            android:name=".LogcatActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/logcat" />
+        <activity
+            android:name=".SettingsActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/settings" />
+        <activity
+            android:name=".NetworkSettingsActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/network" />
+        <activity
+            android:name=".AppSettingsActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/app" />
+        <activity
+            android:name=".OverrideSettingsActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/override" />
+        <activity
+            android:name=".AccessControlActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/access_control_packages" />
+        <activity
+            android:name=".HelpActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/help" />
+        <activity
+            android:name=".FilesActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/files" />
+
+        <service
+            android:name=".LogcatService"
+            android:exported="false"
+            android:label="@string/clash_logcat" />
+        <service
+            android:name=".TileService"
+            android:exported="true"
+            android:icon="@drawable/ic_logo_service"
+            android:label="@string/launch_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".RestartReceiver"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
