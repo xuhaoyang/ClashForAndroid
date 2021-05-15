@@ -82,7 +82,7 @@ func relayDnsPacket(payload []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	r, err := resolver.ResolveMsg(msg)
+	r, err := resolver.ServeMsg(msg)
 	if err != nil {
 		return nil, err
 	}
