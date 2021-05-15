@@ -22,6 +22,7 @@ var processors = []processor{
 	patchProfile,
 	patchDns,
 	patchProviders,
+	patchProxyGroup,
 	validConfig,
 }
 
@@ -81,6 +82,14 @@ func patchProviders(cfg *config.RawConfig, profileDir string) error {
 			provider["path"] = profileDir + "/providers/" + common.ResolveAsRoot(path)
 		}
 	})
+
+	return nil
+}
+
+func patchProxyGroup(cfg *config.RawConfig, _ string) error {
+	for _, g := range cfg.ProxyGroup {
+		g["lazy"] = false
+	}
 
 	return nil
 }
