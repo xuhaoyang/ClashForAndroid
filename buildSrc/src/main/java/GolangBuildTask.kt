@@ -46,6 +46,8 @@ abstract class GolangBuildTask : DefaultTask() {
             """.trimIndent().trim()
         }
 
+        "go mod tidy".exec(pwd = src)
+
         nativeAbis.get().parallelStream().forEach {
             val out = outputDirectory.get().file("$it/libclash.so")
 
