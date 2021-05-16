@@ -193,13 +193,17 @@
 
     <string name="document">Document</string>
     <string name="feedback">Feedback</string>
+    <string name="sources">Sources</string>
     <string name="donate">Donate</string>
     <string name="clash_wiki">Clash Wiki</string>
     <string name="github_issues">Github Issues</string>
     <string name="google_play">Google Play</string>
+    <string name="clash_core">Clash Core</string>
     <string name="clash_wiki_url" translatable="false">https://github.com/Dreamacro/clash/wiki</string>
     <string name="github_issues_url" translatable="false">https://github.com/Kr328/ClashForAndroid/issues</string>
     <string name="donate_url" translatable="false">https://donate.kr328.app</string>
+    <string name="github_url" translatable="false">https://github.com/Kr328/ClashForAndroid</string>
+    <string name="clash_core_url" translatable="false">https://github.com/Dreamacro/clash</string>
 
     <string name="tips_properties"><![CDATA[Accept Only <strong>Clash Config</strong>(including <strong>Proxy</strong>/<strong>Rules</strong>)]]></string>
     <string name="tips_help"><![CDATA[Clash for Android is a <strong>freeware</strong> and we do <strong>NOT</strong> provide any service for it]]></string>
