@@ -6,10 +6,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-
-        maven {
-            url = uri("https://maven.kr328.app")
-        }
     }
 }
 

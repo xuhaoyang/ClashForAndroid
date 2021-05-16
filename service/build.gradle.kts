@@ -60,14 +60,14 @@ android {
 }
 
 dependencies {
-    ksp("com.github.kr328.kaidl:kaidl:$kaidlVersion")
+    ksp(project(":kaidl:kaidl"))
     kapt("androidx.room:room-compiler:$roomVersion")
 
     api(project(":core"))
     api(project(":common"))
 
     implementation(kotlin("stdlib-jdk7"))
-    implementation("com.github.kr328.kaidl:kaidl-runtime:$kaidlVersion")
+    implementation(project(":kaidl:kaidl-runtime"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")

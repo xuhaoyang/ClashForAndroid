@@ -6,6 +6,8 @@ include(":service")
 include(":design")
 include(":common")
 include(":hideapi")
+include(":kaidl:kaidl")
+include(":kaidl:kaidl-runtime")
 
 pluginManagement {
     repositories {
