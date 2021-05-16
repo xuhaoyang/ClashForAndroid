@@ -36,7 +36,7 @@ android {
                 arguments(
                     "-DGO_SOURCE:STRING=$golangSource",
                     "-DGO_OUTPUT:STRING=$golangBuild",
-                    "-DFLAVOR_NAME=$buildFlavor"
+                    "-DFLAVOR_NAME=$buildFlavor",
                 )
             }
         }
@@ -45,13 +45,16 @@ android {
     buildTypes {
         named("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
     productFlavors {
-        create("open") {
-            dimension = "open"
+        create("foss") {
+            dimension = "foss"
         }
         create("premium") {
             dimension = "premium"

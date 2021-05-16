@@ -13,5 +13,5 @@ val Project.buildFlavor: String
         return if (project(":core").file("src/main/golang/clash/script/script.go").exists())
             "premium"
         else
-            "open"
+            "foss"
     }

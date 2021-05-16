@@ -32,8 +32,8 @@ android {
     }
 
     productFlavors {
-        create("open") {
-            dimension = "open"
+        create("foss") {
+            dimension = "foss"
         }
         create("premium") {
             dimension = "premium"

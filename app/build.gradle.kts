@@ -38,9 +38,9 @@ android {
     }
 
     productFlavors {
-        create("open") {
-            dimension = "open"
-            versionNameSuffix = ".open-source"
+        create("foss") {
+            dimension = "foss"
+            versionNameSuffix = ".foss"
         }
         create("premium") {
             dimension = "premium"
