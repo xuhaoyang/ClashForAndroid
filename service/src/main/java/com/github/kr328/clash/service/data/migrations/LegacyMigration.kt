@@ -12,7 +12,6 @@ import com.github.kr328.clash.service.model.Profile
 import com.github.kr328.clash.service.util.generateProfileUUID
 import com.github.kr328.clash.service.util.pendingDir
 import com.github.kr328.clash.service.util.sendProfileChanged
-import com.microsoft.appcenter.crashes.Crashes
 import java.io.File
 
 internal suspend fun migrationFromLegacy(context: Context) {
@@ -37,8 +36,6 @@ internal suspend fun migrationFromLegacy(context: Context) {
                 }
             }
     } catch (e: Exception) {
-        Crashes.trackError(e)
-
         Log.w("Migration legacy database: $e", e)
     }
 

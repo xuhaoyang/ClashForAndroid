@@ -72,8 +72,6 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.core:core-ktx:$ktxVersion")
-    implementation("com.microsoft.appcenter:appcenter-analytics:$appcenterVersion")
-    implementation("com.microsoft.appcenter:appcenter-crashes:$appcenterVersion")
     implementation("dev.rikka.rikkax.preference:multiprocess:$muiltprocessVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 }
