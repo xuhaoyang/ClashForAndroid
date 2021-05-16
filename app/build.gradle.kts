@@ -41,6 +41,7 @@ android {
         create("foss") {
             dimension = "foss"
             versionNameSuffix = ".foss"
+            applicationIdSuffix = ".foss"
         }
         create("premium") {
             dimension = "premium"
