@@ -30,7 +30,10 @@ android {
         named("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -42,6 +45,28 @@ android {
         create("premium") {
             dimension = "premium"
             versionNameSuffix = ".premium"
+        }
+    }
+
+    val signingFile = rootProject.file("keystore.properties")
+    if (signingFile.exists()) {
+        val properties = Properties().apply {
+            signingFile.inputStream().use {
+                load(it)
+            }
+        }
+        signingConfigs {
+            create("release") {
+                storeFile = rootProject.file(properties.getProperty("storeFile")!!)
+                storePassword = properties.getProperty("storePassword")!!
+                keyAlias = properties.getProperty("keyAlias")!!
+                keyPassword = properties.getProperty("keyPassword")!!
+            }
+        }
+        buildTypes {
+            named("release") {
+                signingConfig = signingConfigs["release"]
+            }
         }
     }
 
@@ -79,30 +104,6 @@ android {
                 it.buildConfigField("String", "APP_CENTER_KEY", "null")
             } else {
                 it.buildConfigField("String", "APP_CENTER_KEY", "\"$key\"")
-            }
-        }
-    }
-
-    signingConfigs.apply {
-        val signingFile = rootProject.file("keystore.properties")
-        if ( signingFile.exists() ) {
-            val properties = Properties().apply {
-                signingFile.inputStream().use {
-                    load(it)
-                }
-            }
-            signingConfigs {
-                named("release") {
-                    storeFile = rootProject.file(Objects.requireNonNull(properties.getProperty("storeFile")))
-                    storePassword = Objects.requireNonNull(properties.getProperty("storePassword"))
-                    keyAlias = Objects.requireNonNull(properties.getProperty("keyAlias"))
-                    keyPassword = Objects.requireNonNull(properties.getProperty("keyPassword"))
-                }
-            }
-            buildTypes {
-                named("release") {
-                    this.signingConfig = signingConfigs.findByName("release")
-                }
             }
         }
     }
