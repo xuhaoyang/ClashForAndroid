@@ -45,6 +45,14 @@ android {
         create("premium") {
             dimension = "premium"
             versionNameSuffix = ".premium"
+
+            val appCenterKey = rootProject.file("local.properties").inputStream()
+                .use { Properties().apply { load(it) } }
+                .getProperty("appcenter.key", null)
+
+            Objects.requireNonNull(appCenterKey)
+
+            buildConfigField("String", "APP_CENTER_KEY", "\"$appCenterKey\"")
         }
     }
 
@@ -89,31 +97,18 @@ android {
             isUniversalApk = true
         }
     }
-
-    buildTypes.apply {
-        val properties = Properties().apply {
-            rootProject.file("local.properties").inputStream().use {
-                load(it)
-            }
-        }
-
-        val key = properties.getProperty("appcenter.key", null)
-
-        forEach {
-            if (it.name == "debug" || key == null) {
-                it.buildConfigField("String", "APP_CENTER_KEY", "null")
-            } else {
-                it.buildConfigField("String", "APP_CENTER_KEY", "\"$key\"")
-            }
-        }
-    }
 }
 
 dependencies {
+    val premiumImplementation by configurations
+
     api(project(":core"))
     api(project(":service"))
     api(project(":design"))
     api(project(":common"))
+
+    premiumImplementation("com.microsoft.appcenter:appcenter-analytics:$appcenterVersion")
+    premiumImplementation("com.microsoft.appcenter:appcenter-crashes:$appcenterVersion")
 
     implementation(kotlin("stdlib-jdk7"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
@@ -123,8 +118,6 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:$coordinatorlayoutVersion")
     implementation("androidx.recyclerview:recyclerview:$recyclerviewVersion")
     implementation("androidx.fragment:fragment:$fragmentVersion")
-    implementation("com.microsoft.appcenter:appcenter-analytics:$appcenterVersion")
-    implementation("com.microsoft.appcenter:appcenter-crashes:$appcenterVersion")
     implementation("com.google.android.material:material:$materialVersion")
 }
 

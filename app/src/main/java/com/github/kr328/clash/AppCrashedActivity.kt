@@ -1,12 +1,9 @@
 package com.github.kr328.clash
 
-import android.os.DeadObjectException
 import com.github.kr328.clash.common.compat.versionCodeCompat
 import com.github.kr328.clash.common.log.Log
 import com.github.kr328.clash.design.AppCrashedDesign
 import com.github.kr328.clash.log.SystemLogcat
-import com.microsoft.appcenter.crashes.Crashes
-import com.microsoft.appcenter.crashes.ingestion.models.ErrorAttachmentLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -27,15 +24,7 @@ class AppCrashedActivity : BaseActivity<AppCrashedDesign>() {
             SystemLogcat.dumpCrash()
         }
 
-        if (BuildConfig.APP_CENTER_KEY != null && !BuildConfig.DEBUG) {
-            if (logs.isNotBlank()) {
-                Crashes.trackError(
-                    DeadObjectException(),
-                    mapOf("type" to "app_crashed"),
-                    listOf(ErrorAttachmentLog.attachmentWithText(logs, "logcat.txt"))
-                )
-            }
-        }
+        Tracker.uploadLogcat(logs)
 
         design.setAppLogs(logs)
 
