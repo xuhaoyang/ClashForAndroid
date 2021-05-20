@@ -47,13 +47,15 @@ android {
             dimension = "premium"
             versionNameSuffix = ".premium"
 
-            val appCenterKey = rootProject.file("local.properties").inputStream()
-                .use { Properties().apply { load(it) } }
-                .getProperty("appcenter.key", null)
+            if (buildFlavor == "premium") {
+                val appCenterKey = rootProject.file("local.properties").inputStream()
+                    .use { Properties().apply { load(it) } }
+                    .getProperty("appcenter.key", null)
 
-            Objects.requireNonNull(appCenterKey)
+                Objects.requireNonNull(appCenterKey)
 
-            buildConfigField("String", "APP_CENTER_KEY", "\"$appCenterKey\"")
+                buildConfigField("String", "APP_CENTER_KEY", "\"$appCenterKey\"")
+            }
         }
     }
 
