@@ -7,6 +7,10 @@ var (
 		"8.8.8.8",
 		"1.1.1.1",
 	}
+	defaultFallback = []string{
+		"https://1.1.1.1/dns-query",
+		"https://doh.pub/dns-query",
+	}
 	defaultFakeIPFilter = []string{
 		// stun services
 		"+.stun.*.*",
@@ -21,7 +25,7 @@ var (
 		"*.n.n.srv.nintendo.net",
 	}
 	localNetwork = []string{
-		"0.0.0.0/32",
+		"0.0.0.0/8",
 		"127.0.0.0/8",
 	}
 )

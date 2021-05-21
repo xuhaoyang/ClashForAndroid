@@ -58,10 +58,10 @@ func patchDns(cfg *config.RawConfig, _ string) error {
 		cfg.DNS.Enable = true
 		cfg.DNS.IPv6 = false
 		cfg.DNS.NameServer = defaultNameServers
-		cfg.DNS.Fallback = []string{}
+		cfg.DNS.Fallback = defaultFallback
 		cfg.DNS.FallbackFilter.GeoIP = false
 		cfg.DNS.FallbackFilter.IPCIDR = localNetwork
-		cfg.DNS.EnhancedMode = dns.FAKEIP
+		cfg.DNS.EnhancedMode = dns.MAPPING
 		cfg.DNS.FakeIPRange = "198.18.0.0/16"
 		cfg.DNS.DefaultNameserver = defaultNameServers
 		cfg.DNS.FakeIPFilter = defaultFakeIPFilter
