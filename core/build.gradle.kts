@@ -6,7 +6,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     id("kotlinx-serialization")
-    id("library-golang")
+    id("clash-build")
 }
 
 val geoipDatabaseUrl =

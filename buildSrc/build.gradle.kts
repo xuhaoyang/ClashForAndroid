@@ -28,8 +28,8 @@ dependencies {
 gradlePlugin {
     plugins {
         create("golang") {
-            id = "library-golang"
-            implementationClass = "LibraryGolangPlugin"
+            id = "clash-build"
+            implementationClass = "com.github.kr328.clash.tools.ClashBuildPlugin"
         }
     }
 }

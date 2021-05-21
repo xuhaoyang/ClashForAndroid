@@ -16,6 +16,7 @@ endif ()
 
 include_directories("${GO_OUTPUT_BASE}/${CMAKE_ANDROID_ARCH_ABI}")
 include_directories("${GO_SOURCE}")
+include_directories("${GO_SOURCE}/tun2socket/bridge/native")
 
 link_directories("${GO_OUTPUT_BASE}/${CMAKE_ANDROID_ARCH_ABI}")
 
