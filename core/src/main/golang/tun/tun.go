@@ -9,12 +9,17 @@ import (
 )
 
 type context struct {
-	stack tun2socket.Stack
 	device *os.File
+	stack tun2socket.Stack
 }
 
 var lock sync.Mutex
 var tun *context
+
+func (ctx *context) close() {
+	_ = ctx.stack.Close()
+	_ = ctx.device.Close()
+}
 
 func Start(fd, mtu int, dns string) error {
 	lock.Lock()
@@ -33,11 +38,15 @@ func Start(fd, mtu int, dns string) error {
 		return err
 	}
 
+	ctx := &context{
+		device: device,
+		stack:  stack,
+	}
+
 	go func() {
 		// device -> lwip
 
-		defer device.Close()
-		defer stack.Close()
+		defer ctx.close()
 
 		buf := make([]byte, mtu)
 
@@ -54,8 +63,7 @@ func Start(fd, mtu int, dns string) error {
 	go func() {
 		// lwip -> device
 
-		defer device.Close()
-		defer stack.Close()
+		defer ctx.close()
 
 		buf := make([]byte, mtu)
 
@@ -72,7 +80,7 @@ func Start(fd, mtu int, dns string) error {
 	go func() {
 		// lwip tcp
 
-		defer stack.TCP().Close()
+		defer ctx.close()
 
 		for {
 			conn, err := stack.TCP().Accept()
@@ -96,7 +104,7 @@ func Start(fd, mtu int, dns string) error {
 	go func() {
 		// lwip udp
 
-		defer stack.UDP().Close()
+		defer ctx.close()
 
 		for {
 			buf := allocUDP(mtu)
@@ -123,10 +131,7 @@ func Start(fd, mtu int, dns string) error {
 		}
 	}()
 
-	tun = &context{
-		stack:  stack,
-		device: device,
-	}
+	tun = ctx
 
 	return nil
 }
@@ -140,8 +145,7 @@ func Stop() {
 
 func stopLocked() {
 	if tun != nil {
-		tun.device.Close()
-		tun.stack.Close()
+		tun.close()
 	}
 
 	tun = nil
