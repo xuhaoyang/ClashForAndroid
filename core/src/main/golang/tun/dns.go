@@ -7,24 +7,22 @@ import (
 	"time"
 
 	"github.com/Dreamacro/clash/component/resolver"
+	"github.com/kr328/tun2socket/bridge"
 
 	D "github.com/miekg/dns"
-
-	"github.com/kr328/tun2socket/binding"
-	"github.com/kr328/tun2socket/redirect"
 )
 
 const defaultDnsReadTimeout = time.Second * 30
 
-func shouldHijackDns(dnsAddr binding.Address, targetAddr binding.Address) bool {
-	if targetAddr.Port != 53 {
+func shouldHijackDns(dns net.IP, target net.IP, targetPort int) bool {
+	if targetPort != 53 {
 		return false
 	}
 
-	return dnsAddr.IP.Equal(net.IPv4zero) || dnsAddr.IP.Equal(targetAddr.IP)
+	return net.IPv4zero.Equal(dns) || target.Equal(dns)
 }
 
-func hijackUDPDns(pkt []byte, ep *binding.Endpoint, sender redirect.UDPSender) {
+func hijackUDPDns(pkt []byte, lAddr, rAddr net.Addr, udp bridge.UDP) {
 	go func() {
 		answer, err := relayDnsPacket(pkt)
 
@@ -32,10 +30,9 @@ func hijackUDPDns(pkt []byte, ep *binding.Endpoint, sender redirect.UDPSender) {
 			return
 		}
 
-		_ = sender(answer, &binding.Endpoint{
-			Source: ep.Target,
-			Target: ep.Source,
-		})
+		_, _ = udp.WriteTo(answer, lAddr, rAddr)
+
+		recycleUDP(pkt)
 	}()
 }
 

@@ -3,67 +3,126 @@ package tun
 import (
 	"net"
 	"os"
-	"strconv"
 	"sync"
-
-	"github.com/kr328/tun2socket/binding"
-	"github.com/kr328/tun2socket/redirect"
 
 	"github.com/kr328/tun2socket"
 )
 
-var lock sync.Mutex
-var tun *tun2socket.Tun2Socket
+type context struct {
+	stack tun2socket.Stack
+	device *os.File
+}
 
-func Start(fd, mtu int, gateway, mirror, dns string, onStop func()) error {
+var lock sync.Mutex
+var tun *context
+
+func Start(fd, mtu int, dns string) error {
 	lock.Lock()
 	defer lock.Unlock()
 
 	stopLocked()
 
-	dnsHost, dnsPort, err := net.SplitHostPort(dns)
+	dnsIP := net.ParseIP(dns)
+
+	device := os.NewFile(uintptr(fd), "/dev/tun")
+
+	stack, err := tun2socket.NewStack(mtu)
 	if err != nil {
+		_ = device.Close()
+
 		return err
 	}
 
-	dnsP, err := strconv.Atoi(dnsPort)
-	if err != nil {
-		return err
-	}
+	go func() {
+		// device -> lwip
 
-	dnsAddr := binding.Address{
-		IP:   net.ParseIP(dnsHost),
-		Port: uint16(dnsP),
-	}
+		defer device.Close()
+		defer stack.Close()
 
-	t := tun2socket.NewTun2Socket(os.NewFile(uintptr(fd), "/dev/tun"), mtu, net.ParseIP(gateway), net.ParseIP(mirror))
+		buf := make([]byte, mtu)
 
-	t.SetAllocator(allocUDP)
-	t.SetClosedHandler(onStop)
-	t.SetLogger(&logger{})
+		for {
+			n, err := device.Read(buf)
+			if err != nil {
+				return
+			}
 
-	t.SetTCPHandler(func(conn net.Conn, endpoint *binding.Endpoint) {
-		if shouldHijackDns(dnsAddr, endpoint.Target) {
-			hijackTCPDns(conn)
-
-			return
+			_, _ = stack.Link().Write(buf[:n])
 		}
+	}()
 
-		handleTCP(conn, endpoint)
-	})
-	t.SetUDPHandler(func(payload []byte, endpoint *binding.Endpoint, sender redirect.UDPSender) {
-		if shouldHijackDns(dnsAddr, endpoint.Target) {
-			hijackUDPDns(payload, endpoint, sender)
+	go func() {
+		// lwip -> device
 
-			return
+		defer device.Close()
+		defer stack.Close()
+
+		buf := make([]byte, mtu)
+
+		for {
+			n, err := stack.Link().Read(buf)
+			if err != nil {
+				return
+			}
+
+			_, _ = device.Write(buf[:n])
 		}
+	}()
 
-		handleUDP(payload, endpoint, sender)
-	})
+	go func() {
+		// lwip tcp
 
-	t.Start()
+		for {
+			conn, err := stack.TCP().Accept()
+			if err != nil {
+				return
+			}
 
-	tun = t
+			source := conn.LocalAddr().(*net.TCPAddr)
+			target := conn.RemoteAddr().(*net.TCPAddr)
+
+			if shouldHijackDns(dnsIP, target.IP, target.Port) {
+				hijackTCPDns(conn)
+
+				continue
+			}
+
+			handleTCP(conn, source, target)
+		}
+	}()
+
+	go func() {
+		// lwip udp
+
+		for {
+			buf := allocUDP(mtu)
+
+			n, lAddr, rAddr, err := stack.UDP().ReadFrom(buf)
+			if err != nil {
+				return
+			}
+
+			source := lAddr.(*net.UDPAddr)
+			target := rAddr.(*net.UDPAddr)
+
+			if n == 0 {
+				continue
+			}
+
+			if shouldHijackDns(dnsIP, target.IP, target.Port) {
+				hijackUDPDns(buf[:n], source, target, stack.UDP())
+
+				continue
+			}
+
+			handleUDP(buf[:n], source, target, stack.UDP())
+		}
+	}()
+
+	tun = &context{
+		stack:  stack,
+		device: device,
+	}
 
 	return nil
 }
@@ -77,7 +136,8 @@ func Stop() {
 
 func stopLocked() {
 	if tun != nil {
-		tun.Close()
+		tun.device.Close()
+		tun.stack.Close()
 	}
 
 	tun = nil

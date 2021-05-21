@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.*
 
 abstract class GolangBuildTask : DefaultTask() {
     abstract val debug: Property<Boolean>
@@ -23,7 +24,10 @@ abstract class GolangBuildTask : DefaultTask() {
     abstract val minSdkVersion: Property<Int>
         @Input get
 
-    abstract val cCompilerBasePath: DirectoryProperty
+    abstract val ndkDirectory: DirectoryProperty
+        @InputDirectory get
+
+    abstract val cmakeDirectory: DirectoryProperty
         @InputDirectory get
 
     abstract val inputDirectory: DirectoryProperty
@@ -36,14 +40,12 @@ abstract class GolangBuildTask : DefaultTask() {
     fun build() {
         val src = inputDirectory.get().asFile
 
-        val cmd = if (debug.get()) {
-            """
-                go build --buildmode=c-shared -trimpath -o "%s" -tags "without_gvisor,without_system,debug${if (premium.get()) ",premium" else ""}"
-            """.trimIndent().trim()
+        val generateCmd = """go run make/make.go bridge native build android %s"""
+
+        val buildCmd = if (debug.get()) {
+            """go build --buildmode=c-shared -trimpath -o "%s" -tags "without_gvisor,without_system,debug${if (premium.get()) ",premium" else ""}"""
         } else {
-            """
-                go build --buildmode=c-shared -trimpath -o "%s" -tags "without_gvisor,without_system${if (premium.get()) ",premium" else ""}" -ldflags "-s -w"
-            """.trimIndent().trim()
+            """go build --buildmode=c-shared -trimpath -o "%s" -tags "without_gvisor,without_system${if (premium.get()) ",premium" else ""}" -ldflags "-s -w""""
         }
 
         "go mod tidy".exec(pwd = src)
@@ -51,8 +53,21 @@ abstract class GolangBuildTask : DefaultTask() {
         nativeAbis.get().parallelStream().forEach {
             val out = outputDirectory.get().file("$it/libclash.so")
 
-            cmd.format(out).exec(pwd = src, env = generateGolangBuildEnvironment(it))
+            generateCmd.format(it.toGoArch()).exec(pwd = src.resolve("tun2socket/bridge"), env = generateGolangGenerateEnvironment(it))
+            buildCmd.format(out).exec(pwd = src, env = generateGolangBuildEnvironment(it))
         }
+    }
+
+    private fun generateGolangGenerateEnvironment(abi: String): Map<String, String> {
+        val path = cmakeDirectory.get().asFile.absolutePath + File.pathSeparator + System.getenv("PATH")
+
+        return mapOf(
+            "PATH" to path,
+            "CMAKE_SYSTEM_NAME" to "Android",
+            "CMAKE_ANDROID_NDK" to ndkDirectory.get().asFile.absolutePath,
+            "CMAKE_ANDROID_ARCH_ABI" to abi,
+            "CMAKE_SYSTEM_VERSION" to minSdkVersion.get().toString()
+        )
     }
 
     private fun generateGolangBuildEnvironment(abi: String): Map<String, String> {
@@ -81,13 +96,25 @@ abstract class GolangBuildTask : DefaultTask() {
         }
 
         return mapOf(
-            "CC" to cCompilerBasePath.get().asFile.resolve(compiler).absolutePath,
+            "CC" to compilerBasePath.resolve(compiler).absolutePath,
             "GOOS" to "android",
             "GOARCH" to goArch,
             "GOARM" to goArm,
             "CGO_ENABLED" to "1",
             "CFLAGS" to "-O3 -Werror",
+            "CMAKE_ARGS" to "-DCMAKE_TOOLCHAIN_FILE=${ndkDirectory.get().asFile.absolutePath}/build/cmake/android.toolchain.cmake -DANDROID_ABI=$abi -DANDROID_PLATFORM=android-${minSdkVersion.get()} -DCMAKE_BUILD_TYPE=Release",
+            "PATH" to cmakeDirectory.get().asFile.absolutePath + File.pathSeparator + System.getenv("PATH")
         )
+    }
+
+    private fun String.toGoArch(): String {
+        return when (this) {
+            "arm64-v8a" -> "arm64"
+            "armeabi-v7a" -> "arm"
+            "x86" -> "386"
+            "x86_64" -> "amd64"
+            else -> throw UnsupportedOperationException("unsupported abi: $this")
+        }
     }
 
     private fun String.exec(
@@ -118,4 +145,23 @@ abstract class GolangBuildTask : DefaultTask() {
 
         return outputStream.toString("utf-8")
     }
+
+    private val compilerBasePath: File
+        get() {
+            val host = when {
+                Os.isFamily(Os.FAMILY_WINDOWS) ->
+                    "windows"
+                Os.isFamily(Os.FAMILY_MAC) ->
+                    "darwin"
+                Os.isFamily(Os.FAMILY_UNIX) ->
+                    "linux"
+                else ->
+                    throw GradleScriptException(
+                        "Unsupported host",
+                        FileNotFoundException("Unsupported host")
+                    )
+            }
+
+            return ndkDirectory.get().asFile.resolve("toolchains/llvm/prebuilt/$host-x86_64/bin")
+        }
 }

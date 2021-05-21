@@ -56,17 +56,14 @@ func (t *remoteTun) stop() {
 }
 
 //export startTun
-func startTun(fd, mtu C.int, gateway, mirror, dns C.c_string, callback unsafe.Pointer) C.int {
+func startTun(fd, mtu C.int, dns C.c_string, callback unsafe.Pointer) C.int {
 	f := int(fd)
 	m := int(mtu)
-
-	g := C.GoString(gateway)
-	mr := C.GoString(mirror)
 	d := C.GoString(dns)
 
 	remote := &remoteTun{callback: callback, closed: false, limit: semaphore.NewWeighted(4)}
 
-	if tun.Start(f, m, g, mr, d, remote.stop) != nil {
+	if tun.Start(f, m, d) != nil {
 		return 1
 	}
 

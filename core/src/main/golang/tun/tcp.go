@@ -4,37 +4,24 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/kr328/tun2socket/binding"
-
 	C "github.com/Dreamacro/clash/constant"
-	"github.com/Dreamacro/clash/context"
+	CTX "github.com/Dreamacro/clash/context"
 	"github.com/Dreamacro/clash/tunnel"
 )
 
-func handleTCP(conn net.Conn, endpoint *binding.Endpoint) {
-	src := &net.TCPAddr{
-		IP:   endpoint.Source.IP,
-		Port: int(endpoint.Source.Port),
-		Zone: "",
-	}
-	dst := &net.TCPAddr{
-		IP:   endpoint.Target.IP,
-		Port: int(endpoint.Target.Port),
-		Zone: "",
-	}
-
+func handleTCP(conn net.Conn, source *net.TCPAddr, target *net.TCPAddr) {
 	metadata := &C.Metadata{
 		NetWork:    C.TCP,
 		Type:       C.SOCKS,
-		SrcIP:      src.IP,
-		DstIP:      dst.IP,
-		SrcPort:    strconv.Itoa(src.Port),
-		DstPort:    strconv.Itoa(dst.Port),
+		SrcIP:      source.IP,
+		DstIP:      target.IP,
+		SrcPort:    strconv.Itoa(source.Port),
+		DstPort:    strconv.Itoa(target.Port),
 		AddrType:   C.AtypIPv4,
 		Host:       "",
-		RawSrcAddr: src,
-		RawDstAddr: dst,
+		RawSrcAddr: source,
+		RawDstAddr: target,
 	}
 
-	tunnel.Add(context.NewConnContext(conn, metadata))
+	tunnel.Add(CTX.NewConnContext(conn, metadata))
 }

@@ -1,12 +1,10 @@
 package tun
 
 import (
-	"io"
 	"net"
 
 	"github.com/Dreamacro/clash/transport/socks5"
-	"github.com/kr328/tun2socket/binding"
-	"github.com/kr328/tun2socket/redirect"
+	"github.com/kr328/tun2socket/bridge"
 
 	adapters "github.com/Dreamacro/clash/adapters/inbound"
 	"github.com/Dreamacro/clash/common/pool"
@@ -15,10 +13,9 @@ import (
 )
 
 type udpPacket struct {
-	metadata *C.Metadata
-	source   binding.Address
+	source   *net.UDPAddr
 	data     []byte
-	send     redirect.UDPSender
+	udp      bridge.UDP
 }
 
 func (u *udpPacket) Data() []byte {
@@ -26,15 +23,7 @@ func (u *udpPacket) Data() []byte {
 }
 
 func (u *udpPacket) WriteBack(b []byte, addr net.Addr) (n int, err error) {
-	uAddr, ok := addr.(*net.UDPAddr)
-	if !ok {
-		return 0, io.ErrClosedPipe
-	}
-
-	return len(b), u.send(b, &binding.Endpoint{
-		Source: binding.Address{IP: uAddr.IP, Port: uint16(uAddr.Port)},
-		Target: u.source,
-	})
+	return u.udp.WriteTo(b, u.source, addr)
 }
 
 func (u *udpPacket) Drop() {
@@ -49,20 +38,14 @@ func (u *udpPacket) LocalAddr() net.Addr {
 	}
 }
 
-func handleUDP(payload []byte, endpoint *binding.Endpoint, sender redirect.UDPSender) {
+func handleUDP(payload []byte, source *net.UDPAddr, target *net.UDPAddr, udp bridge.UDP) {
 	pkt := &udpPacket{
-		source: endpoint.Source,
-		data:   payload,
-		send:   sender,
+		source:   source,
+		data:     payload,
+		udp:      udp,
 	}
 
-	rAddr := &net.UDPAddr{
-		IP:   endpoint.Target.IP,
-		Port: int(endpoint.Target.Port),
-		Zone: "",
-	}
-
-	adapter := adapters.NewPacket(socks5.ParseAddrToSocksAddr(rAddr), pkt, C.SOCKS)
+	adapter := adapters.NewPacket(socks5.ParseAddrToSocksAddr(target), pkt, C.SOCKS)
 
 	tunnel.AddPacket(adapter)
 }

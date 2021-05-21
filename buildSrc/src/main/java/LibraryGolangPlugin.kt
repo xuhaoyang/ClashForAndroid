@@ -11,6 +11,11 @@ class LibraryGolangPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.extensions.getByType(LibraryExtension::class.java).apply {
             target.afterEvaluate {
+                val properties = Properties().apply {
+                    target.rootProject.file("local.properties").inputStream().use(this::load)
+                }
+                val cmakeDirectory = target.rootProject.file(properties.getProperty("cmake.dir")!!)
+
                 libraryVariants.forEach { variant ->
                     val abis = defaultConfig.externalNativeBuild.cmake.abiFilters +
                             defaultConfig.externalNativeBuild.ndkBuild.abiFilters
@@ -26,7 +31,8 @@ class LibraryGolangPlugin : Plugin<Project> {
                         it.debug.set(variant.name == "debug")
                         it.nativeAbis.set(abis)
                         it.minSdkVersion.set(defaultConfig.minSdk!!)
-                        it.cCompilerBasePath.set(compilerBasePath)
+                        it.ndkDirectory.set(ndkDirectory)
+                        it.cmakeDirectory.set(cmakeDirectory)
                         it.inputDirectory.set(target.golangSource)
                         it.outputDirectory.set(golangBuildDir)
                     }
@@ -47,23 +53,4 @@ class LibraryGolangPlugin : Plugin<Project> {
             }
         }
     }
-
-    private val LibraryExtension.compilerBasePath: File
-        get() {
-            val host = when {
-                Os.isFamily(Os.FAMILY_WINDOWS) ->
-                    "windows"
-                Os.isFamily(Os.FAMILY_MAC) ->
-                    "darwin"
-                Os.isFamily(Os.FAMILY_UNIX) ->
-                    "linux"
-                else ->
-                    throw GradleScriptException(
-                        "Unsupported host",
-                        FileNotFoundException("Unsupported host")
-                    )
-            }
-
-            return ndkDirectory.resolve("toolchains/llvm/prebuilt/$host-x86_64/bin")
-        }
 }
