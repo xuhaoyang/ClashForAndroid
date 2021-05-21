@@ -72,6 +72,8 @@ func Start(fd, mtu int, dns string) error {
 	go func() {
 		// lwip tcp
 
+		defer stack.TCP().Close()
+
 		for {
 			conn, err := stack.TCP().Accept()
 			if err != nil {
@@ -93,6 +95,8 @@ func Start(fd, mtu int, dns string) error {
 
 	go func() {
 		// lwip udp
+
+		defer stack.UDP().Close()
 
 		for {
 			buf := allocUDP(mtu)
