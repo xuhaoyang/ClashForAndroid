@@ -6,7 +6,6 @@ import java.io.File
 
 class Environment(
     private val ndkDirectory: File,
-    private val cmakeDirectory: File,
     private val minSdkVersion: Int,
 ) {
     fun ofCoreBuild(abi: NativeAbi): Map<String, String> {
@@ -35,10 +34,7 @@ class Environment(
     }
 
     fun ofLwipBuild(abi: NativeAbi): Map<String, String> {
-        val path = "${cmakeDirectory.absolutePath}${File.pathSeparator}${System.getenv("PATH")}"
-
         return mapOf(
-            "PATH" to path,
             "CMAKE_SYSTEM_NAME" to "Android",
             "CMAKE_ANDROID_NDK" to ndkDirectory.absolutePath,
             "CMAKE_ANDROID_ARCH_ABI" to abi.value,

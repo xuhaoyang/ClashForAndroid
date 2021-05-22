@@ -3,18 +3,13 @@ package com.github.kr328.clash.tools
 import com.android.build.gradle.LibraryExtension
 import golangBuild
 import golangSource
-import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.Delete
-import java.io.File
 import java.util.*
 
 class ClashBuildPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.afterEvaluate {
-            val cmakeDirectory = resolveCmakeDir(target)
-
             target.extensions.getByType(LibraryExtension::class.java).apply {
                 libraryVariants.forEach { variant ->
                     val config = BuildConfig.of(this, variant)
@@ -27,7 +22,6 @@ class ClashBuildPlugin : Plugin<Project> {
                     ) {
                         it.config.set(config)
                         it.ndkDirectory.set(ndkDirectory)
-                        it.cmakeDirectory.set(cmakeDirectory)
                         it.inputDirectory.set(target.golangSource)
                         it.outputDirectory.set(buildDir)
                     }
@@ -47,15 +41,5 @@ class ClashBuildPlugin : Plugin<Project> {
                 }
             }
         }
-    }
-
-    private fun resolveCmakeDir(project: Project): File {
-        val properties = Properties().apply {
-            project.rootProject.file("local.properties").inputStream().use(this::load)
-        }
-
-        return project.rootProject.file(
-            properties.getProperty("cmake.dir") ?: throw GradleException("cmake.dir not found")
-        )
     }
 }

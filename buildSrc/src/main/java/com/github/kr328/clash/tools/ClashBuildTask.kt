@@ -16,9 +16,6 @@ abstract class ClashBuildTask : DefaultTask() {
     abstract val ndkDirectory: DirectoryProperty
         @InputDirectory get
 
-    abstract val cmakeDirectory: DirectoryProperty
-        @InputDirectory get
-
     abstract val inputDirectory: DirectoryProperty
         @InputDirectory get
 
@@ -31,7 +28,7 @@ abstract class ClashBuildTask : DefaultTask() {
         val output = outputDirectory.file
 
         val config = config.get()
-        val environment = Environment(ndkDirectory.file, cmakeDirectory.file, config.minSdkVersion)
+        val environment = Environment(ndkDirectory.file, config.minSdkVersion)
 
         val tags = listOf("without_gvisor", "without_system") +
                 (if (config.debug) listOf("debug") else emptyList()) +
