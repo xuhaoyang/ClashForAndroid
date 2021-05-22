@@ -76,6 +76,5 @@
         <item>255.255.255.248/30</item>
         <item>255.255.255.252/31</item>
         <item>255.255.255.254/32</item>
-        <item>172.31.255.252/30</item> <!-- tun device address -->
     </string-array>
 </resources>
