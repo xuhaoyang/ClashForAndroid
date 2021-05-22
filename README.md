@@ -36,13 +36,12 @@ See also [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
    git submodule update --init --recursive
    ```
 
-2. Install `JDK 1.8`, `Android SDK` and `Golang`
+2. Install **OpenJDK 11**, **Android SDK**, **CMake** and **Golang**
 
 3. Create `local.properties` in project root with 
 
    ```properties
    sdk.dir=/path/to/android-sdk
-   appcenter.key=<AppCenter Key>    # Optional, from "appcenter.ms"
    ```
 
 4. Create `keystore.properties` in project root with
@@ -57,7 +56,7 @@ See also [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
 5. Build
 
    ```bash
-   ./gradlew app:assembleRelease
+   ./gradlew app:assembleFossRelease
    ```
 
 6. Pick `app-release-<arch>.apk` in `app/build/outputs/apks`
