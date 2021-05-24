@@ -134,7 +134,7 @@ class ProxyDesign(
                     config,
                     List(groupNames.size) { index ->
                         ProxyAdapter(config) { name ->
-                            requests.offer(Request.Select(index, name))
+                            requests.trySend(Request.Select(index, name))
                         }
                     }
                 ) {
@@ -171,7 +171,7 @@ class ProxyDesign(
     fun requestUrlTesting() {
         urlTesting = true
 
-        requests.offer(Request.UrlTest(binding.pagesView.currentItem))
+        requests.trySend(Request.UrlTest(binding.pagesView.currentItem))
 
         updateUrlTestButtonStatus()
     }

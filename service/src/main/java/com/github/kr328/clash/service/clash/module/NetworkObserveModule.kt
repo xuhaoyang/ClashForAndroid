@@ -36,7 +36,7 @@ class NetworkObserveModule(service: Service) :
         override fun onAvailable(network: Network) {
             this.network = network
 
-            networks.offer(network)
+            networks.trySend(network)
         }
 
         override fun onCapabilitiesChanged(
@@ -49,19 +49,19 @@ class NetworkObserveModule(service: Service) :
             if (this.network == network && this.internet != internet) {
                 this.internet = internet
 
-                networks.offer(network)
+                networks.trySend(network)
             }
         }
 
         override fun onLost(network: Network) {
             if (this.network == network) {
-                networks.offer(null)
+                networks.trySend(null)
             }
         }
 
         override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
             if (this.network == network) {
-                networks.offer(network)
+                networks.trySend(network)
             }
         }
     }

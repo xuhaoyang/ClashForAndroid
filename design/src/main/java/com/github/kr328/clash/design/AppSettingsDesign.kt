@@ -61,7 +61,7 @@ class AppSettingsDesign(
                 title = R.string.dark_mode
             ) {
                 listener = OnChangedListener {
-                    requests.offer(Request.ReCreateAllActivities)
+                    requests.trySend(Request.ReCreateAllActivities)
                 }
             }
 

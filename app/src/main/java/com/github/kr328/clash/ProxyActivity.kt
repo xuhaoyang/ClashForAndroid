@@ -73,7 +73,7 @@ class ProxyActivity : BaseActivity<ProxyDesign>() {
                         }
                         ProxyDesign.Request.ReloadAll -> {
                             names.indices.forEach { idx ->
-                                design.requests.offer(ProxyDesign.Request.Reload(idx))
+                                design.requests.trySend(ProxyDesign.Request.Reload(idx))
                             }
                         }
                         is ProxyDesign.Request.Reload -> {

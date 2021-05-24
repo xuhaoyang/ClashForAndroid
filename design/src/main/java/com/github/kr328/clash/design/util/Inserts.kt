@@ -8,7 +8,7 @@ import com.github.kr328.clash.design.ui.Insets
 fun View.setOnInsertsChangedListener(adaptLandscape: Boolean = true, listener: (Insets) -> Unit) {
     setOnApplyWindowInsetsListener { v, ins ->
         val compat = WindowInsetsCompat.toWindowInsetsCompat(ins)
-        val insets = compat.systemWindowInsets
+        val insets = compat.getInsets(WindowInsetsCompat.Type.systemBars())
 
         val rInsets = if (ViewCompat.getLayoutDirection(v) == ViewCompat.LAYOUT_DIRECTION_LTR) {
             Insets(
@@ -28,7 +28,7 @@ fun View.setOnInsertsChangedListener(adaptLandscape: Boolean = true, listener: (
 
         listener(if (adaptLandscape) rInsets.landscape(v.context) else rInsets)
 
-        compat.consumeStableInsets().toWindowInsets()
+        compat.toWindowInsets()
     }
 
     requestApplyInsets()

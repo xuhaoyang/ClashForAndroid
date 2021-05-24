@@ -97,7 +97,7 @@ class LogcatService : Service(), CoroutineScope by CoroutineScope(Dispatchers.De
                 LogcatWriter(this@LogcatService).use {
                     val observer = object : ILogObserver {
                         override fun newItem(log: LogMessage) {
-                            channel.offer(log)
+                            channel.trySend(log)
                         }
                     }
 

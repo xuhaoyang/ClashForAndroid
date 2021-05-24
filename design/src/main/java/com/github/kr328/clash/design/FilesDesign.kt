@@ -72,38 +72,38 @@ class FilesDesign(context: Context) : Design<FilesDesign.Request>(context) {
 
     private fun requestOpen(file: File) {
         if (file.isDirectory) {
-            requests.offer(Request.OpenDirectory(file))
+            requests.trySend(Request.OpenDirectory(file))
         } else {
-            requests.offer(Request.OpenFile(file))
+            requests.trySend(Request.OpenFile(file))
         }
     }
 
     fun requestRename(dialog: Dialog, file: File) {
-        requests.offer(Request.RenameFile(file))
+        requests.trySend(Request.RenameFile(file))
 
         dialog.dismiss()
     }
 
     fun requestImport(dialog: Dialog, file: File) {
-        requests.offer(Request.ImportFile(file))
+        requests.trySend(Request.ImportFile(file))
 
         dialog.dismiss()
     }
 
     fun requestExport(dialog: Dialog, file: File) {
-        requests.offer(Request.ExportFile(file))
+        requests.trySend(Request.ExportFile(file))
 
         dialog.dismiss()
     }
 
     fun requestDelete(dialog: Dialog, file: File) {
-        requests.offer(Request.DeleteFile(file))
+        requests.trySend(Request.DeleteFile(file))
 
         dialog.dismiss()
     }
 
     fun requestNew() {
-        requests.offer(Request.ImportFile(null))
+        requests.trySend(Request.ImportFile(null))
     }
 
     private fun requestMore(file: File) {

@@ -38,7 +38,7 @@ class ApkBrokenDesign(context: Context) : Design<ApkBrokenDesign.Request>(contex
                 summary = R.string.google_play_url
             ) {
                 clicked {
-                    requests.offer(Request(context.getString(R.string.google_play_url)))
+                    requests.trySend(Request(context.getString(R.string.google_play_url)))
                 }
             }
 
@@ -47,7 +47,7 @@ class ApkBrokenDesign(context: Context) : Design<ApkBrokenDesign.Request>(contex
                 summary = R.string.github_releases_url
             ) {
                 clicked {
-                    requests.offer(Request(context.getString(R.string.github_releases_url)))
+                    requests.trySend(Request(context.getString(R.string.github_releases_url)))
                 }
             }
         }

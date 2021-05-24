@@ -23,7 +23,7 @@ class LogsDesign(context: Context) : Design<LogsDesign.Request>(context) {
     private val binding = DesignLogsBinding
         .inflate(context.layoutInflater, context.root, false)
     private val adapter = LogFileAdapter(context) {
-        requests.offer(Request.OpenFile(it))
+        requests.trySend(Request.OpenFile(it))
     }
 
     override val root: View

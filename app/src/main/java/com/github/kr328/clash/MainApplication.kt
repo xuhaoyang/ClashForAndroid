@@ -32,4 +32,8 @@ class MainApplication : Application() {
             sendServiceRecreated()
         }
     }
+
+    fun finalize() {
+        Global.destroy()
+    }
 }

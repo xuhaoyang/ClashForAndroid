@@ -38,13 +38,13 @@ class NewProfileDesign(context: Context) : Design<NewProfileDesign.Request>(cont
     }
 
     private fun requestCreate(provider: ProfileProvider) {
-        requests.offer(Request.Create(provider))
+        requests.trySend(Request.Create(provider))
     }
 
     private fun requestDetail(provider: ProfileProvider): Boolean {
         if (provider !is ProfileProvider.External) return false
 
-        requests.offer(Request.OpenDetail(provider))
+        requests.trySend(Request.OpenDetail(provider))
 
         return true
     }

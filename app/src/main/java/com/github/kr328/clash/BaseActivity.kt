@@ -114,7 +114,7 @@ abstract class BaseActivity<D : Design<*>> :
 
         Remote.broadcasts.addObserver(this)
 
-        events.offer(Event.ActivityStart)
+        events.trySend(Event.ActivityStart)
     }
 
     override fun onStop() {
@@ -124,7 +124,7 @@ abstract class BaseActivity<D : Design<*>> :
 
         Remote.broadcasts.removeObserver(this)
 
-        events.offer(Event.ActivityStop)
+        events.trySend(Event.ActivityStop)
     }
 
     override fun onDestroy() {
@@ -174,23 +174,23 @@ abstract class BaseActivity<D : Design<*>> :
     }
 
     override fun onProfileChanged() {
-        events.offer(Event.ProfileChanged)
+        events.trySend(Event.ProfileChanged)
     }
 
     override fun onProfileLoaded() {
-        events.offer(Event.ProfileLoaded)
+        events.trySend(Event.ProfileLoaded)
     }
 
     override fun onServiceRecreated() {
-        events.offer(Event.ServiceRecreated)
+        events.trySend(Event.ServiceRecreated)
     }
 
     override fun onStarted() {
-        events.offer(Event.ClashStart)
+        events.trySend(Event.ClashStart)
     }
 
     override fun onStopped(cause: String?) {
-        events.offer(Event.ClashStop)
+        events.trySend(Event.ClashStop)
 
         if (cause != null && activityStarted) {
             launch {

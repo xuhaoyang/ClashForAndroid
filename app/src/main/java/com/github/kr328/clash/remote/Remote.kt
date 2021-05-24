@@ -10,7 +10,6 @@ import com.github.kr328.clash.store.AppStore
 import com.github.kr328.clash.util.ApplicationObserver
 import com.github.kr328.clash.util.verifyApk
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 
@@ -30,9 +29,9 @@ object Remote {
     fun launch() {
         ApplicationObserver.attach(Global.application)
 
-        ApplicationObserver.onVisibleChanged(visible::offer)
+        ApplicationObserver.onVisibleChanged { visible.trySend(it) }
 
-        GlobalScope.launch(Dispatchers.IO) {
+        Global.launch(Dispatchers.IO) {
             run()
         }
     }

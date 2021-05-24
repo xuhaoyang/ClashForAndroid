@@ -28,46 +28,46 @@ class AccessControlMenu(
 
         when (item.itemId) {
             R.id.select_all ->
-                requests.offer(Request.SelectAll)
+                requests.trySend(Request.SelectAll)
             R.id.select_none ->
-                requests.offer(Request.SelectNone)
+                requests.trySend(Request.SelectNone)
             R.id.select_invert ->
-                requests.offer(Request.SelectInvert)
+                requests.trySend(Request.SelectInvert)
             R.id.system_apps -> {
                 uiStore.accessControlSystemApp = !item.isChecked
 
-                requests.offer(Request.ReloadApps)
+                requests.trySend(Request.ReloadApps)
             }
             R.id.name -> {
                 uiStore.accessControlSort = AppInfoSort.Label
 
-                requests.offer(Request.ReloadApps)
+                requests.trySend(Request.ReloadApps)
             }
             R.id.package_name -> {
                 uiStore.accessControlSort = AppInfoSort.PackageName
 
-                requests.offer(Request.ReloadApps)
+                requests.trySend(Request.ReloadApps)
             }
             R.id.install_time -> {
                 uiStore.accessControlSort = AppInfoSort.InstallTime
 
-                requests.offer(Request.ReloadApps)
+                requests.trySend(Request.ReloadApps)
             }
             R.id.update_time -> {
                 uiStore.accessControlSort = AppInfoSort.UpdateTime
 
-                requests.offer(Request.ReloadApps)
+                requests.trySend(Request.ReloadApps)
             }
             R.id.reverse -> {
                 uiStore.accessControlReverse = item.isChecked
 
-                requests.offer(Request.ReloadApps)
+                requests.trySend(Request.ReloadApps)
             }
             R.id.import_from_clipboard -> {
-                requests.offer(Request.Import)
+                requests.trySend(Request.Import)
             }
             R.id.export_to_clipboard -> {
-                requests.offer(Request.Export)
+                requests.trySend(Request.Export)
             }
             else -> return false
         }

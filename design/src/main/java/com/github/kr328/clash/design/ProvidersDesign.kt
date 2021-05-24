@@ -24,7 +24,7 @@ class ProvidersDesign(
         get() = binding.root
 
     private val adapter = ProviderAdapter(context, providers) { index, provider ->
-        requests.offer(Request.Update(index, provider))
+        requests.trySend(Request.Update(index, provider))
     }
 
     fun updateElapsed() {
@@ -56,7 +56,7 @@ class ProvidersDesign(
         adapter.states.filter { !it.updating }.forEachIndexed { index, state ->
             state.updating = true
 
-            requests.offer(Request.Update(index, state.provider))
+            requests.trySend(Request.Update(index, state.provider))
         }
     }
 }

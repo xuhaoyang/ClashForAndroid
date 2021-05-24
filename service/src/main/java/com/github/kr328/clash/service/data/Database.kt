@@ -7,7 +7,6 @@ import com.github.kr328.clash.common.Global
 import com.github.kr328.clash.service.data.migrations.LEGACY_MIGRATION
 import com.github.kr328.clash.service.data.migrations.MIGRATIONS
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.ref.SoftReference
 import androidx.room.Database as DB
@@ -41,7 +40,7 @@ abstract class Database : RoomDatabase() {
         }
 
         init {
-            GlobalScope.launch(Dispatchers.IO) {
+            Global.launch(Dispatchers.IO) {
                 LEGACY_MIGRATION(Global.application)
             }
         }

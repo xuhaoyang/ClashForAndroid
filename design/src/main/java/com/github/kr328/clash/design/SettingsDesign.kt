@@ -28,6 +28,6 @@ class SettingsDesign(context: Context) : Design<SettingsDesign.Request>(context)
     }
 
     fun request(request: Request) {
-        requests.offer(request)
+        requests.trySend(request)
     }
 }

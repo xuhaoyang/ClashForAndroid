@@ -49,7 +49,7 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
     suspend fun requestSave(profile: Profile) {
         showToast(R.string.active_unsaved_tips, ToastDuration.Long) {
             setAction(R.string.edit) {
-                requests.offer(Request.Edit(profile))
+                requests.trySend(Request.Edit(profile))
             }
         }
     }
@@ -84,37 +84,37 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
     }
 
     fun requestUpdateAll() {
-        requests.offer(Request.UpdateAll)
+        requests.trySend(Request.UpdateAll)
     }
 
     fun requestCreate() {
-        requests.offer(Request.Create)
+        requests.trySend(Request.Create)
     }
 
     private fun requestActive(profile: Profile) {
-        requests.offer(Request.Active(profile))
+        requests.trySend(Request.Active(profile))
     }
 
     fun requestUpdate(dialog: Dialog, profile: Profile) {
-        requests.offer(Request.Update(profile))
+        requests.trySend(Request.Update(profile))
 
         dialog.dismiss()
     }
 
     fun requestEdit(dialog: Dialog, profile: Profile) {
-        requests.offer(Request.Edit(profile))
+        requests.trySend(Request.Edit(profile))
 
         dialog.dismiss()
     }
 
     fun requestDuplicate(dialog: Dialog, profile: Profile) {
-        requests.offer(Request.Duplicate(profile))
+        requests.trySend(Request.Duplicate(profile))
 
         dialog.dismiss()
     }
 
     fun requestDelete(dialog: Dialog, profile: Profile) {
-        requests.offer(Request.Delete(profile))
+        requests.trySend(Request.Delete(profile))
 
         dialog.dismiss()
     }

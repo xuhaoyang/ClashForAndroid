@@ -93,7 +93,7 @@ class AccessControlDesign(
             binding.surface = dialog.surface
             binding.mainList.applyLinearAdapter(context, adapter)
             binding.keywordView.addTextChangedListener {
-                filter.offer(Unit)
+                filter.trySend(Unit)
             }
             binding.closeView.setOnClickListener {
                 dialog.dismiss()

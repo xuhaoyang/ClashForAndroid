@@ -218,7 +218,7 @@ object Clash {
         return Channel<LogMessage>(32).apply {
             Bridge.nativeSubscribeLogcat(object : LogcatInterface {
                 override fun received(jsonPayload: String) {
-                    offer(Json.decodeFromString(LogMessage.serializer(), jsonPayload))
+                    trySend(Json.decodeFromString(LogMessage.serializer(), jsonPayload))
                 }
             })
         }

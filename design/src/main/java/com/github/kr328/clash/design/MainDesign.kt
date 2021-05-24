@@ -97,6 +97,6 @@ class MainDesign(context: Context) : Design<MainDesign.Request>(context) {
     }
 
     fun request(request: Request) {
-        requests.offer(request)
+        requests.trySend(request)
     }
 }

@@ -141,7 +141,7 @@ class FilesActivity : BaseActivity<FilesDesign>() {
     }
 
     override fun onBackPressed() {
-        design?.requests?.offer(FilesDesign.Request.PopStack)
+        design?.requests?.trySend(FilesDesign.Request.PopStack)
     }
 
     private suspend fun FilesDesign.fetch(client: FilesClient, stack: Stack<String>, root: String) {

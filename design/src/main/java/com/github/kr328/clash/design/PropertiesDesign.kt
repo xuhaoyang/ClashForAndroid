@@ -142,11 +142,11 @@ class PropertiesDesign(context: Context) : Design<PropertiesDesign.Request>(cont
     }
 
     fun requestCommit() {
-        requests.offer(Request.Commit)
+        requests.trySend(Request.Commit)
     }
 
     fun requestBrowseFiles() {
-        requests.offer(Request.BrowseFiles)
+        requests.trySend(Request.BrowseFiles)
     }
 
     private fun ModelProgressBarConfigure.applyFrom(status: FetchStatus) {

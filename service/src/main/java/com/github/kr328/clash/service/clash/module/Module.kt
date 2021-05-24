@@ -39,7 +39,7 @@ abstract class Module<E>(val service: Service) {
                     return
                 }
 
-                channel.offer(intent)
+                channel.trySend(intent)
             }
         }
 

@@ -96,7 +96,7 @@ class NetworkSettingsDesign(
                 summary = R.string.access_control_packages_summary,
             ) {
                 clicked {
-                    requests.offer(Request.StartAccessControlList)
+                    requests.trySend(Request.StartAccessControlList)
                 }
 
                 vpnDependencies.add(this)

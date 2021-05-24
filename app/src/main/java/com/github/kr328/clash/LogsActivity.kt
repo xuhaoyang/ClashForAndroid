@@ -47,7 +47,7 @@ class LogsActivity : BaseActivity<LogsDesign>() {
                                     deleteAllLogs()
                                 }
 
-                                events.offer(Event.ActivityStart)
+                                events.trySend(Event.ActivityStart)
                             }
                         }
                         is LogsDesign.Request.OpenFile -> {

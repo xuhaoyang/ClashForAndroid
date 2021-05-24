@@ -236,7 +236,7 @@ class OverrideSettingsDesign(
                 summary = R.string.sideload_geoip_summary
             ) {
                 clicked {
-                    requests.offer(Request.EditSideloadGeoip)
+                    requests.trySend(Request.EditSideloadGeoip)
                 }
             }
 
@@ -394,6 +394,6 @@ class OverrideSettingsDesign(
     }
 
     fun requestClear() {
-        requests.offer(Request.ResetOverride)
+        requests.trySend(Request.ResetOverride)
     }
 }

@@ -28,7 +28,7 @@ class ConfigurationModule(service: Service) : Module<ConfigurationModule.LoadExc
 
         var loaded: UUID? = null
 
-        reload.offer(Unit)
+        reload.trySend(Unit)
 
         while (true) {
             val changed: UUID? = select {
@@ -75,6 +75,6 @@ class ConfigurationModule(service: Service) : Module<ConfigurationModule.LoadExc
     }
 
     fun reload() {
-        reload.offer(Unit)
+        reload.trySend(Unit)
     }
 }
