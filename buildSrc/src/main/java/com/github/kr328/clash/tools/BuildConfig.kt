@@ -11,14 +11,12 @@ data class BuildConfig(
     val minSdkVersion: Int,
 ) : Serializable {
     companion object {
-        fun of(extension: BaseExtension, variant: BaseVariant): BuildConfig {
+        fun of(abis: List<NativeAbi>, minSdkVersion: Int, variant: BaseVariant): BuildConfig {
             return BuildConfig(
                 debug = variant.buildType.isDebuggable,
                 premium = variant.flavorName == "premium",
-                abis = extension.defaultConfig.externalNativeBuild.cmake.abiFilters
-                    .map { NativeAbi.parse(it) }
-                    .distinct(),
-                minSdkVersion = extension.defaultConfig.minSdkVersion!!.apiLevel
+                abis = abis,
+                minSdkVersion = minSdkVersion
             )
         }
     }
