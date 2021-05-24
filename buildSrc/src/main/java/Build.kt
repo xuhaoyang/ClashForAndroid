@@ -1,7 +1,7 @@
 import org.gradle.api.Project
 
-const val buildVersionCode = 204002
-const val buildVersionName = "2.4.2"
+const val buildVersionCode = 204003
+const val buildVersionName = "2.4.3"
 
 const val buildMinSdkVersion = 21
 const val buildTargetSdkVersion = 30
