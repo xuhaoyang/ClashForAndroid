@@ -33,7 +33,7 @@ func (u *udpPacket) Drop() {
 func (u *udpPacket) LocalAddr() net.Addr {
 	return &net.UDPAddr{
 		IP:   u.source.IP,
-		Port: int(u.source.Port),
+		Port: u.source.Port,
 		Zone: "",
 	}
 }
