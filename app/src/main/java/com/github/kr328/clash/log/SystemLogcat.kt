@@ -8,7 +8,8 @@ object SystemLogcat {
         "Go",
         "DEBUG",
         "AndroidRuntime",
-        "ClashForAndroid"
+        "ClashForAndroid",
+        "LwIP",
     )
 
     fun dumpCrash(): String {

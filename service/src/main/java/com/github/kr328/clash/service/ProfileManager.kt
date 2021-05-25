@@ -1,7 +1,6 @@
 package com.github.kr328.clash.service
 
-import android.content.Intent
-import android.os.IBinder
+import android.content.Context
 import com.github.kr328.clash.service.data.Database
 import com.github.kr328.clash.service.data.ImportedDao
 import com.github.kr328.clash.service.data.Pending
@@ -9,34 +8,27 @@ import com.github.kr328.clash.service.data.PendingDao
 import com.github.kr328.clash.service.model.Profile
 import com.github.kr328.clash.service.remote.IFetchObserver
 import com.github.kr328.clash.service.remote.IProfileManager
-import com.github.kr328.clash.service.remote.wrap
 import com.github.kr328.clash.service.store.ServiceStore
 import com.github.kr328.clash.service.util.directoryLastModified
 import com.github.kr328.clash.service.util.generateProfileUUID
 import com.github.kr328.clash.service.util.importedDir
 import com.github.kr328.clash.service.util.pendingDir
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.util.*
 
-class ProfileService : BaseService(), IProfileManager {
-    private val service = this
-    private val store by lazy { ServiceStore(this) }
-    private val binder = this.wrap()
+class ProfileManager(private val context: Context) : IProfileManager,
+    CoroutineScope by CoroutineScope(Dispatchers.IO) {
+    private val store = ServiceStore(context)
 
-    override fun onBind(intent: Intent?): IBinder {
-        return binder
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
-        Database.database //.init
-
+    init {
         launch {
-            ProfileReceiver.rescheduleAll(service)
+            Database.database //.init
+
+            ProfileReceiver.rescheduleAll(context)
         }
     }
 
@@ -52,7 +44,7 @@ class ProfileService : BaseService(), IProfileManager {
 
         PendingDao().insert(pending)
 
-        pendingDir.resolve(uuid.toString()).apply {
+        context.pendingDir.resolve(uuid.toString()).apply {
             deleteRecursively()
             mkdirs()
 
@@ -119,21 +111,21 @@ class ProfileService : BaseService(), IProfileManager {
     }
 
     override suspend fun commit(uuid: UUID, callback: IFetchObserver?) {
-        ProfileProcessor.apply(service, uuid, callback)
+        ProfileProcessor.apply(context, uuid, callback)
 
         scheduleUpdate(uuid, false)
     }
 
     override suspend fun release(uuid: UUID) {
-        ProfileProcessor.release(this, uuid)
+        ProfileProcessor.release(context, uuid)
     }
 
     override suspend fun delete(uuid: UUID) {
         ImportedDao().queryByUUID(uuid)?.also {
-            ProfileReceiver.cancelNext(service, it)
+            ProfileReceiver.cancelNext(context, it)
         }
 
-        ProfileProcessor.delete(service, uuid)
+        ProfileProcessor.delete(context, uuid)
     }
 
     override suspend fun queryByUUID(uuid: UUID): Profile? {
@@ -159,7 +151,7 @@ class ProfileService : BaseService(), IProfileManager {
     }
 
     override suspend fun setActive(profile: Profile) {
-        ProfileProcessor.active(this, profile.uuid)
+        ProfileProcessor.active(context, profile.uuid)
     }
 
     private suspend fun resolveProfile(uuid: UUID): Profile? {
@@ -186,14 +178,14 @@ class ProfileService : BaseService(), IProfileManager {
     }
 
     private fun resolveUpdatedAt(uuid: UUID): Long {
-        return pendingDir.resolve(uuid.toString()).directoryLastModified
-            ?: importedDir.resolve(uuid.toString()).directoryLastModified
+        return context.pendingDir.resolve(uuid.toString()).directoryLastModified
+            ?: context.importedDir.resolve(uuid.toString()).directoryLastModified
             ?: -1
     }
 
     private fun cloneImportedFiles(source: UUID, target: UUID = source) {
-        val s = importedDir.resolve(source.toString())
-        val t = pendingDir.resolve(target.toString())
+        val s = context.importedDir.resolve(source.toString())
+        val t = context.pendingDir.resolve(target.toString())
 
         if (!s.exists())
             throw FileNotFoundException("profile $source not found")
@@ -207,9 +199,9 @@ class ProfileService : BaseService(), IProfileManager {
         val imported = ImportedDao().queryByUUID(uuid) ?: return
 
         if (startImmediately) {
-            ProfileReceiver.schedule(service, imported)
+            ProfileReceiver.schedule(context, imported)
         } else {
-            ProfileReceiver.scheduleNext(service, imported)
+            ProfileReceiver.scheduleNext(context, imported)
         }
     }
 }

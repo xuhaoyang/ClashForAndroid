@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 object Remote {
     val broadcasts: Broadcasts = Broadcasts(Global.application)
-    val services: Services = Services(Global.application) {
+    val service: Service = Service(Global.application) {
         ApplicationObserver.createdActivities.forEach { it.finish() }
 
         val intent = AppCrashedActivity::class.intent
@@ -56,10 +56,10 @@ object Remote {
 
         while (true) {
             if (visible.receive()) {
-                services.bind()
+                service.bind()
                 broadcasts.register()
             } else {
-                services.unbind()
+                service.unbind()
                 broadcasts.unregister()
             }
         }

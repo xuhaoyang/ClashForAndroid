@@ -14,14 +14,15 @@ suspend fun <T> withClash(
     block: suspend IClashManager.() -> T
 ): T {
     while (true) {
-        val client = Remote.services.clash.get()
+        val remote = Remote.service.remote.get()
+        val client = remote.clash()
 
         try {
             return withContext(context) { client.block() }
         } catch (e: DeadObjectException) {
             Log.w("Remote services panic")
 
-            Remote.services.clash.reset(client)
+            Remote.service.remote.reset(remote)
         }
     }
 }
@@ -31,14 +32,15 @@ suspend fun <T> withProfile(
     block: suspend IProfileManager.() -> T
 ): T {
     while (true) {
-        val client = Remote.services.profile.get()
+        val remote = Remote.service.remote.get()
+        val client = remote.profile()
 
         try {
             return withContext(context) { client.block() }
         } catch (e: DeadObjectException) {
             Log.w("Remote services panic")
 
-            Remote.services.profile.reset(client)
+            Remote.service.remote.reset(remote)
         }
     }
 }

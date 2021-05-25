@@ -25,11 +25,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".ClashManager"
-            android:exported="false"
-            android:process=":background" />
-        <service
-            android:name=".ProfileService"
+            android:name=".RemoteService"
             android:exported="false"
             android:process=":background" />
         <service

@@ -20,9 +20,9 @@ import com.github.kr328.clash.common.util.intent
 import com.github.kr328.clash.core.model.LogMessage
 import com.github.kr328.clash.log.LogcatCache
 import com.github.kr328.clash.log.LogcatWriter
-import com.github.kr328.clash.service.ClashManager
-import com.github.kr328.clash.service.remote.IClashManager
+import com.github.kr328.clash.service.RemoteService
 import com.github.kr328.clash.service.remote.ILogObserver
+import com.github.kr328.clash.service.remote.IRemoteService
 import com.github.kr328.clash.service.remote.unwrap
 import com.github.kr328.clash.util.logsDir
 import kotlinx.coroutines.*
@@ -52,7 +52,7 @@ class LogcatService : Service(), CoroutineScope by CoroutineScope(Dispatchers.De
 
         showNotification()
 
-        bindService(ClashManager::class.intent, connection, Context.BIND_AUTO_CREATE)
+        bindService(RemoteService::class.intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onDestroy() {
@@ -88,7 +88,7 @@ class LogcatService : Service(), CoroutineScope by CoroutineScope(Dispatchers.De
             return stopSelf()
 
         launch(Dispatchers.IO) {
-            val service = binder.unwrap(IClashManager::class)
+            val service = binder.unwrap(IRemoteService::class).clash()
             val channel = Channel<LogMessage>(CACHE_CAPACITY)
 
             try {

@@ -1,7 +1,6 @@
 package com.github.kr328.clash.service
 
-import android.content.Intent
-import android.os.IBinder
+import android.content.Context
 import com.github.kr328.clash.common.log.Log
 import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.core.model.*
@@ -9,21 +8,15 @@ import com.github.kr328.clash.service.data.Selection
 import com.github.kr328.clash.service.data.SelectionDao
 import com.github.kr328.clash.service.remote.IClashManager
 import com.github.kr328.clash.service.remote.ILogObserver
-import com.github.kr328.clash.service.remote.wrap
 import com.github.kr328.clash.service.store.ServiceStore
 import com.github.kr328.clash.service.util.sendOverrideChanged
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
-import java.util.*
 
-class ClashManager : BaseService(), IClashManager {
-    private val store by lazy { ServiceStore(this) }
-    private val binder = this.wrap()
+class ClashManager(private val context: Context) : IClashManager,
+    CoroutineScope by CoroutineScope(Dispatchers.IO) {
+    private val store = ServiceStore(context)
     private var logReceiver: ReceiveChannel<LogMessage>? = null
-
-    override fun onBind(intent: Intent?): IBinder {
-        return binder
-    }
 
     override fun queryTunnelState(): TunnelState {
         return Clash.queryTunnelState()
@@ -68,7 +61,7 @@ class ClashManager : BaseService(), IClashManager {
     override fun patchOverride(slot: Clash.OverrideSlot, configuration: ConfigurationOverride) {
         Clash.patchOverride(slot, configuration)
 
-        sendOverrideChanged()
+        context.sendOverrideChanged()
     }
 
     override fun clearOverride(slot: Clash.OverrideSlot) {

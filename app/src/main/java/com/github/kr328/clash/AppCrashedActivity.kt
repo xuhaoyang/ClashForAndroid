@@ -24,8 +24,6 @@ class AppCrashedActivity : BaseActivity<AppCrashedDesign>() {
             SystemLogcat.dumpCrash()
         }
 
-        Tracker.uploadLogcat(logs)
-
         design.setAppLogs(logs)
 
         while (isActive) {
