@@ -41,7 +41,8 @@
             android:name=".MainActivity"
             android:configChanges="uiMode"
             android:exported="true"
-            android:label="@string/launch_name">
+            android:label="@string/launch_name"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
