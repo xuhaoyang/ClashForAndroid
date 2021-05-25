@@ -32,51 +32,51 @@ class ProxyMenu(
             R.id.not_selectable -> {
                 uiStore.proxyExcludeNotSelectable = item.isChecked
 
-                requests.offer(ProxyDesign.Request.ReLaunch)
+                requests.trySend(ProxyDesign.Request.ReLaunch)
             }
             R.id.single -> {
                 uiStore.proxySingleLine = true
 
                 updateConfig()
 
-                requests.offer(ProxyDesign.Request.ReloadAll)
+                requests.trySend(ProxyDesign.Request.ReloadAll)
             }
             R.id.multiple -> {
                 uiStore.proxySingleLine = false
 
                 updateConfig()
 
-                requests.offer(ProxyDesign.Request.ReloadAll)
+                requests.trySend(ProxyDesign.Request.ReloadAll)
             }
             R.id.default_ -> {
                 uiStore.proxySort = ProxySort.Default
 
-                requests.offer(ProxyDesign.Request.ReloadAll)
+                requests.trySend(ProxyDesign.Request.ReloadAll)
             }
             R.id.name -> {
                 uiStore.proxySort = ProxySort.Title
 
-                requests.offer(ProxyDesign.Request.ReloadAll)
+                requests.trySend(ProxyDesign.Request.ReloadAll)
             }
             R.id.delay -> {
                 uiStore.proxySort = ProxySort.Delay
 
-                requests.offer(ProxyDesign.Request.ReloadAll)
+                requests.trySend(ProxyDesign.Request.ReloadAll)
             }
             R.id.dont_modify -> {
-                requests.offer(ProxyDesign.Request.PatchMode(null))
+                requests.trySend(ProxyDesign.Request.PatchMode(null))
             }
             R.id.direct_mode -> {
-                requests.offer(ProxyDesign.Request.PatchMode(TunnelState.Mode.Direct))
+                requests.trySend(ProxyDesign.Request.PatchMode(TunnelState.Mode.Direct))
             }
             R.id.global_mode -> {
-                requests.offer(ProxyDesign.Request.PatchMode(TunnelState.Mode.Global))
+                requests.trySend(ProxyDesign.Request.PatchMode(TunnelState.Mode.Global))
             }
             R.id.rule_mode -> {
-                requests.offer(ProxyDesign.Request.PatchMode(TunnelState.Mode.Rule))
+                requests.trySend(ProxyDesign.Request.PatchMode(TunnelState.Mode.Rule))
             }
             R.id.script_mode -> {
-                requests.offer(ProxyDesign.Request.PatchMode(TunnelState.Mode.Script))
+                requests.trySend(ProxyDesign.Request.PatchMode(TunnelState.Mode.Script))
             }
             else -> return false
         }

@@ -238,7 +238,7 @@ class OverrideSettingsDesign(
                 summary = R.string.sideload_geoip_summary
             ) {
                 clicked {
-                    requests.offer(Request.EditSideloadGeoip)
+                    requests.trySend(Request.EditSideloadGeoip)
                 }
             }
 
@@ -379,7 +379,7 @@ class OverrideSettingsDesign(
                 placeholder = R.string.dont_modify,
                 configure = dnsDependencies::add,
             )
-            
+
             editableTextMap(
                 value = configuration.dns::nameserverPolicy,
                 keyAdapter = TextAdapter.String,
@@ -396,6 +396,6 @@ class OverrideSettingsDesign(
     }
 
     fun requestClear() {
-        requests.offer(Request.ResetOverride)
+        requests.trySend(Request.ResetOverride)
     }
 }
