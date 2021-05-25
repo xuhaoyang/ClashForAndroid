@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 
 project(clash-bridge C)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE on)
+
 set(GO_OUTPUT_BASE ${GO_OUTPUT}/${FLAVOR_NAME})
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
