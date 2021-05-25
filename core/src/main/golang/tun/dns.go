@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Dreamacro/clash/component/resolver"
-	"github.com/kr328/tun2socket/bridge"
+	"github.com/kr328/tun2socket"
 
 	D "github.com/miekg/dns"
 )
@@ -22,7 +22,7 @@ func shouldHijackDns(dns net.IP, target net.IP, targetPort int) bool {
 	return net.IPv4zero.Equal(dns) || target.Equal(dns)
 }
 
-func hijackUDPDns(pkt []byte, lAddr, rAddr net.Addr, udp bridge.UDP) {
+func hijackUDPDns(pkt []byte, lAddr, rAddr net.Addr, udp tun2socket.UDP) {
 	go func() {
 		answer, err := relayDnsPacket(pkt)
 

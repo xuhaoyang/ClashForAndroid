@@ -34,11 +34,25 @@ class Environment(
     }
 
     fun ofLwipBuild(abi: NativeAbi): Map<String, String> {
+        val host = when {
+            Os.isFamily(Os.FAMILY_WINDOWS) ->
+                "windows"
+            Os.isFamily(Os.FAMILY_MAC) ->
+                "darwin"
+            Os.isFamily(Os.FAMILY_UNIX) ->
+                "linux"
+            else ->
+                throw GradleException("Unsupported host: ${System.getProperty("os.name")}")
+        }
+
+        val compiler = ndkDirectory.resolve("toolchains/llvm/prebuilt/$host-x86_64/bin")
+            .resolve("${abi.compiler}${minSdkVersion}-clang")
+        val ar = ndkDirectory.resolve("toolchains/llvm/prebuilt/$host-x86_64/bin")
+            .resolve("${abi.archiver}-ar")
+
         return mapOf(
-            "CMAKE_SYSTEM_NAME" to "Android",
-            "CMAKE_ANDROID_NDK" to ndkDirectory.absolutePath,
-            "CMAKE_ANDROID_ARCH_ABI" to abi.value,
-            "CMAKE_SYSTEM_VERSION" to minSdkVersion.toString()
+            "CC" to compiler.absolutePath,
+            "AR" to ar.absolutePath,
         )
     }
 }

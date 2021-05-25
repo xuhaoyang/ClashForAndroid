@@ -39,8 +39,8 @@ abstract class ClashBuildTask : DefaultTask() {
         config.abis.forEach {
             Command.ofGoRun(
                 "make/make.go",
-                listOf("bridge", "native", "build", "android", it.goArch),
-                input.resolve("tun2socket/bridge"),
+                listOf("tun2socket", ".", "android", it.goArch),
+                input.resolve("tun2socket"),
                 environment.ofLwipBuild(it)
             ).exec()
 

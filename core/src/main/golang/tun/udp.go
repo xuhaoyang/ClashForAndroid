@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/Dreamacro/clash/transport/socks5"
-	"github.com/kr328/tun2socket/bridge"
+	"github.com/kr328/tun2socket"
 
 	adapters "github.com/Dreamacro/clash/adapters/inbound"
 	"github.com/Dreamacro/clash/common/pool"
@@ -15,7 +15,7 @@ import (
 type udpPacket struct {
 	source   *net.UDPAddr
 	data     []byte
-	udp      bridge.UDP
+	udp      tun2socket.UDP
 }
 
 func (u *udpPacket) Data() []byte {
@@ -38,7 +38,7 @@ func (u *udpPacket) LocalAddr() net.Addr {
 	}
 }
 
-func handleUDP(payload []byte, source *net.UDPAddr, target *net.UDPAddr, udp bridge.UDP) {
+func handleUDP(payload []byte, source *net.UDPAddr, target *net.UDPAddr, udp tun2socket.UDP) {
 	pkt := &udpPacket{
 		source:   source,
 		data:     payload,
