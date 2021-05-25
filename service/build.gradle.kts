@@ -48,15 +48,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    sourceSets {
-        named("debug") {
-            java.srcDir(buildDir.resolve("generated/ksp/debug/kotlin"))
-        }
-        named("release") {
-            java.srcDir(buildDir.resolve("generated/ksp/release/kotlin"))
-        }
-    }
 }
 
 dependencies {
@@ -74,4 +65,12 @@ dependencies {
     implementation("androidx.core:core-ktx:$coreVersion")
     implementation("dev.rikka.rikkax.preference:multiprocess:$muiltprocessVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
+}
+
+afterEvaluate {
+    android {
+        libraryVariants.forEach {
+            sourceSets[it.name].java.srcDir(buildDir.resolve("generated/ksp/${it.name}/kotlin"))
+        }
+    }
 }
