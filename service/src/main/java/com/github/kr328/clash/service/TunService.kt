@@ -217,6 +217,7 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
                 fd = establish()?.detachFd()
                     ?: throw NullPointerException("Establish VPN rejected by system"),
                 mtu = TUN_MTU,
+                gateway = "$TUN_GATEWAY/$TUN_SUBNET_PREFIX",
                 dns = if (store.dnsHijacking) NET_ANY else TUN_DNS,
             )
         }

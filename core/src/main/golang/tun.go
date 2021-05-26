@@ -11,8 +11,6 @@ import (
 	"cfa/tun"
 
 	"golang.org/x/sync/semaphore"
-
-	"github.com/Dreamacro/clash/log"
 )
 
 type remoteTun struct {
@@ -23,7 +21,7 @@ type remoteTun struct {
 }
 
 func (t *remoteTun) markSocket(fd int) {
-	_ = t.limit.Acquire(context.Background(), 1)
+	_ = t.limit.Acquire(context.TODO(), 1)
 	defer t.limit.Release(1)
 
 	if t.closed {
@@ -34,7 +32,7 @@ func (t *remoteTun) markSocket(fd int) {
 }
 
 func (t *remoteTun) querySocketUid(protocol int, source, target string) int {
-	_ = t.limit.Acquire(context.Background(), 1)
+	_ = t.limit.Acquire(context.TODO(), 1)
 	defer t.limit.Release(1)
 
 	if t.closed {
@@ -50,26 +48,27 @@ func (t *remoteTun) stop() {
 
 	t.closed = true
 
-	C.release_object(t.callback)
+	app.ApplyTunContext(nil, nil)
 
-	log.Infoln("Android tun device destroyed")
+	C.release_object(t.callback)
 }
 
 //export startTun
-func startTun(fd, mtu C.int, dns C.c_string, callback unsafe.Pointer) C.int {
+func startTun(fd, mtu C.int, gateway, dns C.c_string, callback unsafe.Pointer) C.int {
 	f := int(fd)
 	m := int(mtu)
+	g := C.GoString(gateway)
 	d := C.GoString(dns)
 
 	remote := &remoteTun{callback: callback, closed: false, limit: semaphore.NewWeighted(4)}
 
-	if tun.Start(f, m, d) != nil {
-		return 1
-	}
-
 	app.ApplyTunContext(remote.markSocket, remote.querySocketUid)
 
-	log.Infoln("Android tun device created")
+	if tun.Start(f, m, g, d, remote.stop) != nil {
+		app.ApplyTunContext(nil, nil)
+
+		return 1
+	}
 
 	return 0
 }

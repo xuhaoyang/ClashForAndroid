@@ -3,6 +3,7 @@ package tun
 import (
 	"net"
 
+	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/transport/socks5"
 	"github.com/kr328/tun2socket"
 
@@ -12,48 +13,88 @@ import (
 	"github.com/Dreamacro/clash/tunnel"
 )
 
-type udpPacket struct {
-	source   *net.UDPAddr
-	data     []byte
-	udp      tun2socket.UDP
+type packet struct {
+	stack tun2socket.Stack
+	local *net.UDPAddr
+	data  []byte
 }
 
-func (u *udpPacket) Data() []byte {
-	return u.data
+func (pkt *packet) Data() []byte {
+	return pkt.data
 }
 
-func (u *udpPacket) WriteBack(b []byte, addr net.Addr) (n int, err error) {
-	return u.udp.WriteTo(b, u.source, addr)
+func (pkt *packet) WriteBack(b []byte, addr net.Addr) (n int, err error) {
+	return pkt.stack.UDP().WriteTo(b, pkt.local, addr)
 }
 
-func (u *udpPacket) Drop() {
-	recycleUDP(u.data)
+func (pkt *packet) Drop() {
+	pool.Put(pkt.data)
 }
 
-func (u *udpPacket) LocalAddr() net.Addr {
+func (pkt *packet) LocalAddr() net.Addr {
 	return &net.UDPAddr{
-		IP:   u.source.IP,
-		Port: u.source.Port,
+		IP:   pkt.local.IP,
+		Port: pkt.local.Port,
 		Zone: "",
 	}
 }
 
-func handleUDP(payload []byte, source *net.UDPAddr, target *net.UDPAddr, udp tun2socket.UDP) {
-	pkt := &udpPacket{
-		source:   source,
-		data:     payload,
-		udp:      udp,
+func (a *adapter) udp() {
+	log.Infoln("[ATUN] UDP receiver started")
+	defer log.Infoln("[ATUN] UDP receiver exited")
+	defer a.stack.Close()
+
+	for {
+		buf := pool.Get(a.mtu)
+
+		n, lAddr, rAddr, err := a.stack.UDP().ReadFrom(buf)
+		if err != nil {
+			return
+		}
+
+		sAddr := lAddr.(*net.UDPAddr)
+		tAddr := rAddr.(*net.UDPAddr)
+
+		// handle dns messages
+		if a.hijackUDPDNS(buf[:n], sAddr, tAddr) {
+			continue
+		}
+
+		// drop all packets send to gateway
+		if a.gateway.Contains(tAddr.IP) {
+			pool.Put(buf)
+
+			continue
+		}
+
+		pkt := &packet{
+			stack: a.stack,
+			local: sAddr,
+			data:  buf[:n],
+		}
+
+		adapter := adapters.NewPacket(socks5.ParseAddrToSocksAddr(tAddr), pkt, C.SOCKS)
+
+		tunnel.AddPacket(adapter)
+	}
+}
+
+func (a *adapter) hijackUDPDNS(pkt []byte, sAddr, tAddr *net.UDPAddr) bool {
+	if !shouldHijackDns(a.dns, tAddr.IP, tAddr.Port) {
+		return false
 	}
 
-	adapter := adapters.NewPacket(socks5.ParseAddrToSocksAddr(target), pkt, C.SOCKS)
+	go func() {
+		answer, err := relayDns(pkt)
 
-	tunnel.AddPacket(adapter)
-}
+		if err != nil {
+			return
+		}
 
-func allocUDP(size int) []byte {
-	return pool.Get(size)
-}
+		_, _ = a.stack.UDP().WriteTo(answer, sAddr, tAddr)
 
-func recycleUDP(payload []byte) {
-	_ = pool.Put(payload)
+		pool.Put(pkt)
+	}()
+
+	return true
 }
