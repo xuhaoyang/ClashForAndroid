@@ -138,6 +138,9 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
                 resources.getStringArray(R.array.bypass_private_route).map(::parseCIDR).forEach {
                     addRoute(it.ip, it.prefix)
                 }
+
+                // Route of virtual DNS
+                addRoute(TUN_DNS, 32)
             } else {
                 addRoute(NET_ANY, 0)
             }
@@ -228,8 +231,8 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
     companion object {
         private const val TUN_MTU = 9000
         private const val TUN_SUBNET_PREFIX = 30
-        private const val TUN_GATEWAY = "172.31.255.253"
-        private const val TUN_DNS = "198.18.0.1"
+        private const val TUN_GATEWAY = "172.19.0.1"
+        private const val TUN_DNS = "172.19.0.2"
         private const val NET_ANY = "0.0.0.0"
     }
 }
