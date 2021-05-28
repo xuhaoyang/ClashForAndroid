@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.5.0"
+    kotlin("jvm") version "1.5.10"
     `java-gradle-plugin`
 }
 
@@ -12,7 +12,7 @@ dependencies {
     implementation(kotlin("gradle-plugin"))
     implementation(kotlin("serialization"))
     implementation("com.android.tools.build:gradle:4.2.1")
-    implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.0-1.0.0-alpha10")
+    implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.10-1.0.0-beta01")
 }
 
 gradlePlugin {
