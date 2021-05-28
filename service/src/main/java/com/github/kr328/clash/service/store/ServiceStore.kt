@@ -46,6 +46,11 @@ class ServiceStore(context: Context) {
         defaultValue = false
     )
 
+    var blockLoopback by store.boolean(
+        key = "block_loopback",
+        defaultValue = true
+    )
+
     var dynamicNotification by store.boolean(
         key = "dynamic_notification",
         defaultValue = true
