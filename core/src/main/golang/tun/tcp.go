@@ -38,6 +38,8 @@ accept:
 		// drop all connections connect to blocking list
 		for _, b := range a.blocking {
 			if b.Contains(tAddr.IP) {
+				_ = conn.Close()
+
 				continue accept
 			}
 		}
