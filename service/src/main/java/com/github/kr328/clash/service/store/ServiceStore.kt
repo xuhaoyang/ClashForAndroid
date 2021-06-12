@@ -43,7 +43,7 @@ class ServiceStore(context: Context) {
 
     var systemProxy by store.boolean(
         key = "system_proxy",
-        defaultValue = false
+        defaultValue = true
     )
 
     var blockLoopback by store.boolean(

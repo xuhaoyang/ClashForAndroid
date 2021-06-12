@@ -89,8 +89,10 @@ func (l *httpListener) handleConn(conn net.Conn) {
 	if err != nil || request.URL.Host == "" {
 		if err != nil {
 			log.Warnln("HTTP Connection closed: %s", err.Error())
+		} else {
+			log.Warnln("HTTP Connection closed: unknown host")
 		}
-		
+
 		_ = conn.Close()
 		return
 	}
