@@ -57,9 +57,12 @@ dependencies {
     api(project(":core"))
     api(project(":common"))
 
+    implementation(project(":kaidl:kaidl-runtime")) {
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+    }
+
     implementation(kotlin("stdlib-jdk7"))
-    implementation(project(":kaidl:kaidl-runtime"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.core:core-ktx:$coreVersion")
