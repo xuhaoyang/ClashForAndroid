@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	LocalHttpTimeout = time.Millisecond * 100
+	LocalHttpTimeout = time.Minute * 5
 )
 
 var listener *httpListener
@@ -55,7 +55,7 @@ func Start(listen string) (listenAt string, err error) {
 
 			_ = conn.(*net.TCPConn).SetKeepAlive(false)
 
-			h.handleConn(conn)
+			go h.handleConn(conn)
 		}
 	}()
 
