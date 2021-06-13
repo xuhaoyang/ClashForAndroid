@@ -5,15 +5,10 @@ import (
 	"net"
 	"net/http"
 	"sync"
-	"time"
 
 	"github.com/Dreamacro/clash/adapter/inbound"
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/tunnel"
-)
-
-const (
-	LocalHttpTimeout = time.Minute * 5
 )
 
 var listener *httpListener
@@ -79,18 +74,14 @@ func stopLocked() {
 }
 
 func (l *httpListener) handleConn(conn net.Conn) {
-	_ = conn.SetReadDeadline(time.Now().Add(LocalHttpTimeout))
-
 	br := bufio.NewReader(conn)
 	request, err := http.ReadRequest(br)
 
-	_ = conn.SetReadDeadline(time.Time{})
-
 	if err != nil || request.URL.Host == "" {
 		if err != nil {
-			log.Warnln("HTTP Connection closed: %s", err.Error())
+			log.Warnln("[HTTP] Connection closed: %s", err.Error())
 		} else {
-			log.Warnln("HTTP Connection closed: unknown host")
+			log.Warnln("[HTTP] Connection closed: unknown host")
 		}
 
 		_ = conn.Close()
