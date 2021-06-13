@@ -7,7 +7,7 @@ import (
 	"github.com/Dreamacro/clash/transport/socks5"
 	"github.com/kr328/tun2socket"
 
-	adapters "github.com/Dreamacro/clash/adapters/inbound"
+	"github.com/Dreamacro/clash/adapter/inbound"
 	"github.com/Dreamacro/clash/common/pool"
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/tunnel"
@@ -74,7 +74,7 @@ read:
 			data:  buf[:n],
 		}
 
-		adapter := adapters.NewPacket(socks5.ParseAddrToSocksAddr(tAddr), pkt, C.SOCKS)
+		adapter := inbound.NewPacket(socks5.ParseAddrToSocksAddr(tAddr), pkt, C.SOCKS)
 
 		tunnel.AddPacket(adapter)
 	}

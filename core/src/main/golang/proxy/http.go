@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	adapters "github.com/Dreamacro/clash/adapters/inbound"
+	"github.com/Dreamacro/clash/adapter/inbound"
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/tunnel"
 )
@@ -102,9 +102,9 @@ func (l *httpListener) handleConn(conn net.Conn) {
 		if err != nil {
 			return
 		}
-		tunnel.Add(adapters.NewHTTPS(request, conn))
+		tunnel.Add(inbound.NewHTTPS(request, conn))
 		return
 	}
 
-	tunnel.Add(adapters.NewHTTP(request, conn))
+	tunnel.Add(inbound.NewHTTP(request, conn))
 }
