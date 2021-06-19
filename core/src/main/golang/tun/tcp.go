@@ -57,7 +57,7 @@ accept:
 			RawDstAddr: tAddr,
 		}
 
-		tunnel.Add(context.NewConnContext(conn, metadata))
+		tunnel.TCPIn() <- context.NewConnContext(conn, metadata)
 	}
 }
 

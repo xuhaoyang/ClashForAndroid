@@ -74,9 +74,7 @@ read:
 			data:  buf[:n],
 		}
 
-		adapter := inbound.NewPacket(socks5.ParseAddrToSocksAddr(tAddr), pkt, C.SOCKS)
-
-		tunnel.AddPacket(adapter)
+		tunnel.UDPIn() <- inbound.NewPacket(socks5.ParseAddrToSocksAddr(tAddr), pkt, C.SOCKS)
 	}
 }
 
