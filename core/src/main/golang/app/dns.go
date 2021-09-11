@@ -1,15 +1,20 @@
 package app
 
-import "strings"
+import (
+	"strings"
 
-var systemDns []string
+	"github.com/Dreamacro/clash/dns"
+)
 
 func NotifyDnsChanged(dnsList string) {
-	dns := strings.Split(dnsList, ",")
+	dL := strings.Split(dnsList, ",")
 
-	systemDns = dns
+	ns := make([]dns.NameServer, 0, len(dnsList))
+	for _, d := range dL {
+		ns = append(ns, dns.NameServer{Addr: d})
+	}
+
+	dns.UpdateSystemDNS(dL)
+	dns.FlushCacheWithDefaultResolver()
 }
 
-func SystemDns() []string {
-	return systemDns
-}

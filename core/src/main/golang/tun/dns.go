@@ -3,7 +3,8 @@ package tun
 import (
 	"net"
 
-	"github.com/Dreamacro/clash/component/resolver"
+	"github.com/Dreamacro/clash/dns"
+
 	D "github.com/miekg/dns"
 )
 
@@ -21,7 +22,7 @@ func relayDns(payload []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	r, err := resolver.ServeMsg(msg)
+	r, err := dns.ServeDNSWithDefaultServer(msg)
 	if err != nil {
 		return nil, err
 	}

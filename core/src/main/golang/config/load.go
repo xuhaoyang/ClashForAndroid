@@ -3,6 +3,7 @@ package config
 import (
 	"io/ioutil"
 	P "path"
+	"runtime"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -80,6 +81,8 @@ func Load(path string) error {
 	executor.ApplyConfig(cfg, true)
 
 	app.ApplySubtitlePattern(rawCfg.ClashForAndroid.UiSubtitlePattern)
+
+	runtime.GC()
 
 	return nil
 }

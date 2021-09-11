@@ -73,8 +73,4 @@ class ConfigurationModule(service: Service) : Module<ConfigurationModule.LoadExc
             }
         }
     }
-
-    fun reload() {
-        reload.trySend(Unit)
-    }
 }

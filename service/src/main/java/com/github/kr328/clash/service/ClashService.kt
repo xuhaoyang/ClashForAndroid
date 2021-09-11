@@ -54,8 +54,6 @@ class ClashService : BaseService() {
                         true
                     }
                     network.onEvent {
-                        config.reload()
-
                         false
                     }
                 }

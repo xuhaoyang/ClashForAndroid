@@ -65,8 +65,6 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
                             setUnderlyingNetworks(e.network?.let { arrayOf(it) })
                         }
 
-                        config.reload()
-
                         false
                     }
                 }

@@ -10,7 +10,6 @@ import (
 	"github.com/Dreamacro/clash/log"
 	"github.com/dlclark/regexp2"
 
-	"cfa/app"
 	"cfa/common"
 
 	"github.com/Dreamacro/clash/config"
@@ -76,7 +75,7 @@ func patchDns(cfg *config.RawConfig, _ string) error {
 	}
 
 	if cfg.ClashForAndroid.AppendSystemDNS {
-		cfg.DNS.NameServer = append(cfg.DNS.NameServer, app.SystemDns()...)
+		cfg.DNS.NameServer = append(cfg.DNS.NameServer, "dhcp://" + dns.SystemDNSPlaceholder)
 	}
 
 	return nil
