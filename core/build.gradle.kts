@@ -1,3 +1,4 @@
+import com.github.kr328.golang.GolangBuildTask
 import com.github.kr328.golang.GolangPlugin
 import java.io.FileOutputStream
 import java.net.URL
@@ -14,6 +15,7 @@ val geoipDatabaseUrl =
     "https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb"
 val geoipInvalidate = Duration.ofDays(7)!!
 val geoipOutput = buildDir.resolve("intermediates/golang_blob")
+val golangSource = file("src/main/golang/native")
 
 golang {
     sourceSets {
@@ -37,7 +39,7 @@ android {
         all {
             externalNativeBuild {
                 cmake {
-                    arguments("-DGO_SOURCE:STRING=${file("src/main/golang/native")}")
+                    arguments("-DGO_SOURCE:STRING=${golangSource}")
                     arguments("-DGO_OUTPUT:STRING=${GolangPlugin.outputDirOf(project, null, null)}")
                     arguments("-DFLAVOR_NAME:STRING=$name")
                 }
@@ -63,6 +65,12 @@ dependencies {
 
 repositories {
     mavenCentral()
+}
+
+afterEvaluate {
+    tasks.withType(GolangBuildTask::class.java).forEach {
+        it.inputs.file(golangSource)
+    }
 }
 
 task("downloadGeoipDatabase") {
