@@ -10,9 +10,9 @@ import "C"
 import (
 	"runtime"
 
-	"cfa/config"
-	"cfa/delegate"
-	"cfa/tunnel"
+	"cfa/native/config"
+	"cfa/native/delegate"
+	"cfa/native/tunnel"
 
 	"github.com/Dreamacro/clash/log"
 )

@@ -11,8 +11,7 @@ import (
 	"runtime"
 	"time"
 
-	"cfa/app"
-
+	app2 "cfa/native/app"
 	"github.com/Dreamacro/clash/component/dialer"
 )
 
@@ -40,7 +39,7 @@ func openUrl(url string) (io.ReadCloser, error) {
 		return nil, err
 	}
 
-	request.Header.Set("User-Agent", "ClashForAndroid/"+app.VersionName())
+	request.Header.Set("User-Agent", "ClashForAndroid/"+app2.VersionName())
 
 	response, err := client.Do(request)
 	if err != nil {
@@ -51,7 +50,7 @@ func openUrl(url string) (io.ReadCloser, error) {
 }
 
 func openContent(url string) (io.ReadCloser, error) {
-	return app.OpenContent(url)
+	return app2.OpenContent(url)
 }
 
 func fetch(url *U.URL, file string) error {

@@ -7,10 +7,10 @@ import (
 	"context"
 	"unsafe"
 
-	"cfa/app"
-	"cfa/tun"
-
 	"golang.org/x/sync/semaphore"
+
+	"cfa/native/app"
+	"cfa/native/tun"
 )
 
 type remoteTun struct {

@@ -6,8 +6,8 @@ import "C"
 import (
 	"unsafe"
 
-	"cfa/app"
-	"cfa/tunnel"
+	"cfa/native/app"
+	"cfa/native/tunnel"
 )
 
 //export queryTunnelState

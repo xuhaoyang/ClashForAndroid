@@ -1,10 +1,11 @@
 package app
 
 import (
-	"cfa/platform"
 	"net"
 	"strings"
 	"syscall"
+
+	"cfa/native/platform"
 )
 
 var markSocketImpl func(fd int)

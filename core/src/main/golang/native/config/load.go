@@ -8,8 +8,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"cfa/app"
-
+	"cfa/native/app"
 	"github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/log"
 

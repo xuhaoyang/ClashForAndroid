@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Dreamacro/clash/log"
 	"github.com/dlclark/regexp2"
 
-	"cfa/common"
+	"cfa/native/common"
+	"github.com/Dreamacro/clash/log"
 
 	"github.com/Dreamacro/clash/config"
 	"github.com/Dreamacro/clash/dns"

@@ -19,14 +19,15 @@ golang {
     sourceSets {
         create("foss") {
             tags.set(listOf("foss"))
+            srcDir.set(file("src/foss/golang"))
         }
         create("premium") {
             tags.set(listOf("premium"))
-            moduleFile.set("go.premium.mod")
+            srcDir.set(file("src/premium/golang"))
         }
         all {
             fileName.set("libclash.so")
-            srcDir.set(file("src/main/golang"))
+            packageName.set("cfa/native")
         }
     }
 }
@@ -36,7 +37,7 @@ android {
         all {
             externalNativeBuild {
                 cmake {
-                    arguments("-DGO_SOURCE:STRING=${golang.sourceSets.getByName(name).srcDir.asFile.get()}")
+                    arguments("-DGO_SOURCE:STRING=${file("src/main/golang/native")}")
                     arguments("-DGO_OUTPUT:STRING=${GolangPlugin.outputDirOf(project, null, null)}")
                     arguments("-DFLAVOR_NAME:STRING=$name")
                 }

@@ -7,8 +7,7 @@ import (
 	"errors"
 	"unsafe"
 
-	"cfa/app"
-
+	"cfa/native/app"
 	"github.com/Dreamacro/clash/log"
 )
 

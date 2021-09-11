@@ -4,8 +4,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Dreamacro/clash/adapter"
 	"github.com/dlclark/regexp2"
+
+	"github.com/Dreamacro/clash/adapter"
 
 	"github.com/Dreamacro/clash/adapter/outboundgroup"
 	C "github.com/Dreamacro/clash/constant"

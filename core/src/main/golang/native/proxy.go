@@ -3,7 +3,9 @@ package main
 //#include "bridge.h"
 import "C"
 
-import "cfa/proxy"
+import (
+	"cfa/native/proxy"
+)
 
 //export startHttp
 func startHttp(listenAt C.c_string) *C.char {
