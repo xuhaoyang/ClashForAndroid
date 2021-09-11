@@ -1,6 +1,6 @@
 module cfa
 
-go 1.16
+go 1.17
 
 require (
 	cfa/blob v0.0.0 // local generated
