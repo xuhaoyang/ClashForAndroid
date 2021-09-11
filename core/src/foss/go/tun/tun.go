@@ -7,7 +7,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/kr328/tun2socket"
+	"github.com/kr328/tun2socket-lwip"
 )
 
 type adapter struct {

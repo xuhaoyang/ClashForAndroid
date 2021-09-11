@@ -1,12 +1,13 @@
+import com.github.kr328.golang.GolangPlugin
 import java.io.FileOutputStream
 import java.net.URL
 import java.time.Duration
 
 plugins {
-    id("com.android.library")
     kotlin("android")
+    id("com.android.library")
     id("kotlinx-serialization")
-    id("clash-build")
+    id("golang-android")
 }
 
 val geoipDatabaseUrl =
@@ -14,60 +15,31 @@ val geoipDatabaseUrl =
 val geoipInvalidate = Duration.ofDays(7)!!
 val geoipOutput = buildDir.resolve("intermediates/golang_blob")
 
-android {
-    compileSdk = buildTargetSdkVersion
-
-    ndkVersion = buildNdkVersion
-
-    flavorDimensions(buildFlavor)
-
-    defaultConfig {
-        minSdk = buildMinSdkVersion
-        targetSdk = buildTargetSdkVersion
-
-        versionCode = buildVersionCode
-        versionName = buildVersionName
-
-        consumerProguardFiles("consumer-rules.pro")
-
-        externalNativeBuild {
-            cmake {
-                abiFilters("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-                arguments(
-                    "-DGO_SOURCE:STRING=$golangSource",
-                    "-DGO_OUTPUT:STRING=$golangBuild",
-                    "-DFLAVOR_NAME=$buildFlavor",
-                )
-            }
-        }
-    }
-
-    buildTypes {
-        named("release") {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    productFlavors {
+golang {
+    sourceSets {
         create("foss") {
-            dimension = "foss"
+            srcDir.set(file("src/foss/go"))
         }
         create("premium") {
-            dimension = "premium"
+            srcDir.set(file("src/premium/go"))
+        }
+        all {
+            fileName.set("libclash.so")
         }
     }
+}
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
+android {
+    productFlavors {
+        all {
+            externalNativeBuild {
+                cmake {
+                    arguments("-DGO_SOURCE:STRING=${golang.sourceSets.getByName(name).srcDir.asFile.get()}")
+                    arguments("-DGO_OUTPUT:STRING=${GolangPlugin.outputDirOf(project, null, null)}")
+                    arguments("-DFLAVOR_NAME:STRING=$name")
+                }
+            }
+        }
     }
 
     externalNativeBuild {
@@ -78,12 +50,12 @@ android {
 }
 
 dependencies {
-    api(project(":common"))
+    implementation(project(":common"))
 
     implementation(kotlin("stdlib-jdk7"))
-    implementation("androidx.core:core-ktx:$coreVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
+    implementation(deps.androidx.core)
+    implementation(deps.kotlin.coroutine)
+    implementation(deps.kotlin.serialization.json)
 }
 
 repositories {
@@ -107,6 +79,8 @@ task("downloadGeoipDatabase") {
         //go:embed Country.mmdb
         var GeoipDatabase []byte
     """.trimIndent()
+
+    outputs.dir(geoipOutput)
 
     onlyIf {
         System.currentTimeMillis() - databaseFile.lastModified() > geoipInvalidate.toMillis()

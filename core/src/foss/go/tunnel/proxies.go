@@ -8,8 +8,8 @@ import (
 	"github.com/dlclark/regexp2"
 
 	"github.com/Dreamacro/clash/adapter/outboundgroup"
-	"github.com/Dreamacro/clash/adapter/provider"
 	C "github.com/Dreamacro/clash/constant"
+	"github.com/Dreamacro/clash/constant/provider"
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/tunnel"
 )

@@ -46,7 +46,7 @@ accept:
 
 		metadata := &C.Metadata{
 			NetWork:    C.TCP,
-			Type:       C.SOCKS,
+			Type:       C.SOCKS5,
 			SrcIP:      sAddr.IP,
 			DstIP:      tAddr.IP,
 			SrcPort:    strconv.Itoa(sAddr.Port),

@@ -19,9 +19,11 @@ gradle-app.setting
 # Ignore IDEA config
 *.iml
 /.idea/*
-/core/src/main/golang/.idea/*
 !/.idea/codeStyles
-!/core/src/main/golang/.idea/codeStyles
+/core/src/foss/go/.idea/*
+!/core/src/foss/go/.idea/codeStyles
+/core/src/premium/go/.idea/*
+!/core/src/premium/go/.idea/codeStyles
 
 # KeyStore
 *.keystore

@@ -1,9 +1,3 @@
-[submodule "core/src/main/golang/clash"]
-	path = core/src/main/golang/clash
+[submodule "clash-foss"]
+	path = core/src/foss/go/clash
 	url = https://github.com/Kr328/clash.git
-[submodule "kaidl"]
-	path = kaidl
-	url = https://github.com/Kr328/kaidl.git
-[submodule "core/src/main/golang/tun2socket"]
-	path = core/src/main/golang/tun2socket
-	url = https://github.com/Kr328/tun2socket-lwip.git

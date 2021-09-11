@@ -1,73 +1,26 @@
 plugins {
-    id("com.android.library")
     kotlin("android")
     kotlin("kapt")
     id("kotlinx-serialization")
+    id("com.android.library")
     id("com.google.devtools.ksp")
 }
 
-android {
-    compileSdk = buildTargetSdkVersion
-
-    flavorDimensions(buildFlavor)
-
-    defaultConfig {
-        minSdk = buildMinSdkVersion
-        targetSdk = buildTargetSdkVersion
-
-        versionCode = buildVersionCode
-        versionName = buildVersionName
-
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        named("release") {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    productFlavors {
-        create("foss") {
-            dimension = "foss"
-        }
-        create("premium") {
-            dimension = "premium"
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
 dependencies {
-    ksp(project(":kaidl:kaidl"))
-    kapt("androidx.room:room-compiler:$roomVersion")
+    ksp(deps.kaidl.compiler)
+    kapt(deps.androidx.room.compiler)
 
-    api(project(":core"))
-    api(project(":common"))
-
-    implementation(project(":kaidl:kaidl-runtime")) {
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-    }
+    implementation(project(":core"))
+    implementation(project(":common"))
 
     implementation(kotlin("stdlib-jdk7"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    implementation("androidx.core:core-ktx:$coreVersion")
-    implementation("dev.rikka.rikkax.preference:multiprocess:$muiltprocessVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
+    implementation(deps.kotlin.coroutine)
+    implementation(deps.kotlin.serialization.json)
+    implementation(deps.androidx.core)
+    implementation(deps.androidx.room.runtime)
+    implementation(deps.androidx.room.ktx)
+    implementation(deps.kaidl.runtime)
+    implementation(deps.rikkax.multiprocess)
 }
 
 afterEvaluate {

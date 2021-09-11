@@ -1,9 +1,6 @@
 name: Build Unsigned
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
     paths-ignore:
       - '.github/**'
       - '.idea/**'
@@ -13,8 +10,6 @@ on:
       - 'LICENSE'
       - 'NOTICE'
   pull_request:
-    branches:
-      - main
     paths-ignore:
       - '.github/**'
       - '.idea/**'
@@ -38,10 +33,8 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: 1.17
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
-      - name: Setup Cmake & Ninja
-        uses: lukka/get-cmake@latest
       - name: Build
-        run: ./gradlew --no-daemon app:assembleRelease
+        run: ./gradlew --no-daemon app:assembleFossRelease

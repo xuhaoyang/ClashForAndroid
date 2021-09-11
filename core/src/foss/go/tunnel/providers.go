@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Dreamacro/clash/adapter/provider"
+	P "github.com/Dreamacro/clash/adapter/provider"
+	"github.com/Dreamacro/clash/constant/provider"
 	"github.com/Dreamacro/clash/tunnel"
 )
 
@@ -38,7 +39,7 @@ func QueryProviders() []*Provider {
 	for _, p := range providers {
 		updatedAt := time.Time{}
 
-		if s, ok := p.(provider.UpdatableProvider); ok {
+		if s, ok := p.(P.UpdatableProvider); ok {
 			updatedAt = s.UpdatedAt()
 		}
 
