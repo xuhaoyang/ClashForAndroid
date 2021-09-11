@@ -1,6 +1,8 @@
 name: Build Unsigned
 on:
   push:
+    branches:
+      - main
     paths-ignore:
       - '.github/**'
       - '.idea/**'
