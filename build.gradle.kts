@@ -2,6 +2,7 @@
 
 import com.android.build.gradle.BaseExtension
 import java.net.URL
+import java.util.*
 
 buildscript {
     repositories {
@@ -105,6 +106,17 @@ subprojects {
             create("premium") {
                 dimension = defaultDimension
                 versionNameSuffix = ".premium"
+
+                val trackFile = rootProject.file("track.properties")
+                if (trackFile.exists()) {
+                    val track = Properties().apply {
+                        trackFile.inputStream().use(this::load)
+                    }
+
+                    buildConfigField("String", "APP_CENTER_KEY", "\"${track.getProperty("appcenter.key")!!}\"")
+                } else {
+                    buildConfigField("String", "APP_CENTER_KEY", "null")
+                }
             }
         }
 

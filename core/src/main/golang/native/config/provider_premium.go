@@ -2,7 +2,11 @@
 
 package config
 
-import "github.com/Dreamacro/clash/config"
+import (
+	"io"
+
+	"github.com/Dreamacro/clash/config"
+)
 
 func forEachProviders(rawCfg *config.RawConfig, fun func(index int, total int, key string, provider map[string]interface{})) {
 	total := len(rawCfg.ProxyProvider) + len(rawCfg.RuleProvider)
@@ -23,10 +27,10 @@ func forEachProviders(rawCfg *config.RawConfig, fun func(index int, total int, k
 
 func destroyProviders(cfg *config.Config) {
 	for _, p := range cfg.ProxyProviders {
-		_ = p.Destroy()
+		_ = p.(io.Closer).Close()
 	}
 
 	for _, p := range cfg.RuleProviders {
-		_ = p.Destroy()
+		_ = p.(io.Closer).Close()
 	}
 }

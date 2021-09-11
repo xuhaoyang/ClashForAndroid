@@ -24,7 +24,7 @@ golang {
             srcDir.set(file("src/foss/golang"))
         }
         create("premium") {
-            tags.set(listOf("premium"))
+            tags.set(listOf("premium", "without_gvisor", "without_system"))
             srcDir.set(file("src/premium/golang"))
         }
         all {
@@ -69,7 +69,7 @@ repositories {
 
 afterEvaluate {
     tasks.withType(GolangBuildTask::class.java).forEach {
-        it.inputs.file(golangSource)
+        it.inputs.dir(golangSource)
     }
 }
 
