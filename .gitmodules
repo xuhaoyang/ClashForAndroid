@@ -1,3 +1,6 @@
 [submodule "clash-foss"]
-	path = core/src/foss/go/clash
+	path = core/src/main/golang/core/foss
+	url = https://github.com/Kr328/clash.git
+[submodule "clash-premium"]
+	path = core/src/main/golang/core/premium
 	url = https://github.com/Kr328/clash.git

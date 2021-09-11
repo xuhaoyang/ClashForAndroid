@@ -18,13 +18,15 @@ val geoipOutput = buildDir.resolve("intermediates/golang_blob")
 golang {
     sourceSets {
         create("foss") {
-            srcDir.set(file("src/foss/go"))
+            tags.set(listOf("foss"))
         }
         create("premium") {
-            srcDir.set(file("src/premium/go"))
+            tags.set(listOf("premium"))
+            moduleFile.set("go.premium.mod")
         }
         all {
             fileName.set("libclash.so")
+            srcDir.set(file("src/main/golang"))
         }
     }
 }

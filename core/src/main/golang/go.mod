@@ -13,6 +13,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-replace github.com/Dreamacro/clash => ./clash
+replace github.com/Dreamacro/clash => ./core/foss
 
 replace cfa/blob => ../../../build/intermediates/golang_blob

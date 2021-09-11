@@ -20,10 +20,8 @@ gradle-app.setting
 *.iml
 /.idea/*
 !/.idea/codeStyles
-/core/src/foss/go/.idea/*
-!/core/src/foss/go/.idea/codeStyles
-/core/src/premium/go/.idea/*
-!/core/src/premium/go/.idea/codeStyles
+/core/src/main/golang/.idea/*
+!/core/src/main/golang/.idea/codeStyles
 
 # KeyStore
 *.keystore

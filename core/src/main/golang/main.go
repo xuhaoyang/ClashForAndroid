@@ -11,7 +11,7 @@ import (
 	"runtime"
 
 	"cfa/config"
-	"cfa/core"
+	"cfa/delegate"
 	"cfa/tunnel"
 
 	"github.com/Dreamacro/clash/log"
@@ -27,7 +27,7 @@ func coreInit(home, versionName C.c_string, sdkVersion C.int) {
 	v := C.GoString(versionName)
 	s := int(sdkVersion)
 
-	core.Init(h, v, s)
+	delegate.Init(h, v, s)
 
 	reset()
 }
