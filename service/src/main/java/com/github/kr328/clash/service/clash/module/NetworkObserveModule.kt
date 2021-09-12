@@ -80,8 +80,6 @@ class NetworkObserveModule(service: Service) :
         }
 
         try {
-            delay(TimeUnit.SECONDS.toMillis(10))
-
             while (true) {
                 val network = networks.receive()
 
