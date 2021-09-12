@@ -70,10 +70,6 @@ subprojects {
             versionName = buildVersionName
             versionCode = buildVersionCode
 
-            if (!isApp) {
-                consumerProguardFiles("consumer-rules.pro")
-            }
-
             resValue("string", "release_name", "v$buildVersionName")
             resValue("integer", "release_code", "$buildVersionCode")
 
@@ -81,6 +77,10 @@ subprojects {
                 cmake {
                     abiFilters("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
                 }
+            }
+
+            if (!isApp) {
+                consumerProguardFiles("consumer-rules.pro")
             }
         }
 
@@ -108,6 +108,8 @@ subprojects {
                 dimension = defaultDimension
                 versionNameSuffix = ".foss"
 
+                buildConfigField("boolean", "PREMIUM", "Boolean.parseBoolean(\"false\")")
+
                 if (isApp) {
                     applicationIdSuffix = ".foss"
                 }
@@ -115,6 +117,8 @@ subprojects {
             create("premium") {
                 dimension = defaultDimension
                 versionNameSuffix = ".premium"
+
+                buildConfigField("boolean", "PREMIUM", "Boolean.parseBoolean(\"true\")")
 
                 val trackFile = rootProject.file("track.properties")
                 if (trackFile.exists()) {

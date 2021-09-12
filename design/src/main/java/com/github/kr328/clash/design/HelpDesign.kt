@@ -47,6 +47,17 @@ class HelpDesign(
 
             category(R.string.feedback)
 
+            if (BuildConfig.PREMIUM) {
+                clickable(
+                    title = R.string.google_play,
+                    summary = R.string.google_play_url
+                ) {
+                    clicked {
+                        openLink(Uri.parse(context.getString(R.string.google_play_url)))
+                    }
+                }
+            }
+
             clickable(
                 title = R.string.github_issues,
                 summary = R.string.github_issues_url
@@ -56,23 +67,25 @@ class HelpDesign(
                 }
             }
 
-            category(R.string.sources)
+            if (!BuildConfig.PREMIUM) {
+                category(R.string.sources)
 
-            clickable(
-                title = R.string.clash_for_android,
-                summary = R.string.github_url
-            ) {
-                clicked {
-                    openLink(Uri.parse(context.getString(R.string.github_url)))
+                clickable(
+                    title = R.string.clash_for_android,
+                    summary = R.string.github_url
+                ) {
+                    clicked {
+                        openLink(Uri.parse(context.getString(R.string.github_url)))
+                    }
                 }
-            }
 
-            clickable(
-                title = R.string.clash_core,
-                summary = R.string.clash_core_url
-            ) {
-                clicked {
-                    openLink(Uri.parse(context.getString(R.string.clash_core_url)))
+                clickable(
+                    title = R.string.clash_core,
+                    summary = R.string.clash_core_url
+                ) {
+                    clicked {
+                        openLink(Uri.parse(context.getString(R.string.clash_core_url)))
+                    }
                 }
             }
 

@@ -185,24 +185,43 @@ class OverrideSettingsDesign(
                 empty = R.string.default_
             )
 
-            selectableList(
-                value = configuration::mode,
-                values = arrayOf(
-                    null,
-                    TunnelState.Mode.Direct,
-                    TunnelState.Mode.Global,
-                    TunnelState.Mode.Rule,
-                    TunnelState.Mode.Script
-                ),
-                valuesText = arrayOf(
-                    R.string.dont_modify,
-                    R.string.direct_mode,
-                    R.string.global_mode,
-                    R.string.rule_mode,
-                    R.string.script_mode
-                ),
-                title = R.string.mode
-            )
+            if (BuildConfig.PREMIUM) {
+                selectableList(
+                    value = configuration::mode,
+                    values = arrayOf(
+                        null,
+                        TunnelState.Mode.Direct,
+                        TunnelState.Mode.Global,
+                        TunnelState.Mode.Rule,
+                        TunnelState.Mode.Script
+                    ),
+                    valuesText = arrayOf(
+                        R.string.dont_modify,
+                        R.string.direct_mode,
+                        R.string.global_mode,
+                        R.string.rule_mode,
+                        R.string.script_mode
+                    ),
+                    title = R.string.mode
+                )
+            } else {
+                selectableList(
+                    value = configuration::mode,
+                    values = arrayOf(
+                        null,
+                        TunnelState.Mode.Direct,
+                        TunnelState.Mode.Global,
+                        TunnelState.Mode.Rule
+                    ),
+                    valuesText = arrayOf(
+                        R.string.dont_modify,
+                        R.string.direct_mode,
+                        R.string.global_mode,
+                        R.string.rule_mode
+                    ),
+                    title = R.string.mode
+                )
+            }
 
             selectableList(
                 value = configuration::logLevel,

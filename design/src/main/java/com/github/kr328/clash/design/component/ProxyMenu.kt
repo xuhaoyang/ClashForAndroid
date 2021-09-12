@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import com.github.kr328.clash.core.model.ProxySort
 import com.github.kr328.clash.core.model.TunnelState
+import com.github.kr328.clash.design.BuildConfig
 import com.github.kr328.clash.design.ProxyDesign
 import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.store.UiStore
@@ -75,6 +76,9 @@ class ProxyMenu(
             R.id.rule_mode -> {
                 requests.trySend(ProxyDesign.Request.PatchMode(TunnelState.Mode.Rule))
             }
+            R.id.script_mode -> {
+                requests.trySend(ProxyDesign.Request.PatchMode(TunnelState.Mode.Script))
+            }
             else -> return false
         }
 
@@ -85,6 +89,8 @@ class ProxyMenu(
         menu.menuInflater.inflate(R.menu.menu_proxy, menu.menu)
 
         menu.menu.apply {
+            findItem(R.id.script_mode).isVisible = BuildConfig.PREMIUM
+
             findItem(R.id.not_selectable).isChecked = uiStore.proxyExcludeNotSelectable
 
             if (uiStore.proxySingleLine) {
@@ -104,7 +110,7 @@ class ProxyMenu(
                 TunnelState.Mode.Direct -> findItem(R.id.direct_mode).isChecked = true
                 TunnelState.Mode.Global -> findItem(R.id.global_mode).isChecked = true
                 TunnelState.Mode.Rule -> findItem(R.id.rule_mode).isChecked = true
-                TunnelState.Mode.Script -> throw IllegalStateException("invalid mode")
+                TunnelState.Mode.Script -> findItem(R.id.script_mode).isChecked = true
             }
         }
 
