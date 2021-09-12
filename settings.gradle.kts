@@ -18,7 +18,7 @@ dependencyResolutionManagement {
             val agp = "7.0.2"
             val ksp = "1.5.30-1.0.0"
             val kotlin = "1.5.30"
-            val golang = "1.0.3"
+            val golang = "1.0.4"
             val coroutine = "1.5.2"
             val coreKtx = "1.6.0"
             val activity = "1.3.1"
