@@ -11,5 +11,6 @@ import (
 	_ "cfa/native/tunnel"
 
 	_ "golang.org/x/sync/semaphore"
+
 	_ "github.com/Dreamacro/clash/log"
 )

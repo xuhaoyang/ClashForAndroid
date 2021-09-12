@@ -6,7 +6,7 @@ import (
 
 	"cfa/blob"
 
-	app2 "cfa/native/app"
+	"cfa/native/app"
 	"cfa/native/platform"
 	"github.com/Dreamacro/clash/component/process"
 	"github.com/Dreamacro/clash/log"
@@ -21,8 +21,8 @@ var errBlocked = errors.New("blocked")
 func Init(home, versionName string, platformVersion int) {
 	mmdb.LoadFromBytes(blob.GeoipDatabase)
 	constant.SetHomeDir(home)
-	app2.ApplyVersionName(versionName)
-	app2.ApplyPlatformVersion(platformVersion)
+	app.ApplyVersionName(versionName)
+	app.ApplyPlatformVersion(platformVersion)
 
 	process.DefaultPackageNameResolver = func(metadata *constant.Metadata) (string, error) {
 		src, dst := metadata.RawSrcAddr, metadata.RawDstAddr
@@ -31,8 +31,8 @@ func Init(home, versionName string, platformVersion int) {
 			return "", process.ErrInvalidNetwork
 		}
 
-		uid := app2.QuerySocketUid(metadata.RawSrcAddr, metadata.RawDstAddr)
-		pkg := app2.QueryAppByUid(uid)
+		uid := app.QuerySocketUid(metadata.RawSrcAddr, metadata.RawDstAddr)
+		pkg := app.QueryAppByUid(uid)
 
 		log.Debugln("[PKG] %s --> %s by %d[%s]", metadata.SourceAddress(), metadata.RemoteAddress(), uid, pkg)
 
@@ -45,7 +45,7 @@ func Init(home, versionName string, platformVersion int) {
 		}
 
 		return conn.Control(func(fd uintptr) {
-			app2.MarkSocket(int(fd))
+			app.MarkSocket(int(fd))
 		})
 	}
 }
