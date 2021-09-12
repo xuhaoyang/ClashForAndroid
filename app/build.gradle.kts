@@ -5,6 +5,8 @@ plugins {
 }
 
 dependencies {
+    compileOnly(project(":hideapi"))
+
     implementation(project(":core"))
     implementation(project(":service"))
     implementation(project(":design"))
