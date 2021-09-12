@@ -16,7 +16,7 @@ dependencyResolutionManagement {
         create("deps") {
             val version = "0.39.0"
             val agp = "7.0.2"
-            val ksp = "1.5.30-1.0.0-beta09"
+            val ksp = "1.5.30-1.0.0"
             val kotlin = "1.5.30"
             val golang = "1.0.3"
             val coroutine = "1.5.2"
@@ -30,7 +30,7 @@ dependencyResolutionManagement {
             val material = "1.4.0"
             val appcenter = "4.3.1"
             val serialization = "1.2.1"
-            val kaidl = "1.14"
+            val kaidl = "1.15"
             val room = "2.3.0"
             val multiprocess = "1.0.0"
 
