@@ -1,17 +1,20 @@
 @file:Suppress("UNUSED_VARIABLE")
 
 import com.android.build.gradle.BaseExtension
+import com.github.benmanes.gradle.versions.VersionsPlugin
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import java.net.URL
 import java.util.*
 
 buildscript {
     repositories {
+        gradlePluginPortal()
         mavenCentral()
-        mavenLocal()
         google()
         maven("https://maven.kr328.app/releases")
     }
     dependencies {
+        classpath(deps.build.update)
         classpath(deps.build.android)
         classpath(deps.build.kotlin.common)
         classpath(deps.build.kotlin.serialization)
@@ -21,9 +24,21 @@ buildscript {
 }
 
 allprojects {
+    apply {
+        plugin(VersionsPlugin::class)
+    }
+
+    tasks.withType(DependencyUpdatesTask::class) {
+        val rejectPattern = Regex("(beta|alpha)", RegexOption.IGNORE_CASE)
+
+        rejectVersionIf {
+            candidate.version.contains(rejectPattern)
+        }
+    }
+
     repositories {
-        google()
         mavenCentral()
+        google()
         maven("https://maven.kr328.app/releases")
     }
 }
@@ -66,12 +81,6 @@ subprojects {
                 cmake {
                     abiFilters("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
                 }
-            }
-        }
-
-        externalNativeBuild {
-            cmake {
-                version = "3.18.1"
             }
         }
 

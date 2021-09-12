@@ -14,25 +14,27 @@ include(":hideapi")
 dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
+            val version = "0.39.0"
             val agp = "7.0.2"
             val ksp = "1.5.30-1.0.0-beta09"
             val kotlin = "1.5.30"
             val golang = "1.0.3"
-            val coroutine = "1.5.0"
-            val coreKtx = "1.5.0"
-            val activity = "1.2.3"
-            val fragment = "1.3.4"
-            val appcompat = "1.3.0"
+            val coroutine = "1.5.2"
+            val coreKtx = "1.6.0"
+            val activity = "1.3.1"
+            val fragment = "1.3.6"
+            val appcompat = "1.3.1"
             val coordinator = "1.1.0"
             val recyclerview = "1.2.1"
             val viewpager = "1.0.0"
-            val material = "1.3.0"
-            val appcenter = "4.2.0"
+            val material = "1.4.0"
+            val appcenter = "4.3.1"
             val serialization = "1.2.1"
             val kaidl = "1.14"
             val room = "2.3.0"
             val multiprocess = "1.0.0"
 
+            alias("build-update").to("com.github.ben-manes:gradle-versions-plugin:$version")
             alias("build-android").to("com.android.tools.build:gradle:$agp")
             alias("build-kotlin-common").to("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin")
             alias("build-kotlin-serialization").to("org.jetbrains.kotlin:kotlin-serialization:$kotlin")
