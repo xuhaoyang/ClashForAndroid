@@ -52,6 +52,10 @@ object Clash {
         Bridge.nativeNotifyDnsChanged(dns.joinToString(separator = ","))
     }
 
+    fun notifyTimeZoneChanged(name: String, offset: Int) {
+        Bridge.nativeNotifyTimeZoneChanged(name, offset)
+    }
+
     fun notifyInstalledAppsChanged(uids: List<Pair<Int, String>>) {
         val uidList = uids.joinToString(separator = ",") { "${it.first}:${it.second}" }
 

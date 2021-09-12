@@ -16,6 +16,7 @@ object Bridge {
     external fun nativeQueryTrafficNow(): Long
     external fun nativeQueryTrafficTotal(): Long
     external fun nativeNotifyDnsChanged(dnsList: String)
+    external fun nativeNotifyTimeZoneChanged(name: String, offset: Int)
     external fun nativeNotifyInstalledAppChanged(uidList: String)
     external fun nativeStartTun(fd: Int, mtu: Int, dns: String, blocking: String, cb: TunInterface)
     external fun nativeStopTun()

@@ -85,6 +85,16 @@ Java_com_github_kr328_clash_core_bridge_Bridge_nativeNotifyDnsChanged(JNIEnv *en
 }
 
 JNIEXPORT void JNICALL
+Java_com_github_kr328_clash_core_bridge_Bridge_nativeNotifyTimeZoneChanged(JNIEnv *env, jobject thiz,
+                                                                           jstring name, jint offset) {
+    TRACE_METHOD();
+
+    scoped_string _name = get_string(name);
+
+    notifyTimeZoneChanged(_name, offset);
+}
+
+JNIEXPORT void JNICALL
 Java_com_github_kr328_clash_core_bridge_Bridge_nativeNotifyInstalledAppChanged(JNIEnv *env,
                                                                                jobject thiz,
                                                                                jstring uid_list) {

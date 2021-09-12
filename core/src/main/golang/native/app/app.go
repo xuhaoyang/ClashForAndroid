@@ -3,6 +3,7 @@ package app
 import (
 	"strconv"
 	"strings"
+	"time"
 )
 
 var appVersionName string
@@ -45,4 +46,8 @@ func NotifyInstallAppsChanged(uidList string) {
 
 func QueryAppByUid(uid int) string {
 	return installedAppsUid[uid]
+}
+
+func NotifyTimeZoneChanged(name string, offset int) {
+	time.Local = time.FixedZone(name, offset)
 }
