@@ -90,17 +90,6 @@ subprojects {
             }
         }
 
-        buildTypes {
-            named("release") {
-                isMinifyEnabled = isApp
-                isShrinkResources = isApp
-                proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-                )
-            }
-        }
-
         productFlavors {
             flavorDimensions(defaultDimension)
 
@@ -120,16 +109,45 @@ subprojects {
 
                 buildConfigField("boolean", "PREMIUM", "Boolean.parseBoolean(\"true\")")
 
-                val trackFile = rootProject.file("track.properties")
-                if (trackFile.exists()) {
-                    val track = Properties().apply {
-                        trackFile.inputStream().use(this::load)
+                val tracker = rootProject.file("tracker.properties")
+                if (tracker.exists()) {
+                    val prop = Properties().apply {
+                        tracker.inputStream().use(this::load)
                     }
 
-                    buildConfigField("String", "APP_CENTER_KEY", "\"${track.getProperty("appcenter.key")!!}\"")
-                } else {
-                    buildConfigField("String", "APP_CENTER_KEY", "null")
+                    buildConfigField("String", "APP_CENTER_KEY", "\"${prop.getProperty("appcenter.key")!!}\"")
                 }
+            }
+        }
+
+        signingConfigs {
+            val keystore = rootProject.file("signing.properties")
+            if (keystore.exists()) {
+                create("release") {
+                    val prop = Properties().apply {
+                        keystore.inputStream().use(this::load)
+                    }
+
+                    storeFile = rootProject.file(prop.getProperty("keystore.path")!!)
+                    storePassword = prop.getProperty("keystore.password")!!
+                    keyAlias = prop.getProperty("key.alias")!!
+                    keyPassword = prop.getProperty("key.password")!!
+                }
+            }
+        }
+
+        buildTypes {
+            named("release") {
+                isMinifyEnabled = isApp
+                isShrinkResources = isApp
+                signingConfig = signingConfigs.findByName("release")
+                proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+                )
+            }
+            named("debug") {
+                versionNameSuffix = ".debug"
             }
         }
 

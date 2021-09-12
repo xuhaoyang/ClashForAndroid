@@ -28,6 +28,7 @@ gradle-app.setting
 !/core/src/premium/golang/.idea/codeStyles
 
 # KeyStore
+signing.properties
 *.keystore
 *.jks
 
@@ -37,8 +38,9 @@ cmake-build-*
 # local.properties
 local.properties
 
-# keystore
-keystore.properties
+
+# tracker
+tracker.properties
 
 # vscode
 .vscode
