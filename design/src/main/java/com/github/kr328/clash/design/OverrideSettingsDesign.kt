@@ -383,6 +383,15 @@ class OverrideSettingsDesign(
                 configure = dnsDependencies::add,
             )
 
+            editableText(
+                value = configuration.dns.fallbackFilter::geoIpCode,
+                adapter = NullableTextAdapter.String,
+                title = R.string.geoip_fallback_code,
+                placeholder = R.string.dont_modify,
+                empty = R.string.raw_cn,
+                configure = dnsDependencies::add,
+            )
+
             editableTextList(
                 value = configuration.dns.fallbackFilter::domain,
                 adapter = TextAdapter.String,

@@ -213,4 +213,5 @@
     <string name="name_server_policy">Name Server 策略</string>
     <string name="block_loopback">阻止本地回环</string>
     <string name="block_loopback_summary">阻止本地回环连接</string>
+    <string name="geoip_fallback_code">GeoIP Fallback 区域代码</string>
 </resources>

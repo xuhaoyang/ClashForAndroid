@@ -74,6 +74,7 @@
     <string name="exit_without_save">Exit without Save</string>
     <string name="exit_without_save_warning">All changed will *LOST*</string>
 
+    <string name="raw_cn" translatable="false">cn</string>
     <string name="disabled">Disabled</string>
     <string name="unavailable">Unavailable</string>
     <string name="empty_name">Empty Name</string>
@@ -159,6 +160,7 @@
     <string name="default_name_server">Default Name Server</string>
     <string name="fakeip_filter">Fake-IP Filter</string>
     <string name="geoip_fallback">GeoIP Fallback</string>
+    <string name="geoip_fallback_code">GeoIP Fallback Code</string>
     <string name="ipcidr_fallback">IPCIDR Fallback</string>
     <string name="domain_fallback">Domain Fallback</string>
     <string name="name_server_policy">Name Server Policy</string>

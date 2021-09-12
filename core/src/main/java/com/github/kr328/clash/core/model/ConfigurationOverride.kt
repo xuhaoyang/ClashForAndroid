@@ -91,6 +91,9 @@ data class ConfigurationOverride(
         @SerialName("geoip")
         var geoIp: Boolean? = null,
 
+        @SerialName("geoip-code")
+        var geoIpCode: String? = null,
+
         @SerialName("ipcidr")
         var ipcidr: List<String>? = null,
 
