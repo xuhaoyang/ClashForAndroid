@@ -8,7 +8,7 @@ import com.microsoft.appcenter.crashes.ingestion.models.ErrorAttachmentLog
 
 object Tracker {
     fun initialize(application: Application) {
-        if (BuildConfig.APP_CENTER_KEY != null && !BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             AppCenter.start(
                 application,
                 BuildConfig.APP_CENTER_KEY,
@@ -18,7 +18,7 @@ object Tracker {
     }
 
     fun uploadLogcat(logcat: String) {
-        if (BuildConfig.APP_CENTER_KEY != null && !BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             if (logcat.isNotBlank()) {
                 Crashes.trackError(
                     RuntimeException(),
