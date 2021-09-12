@@ -38,13 +38,13 @@ See also [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
    sdk.dir=/path/to/android-sdk
    ```
 
-4. Create `keystore.properties` in project root with
+4. Create `signing.properties` in project root with
 
    ```properties
-   storeFile=/path/to/keystore/file
-   storePassword=<key store password>
-   keyAlias=<key alias>
-   keyPassword=<key password>
+   keystore.path=/path/to/keystore/file
+   keystore.password=<key store password>
+   key.alias=<key alias>
+   key.password=<key password>
    ```
 
 5. Build
@@ -53,4 +53,4 @@ See also [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
    ./gradlew app:assembleFossRelease
    ```
 
-6. Pick `app-foss-<arch>-release-signed.apk` in `app/build/outputs/apk/foss/release/`
+6. Pick `app-foss-<arch>-release.apk` in `app/build/outputs/apk/foss/release/`
