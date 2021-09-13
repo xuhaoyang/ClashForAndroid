@@ -5,6 +5,7 @@ on:
       - main
     paths-ignore:
       - '.idea/**'
+      - '.gitattributes'
       - '.gitignore'
       - '.gitmodules'
       - '**.md'
@@ -13,6 +14,7 @@ on:
   pull_request:
     paths-ignore:
       - '.idea/**'
+      - '.gitattributes'
       - '.gitignore'
       - '.gitmodules'
       - '**.md'
