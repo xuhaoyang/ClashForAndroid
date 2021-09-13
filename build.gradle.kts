@@ -48,7 +48,7 @@ subprojects {
 
     apply(plugin = if (isApp) "com.android.application" else "com.android.library")
 
-    extensions.configure(BaseExtension::class) {
+    extensions.configure<BaseExtension> {
         val minSdkVersion = 21
         val targetSdkVersion = 30
         val buildVersionCode = 204010
@@ -172,7 +172,7 @@ task("clean", type = Delete::class) {
     delete(rootProject.buildDir)
 }
 
-tasks.named<Wrapper>("wrapper") {
+tasks.wrapper {
     distributionType = Wrapper.DistributionType.ALL
 
     doLast {

@@ -9,7 +9,6 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":service"))
 
-    implementation(kotlin("stdlib-jdk7"))
     implementation(deps.kotlin.coroutine)
     implementation(deps.androidx.core)
     implementation(deps.androidx.appcompat)

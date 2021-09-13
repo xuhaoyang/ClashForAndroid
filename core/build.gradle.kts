@@ -57,14 +57,9 @@ android {
 dependencies {
     implementation(project(":common"))
 
-    implementation(kotlin("stdlib-jdk7"))
     implementation(deps.androidx.core)
     implementation(deps.kotlin.coroutine)
     implementation(deps.kotlin.serialization.json)
-}
-
-repositories {
-    mavenCentral()
 }
 
 afterEvaluate {

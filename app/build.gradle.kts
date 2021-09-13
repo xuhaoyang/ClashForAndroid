@@ -12,7 +12,6 @@ dependencies {
     implementation(project(":design"))
     implementation(project(":common"))
 
-    implementation(kotlin("stdlib-jdk7"))
     implementation(deps.kotlin.coroutine)
     implementation(deps.androidx.core)
     implementation(deps.androidx.activity)

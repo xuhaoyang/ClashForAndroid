@@ -13,7 +13,6 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":common"))
 
-    implementation(kotlin("stdlib-jdk7"))
     implementation(deps.kotlin.coroutine)
     implementation(deps.kotlin.serialization.json)
     implementation(deps.androidx.core)
