@@ -28,7 +28,7 @@ dependencyResolutionManagement {
             val viewpager = "1.0.0"
             val material = "1.4.0"
             val appcenter = "4.3.1"
-            val serialization = "1.2.1"
+            val serialization = "1.2.2"
             val kaidl = "1.15"
             val room = "2.3.0"
             val multiprocess = "1.0.0"
