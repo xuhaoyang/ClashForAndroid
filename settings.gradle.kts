@@ -14,7 +14,6 @@ include(":hideapi")
 dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
-            val version = "0.39.0"
             val agp = "7.0.2"
             val ksp = "1.5.30-1.0.0"
             val kotlin = "1.5.30"
@@ -34,7 +33,6 @@ dependencyResolutionManagement {
             val room = "2.3.0"
             val multiprocess = "1.0.0"
 
-            alias("build-update").to("com.github.ben-manes:gradle-versions-plugin:$version")
             alias("build-android").to("com.android.tools.build:gradle:$agp")
             alias("build-kotlin-common").to("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin")
             alias("build-kotlin-serialization").to("org.jetbrains.kotlin:kotlin-serialization:$kotlin")
