@@ -193,23 +193,7 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
                         ProxyInfo.buildDirectProxy(
                             it.address.hostAddress,
                             it.port,
-                            if (store.bypassPrivateNetwork)
-                                listOf(
-                                    "localhost",
-                                    "*.local",
-                                    "127.*",
-                                    "10.*",
-                                    "172.16.*",
-                                    "172.17.*",
-                                    "172.18.*",
-                                    "172.19.*",
-                                    "172.2*",
-                                    "172.30.*",
-                                    "172.31.*",
-                                    "192.168.*"
-                                )
-                            else
-                                emptyList()
+                            HTTP_PROXY_BLACK_LIST + if (store.bypassPrivateNetwork) HTTP_PROXY_LOCAL_LIST else emptyList()
                         )
                     )
                 }
@@ -239,5 +223,21 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
         private const val TUN_DNS = "172.19.0.2"
         private const val NET_ANY = "0.0.0.0"
         private const val NET_SUBNET_LOOPBACK = "127.0.0.0/8"
+
+        private val HTTP_PROXY_LOCAL_LIST: List<String> = listOf(
+            "localhost",
+            "*.local",
+            "127.*",
+            "10.*",
+            "172.16.*",
+            "172.17.*",
+            "172.18.*",
+            "172.19.*",
+            "172.2*",
+            "172.30.*",
+            "172.31.*",
+            "192.168.*"
+        )
+        private val HTTP_PROXY_BLACK_LIST: List<String> = listOf("*zhihu.com", "*zhimg.com")
     }
 }
