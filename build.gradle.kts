@@ -36,8 +36,8 @@ subprojects {
     extensions.configure<BaseExtension> {
         val minSdkVersion = 21
         val targetSdkVersion = 30
-        val buildVersionCode = 204011
-        val buildVersionName = "2.4.11"
+        val buildVersionCode = 204012
+        val buildVersionName = "2.4.12"
         val defaultDimension = "feature"
 
         ndkVersion = "23.0.7599858"
