@@ -1,5 +1,6 @@
 @file:Suppress("UNUSED_VARIABLE")
 
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import java.net.URL
 import java.util.*
@@ -65,6 +66,8 @@ subprojects {
 
             if (!isApp) {
                 consumerProguardFiles("consumer-rules.pro")
+            } else {
+                setProperty("archivesBaseName", "cfa-$versionName")
             }
         }
 
@@ -99,7 +102,11 @@ subprojects {
                         tracker.inputStream().use(this::load)
                     }
 
-                    buildConfigField("String", "APP_CENTER_KEY", "\"${prop.getProperty("appcenter.key")!!}\"")
+                    buildConfigField(
+                        "String",
+                        "APP_CENTER_KEY",
+                        "\"${prop.getProperty("appcenter.key")!!}\""
+                    )
                 }
             }
         }
@@ -142,6 +149,8 @@ subprojects {
         }
 
         if (isApp) {
+            this as AppExtension
+
             splits {
                 abi {
                     isEnable = true
