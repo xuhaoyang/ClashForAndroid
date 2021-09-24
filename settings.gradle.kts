@@ -15,8 +15,8 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
             val agp = "7.0.2"
-            val ksp = "1.5.30-1.0.0"
-            val kotlin = "1.5.30"
+            val ksp = "1.5.31-1.0.0"
+            val kotlin = "1.5.31"
             val golang = "1.0.4"
             val coroutine = "1.5.2"
             val coreKtx = "1.6.0"
