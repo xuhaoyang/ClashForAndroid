@@ -33,6 +33,11 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle/wrapper/gradle-wrapper.properties', '**/buildSrc/src/main/kotlin/**.kt') }}
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
