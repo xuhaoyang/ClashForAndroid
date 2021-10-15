@@ -6,22 +6,23 @@ require cfa v0.0.0
 
 require (
 	cfa/blob v0.0.0 // indirect
-	github.com/Dreamacro/clash v0.0.0 // indirect
+	github.com/Dreamacro/clash v1.7.1 // indirect
 	github.com/Dreamacro/go-shadowsocks2 v0.1.7 // indirect
 	github.com/avast/apkparser v0.0.0-20210223100516-186f320f9bfc // indirect
-	github.com/avast/apkverifier v0.0.0-20210524110121-dfe686b45d88 // indirect
+	github.com/avast/apkverifier v0.0.0-20210916093748-2146ff7c4b7f // indirect
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/insomniacslk/dhcp v0.0.0-20210827173440-b95caade3eac // indirect
 	github.com/klauspost/compress v1.11.13 // indirect
-	github.com/kr328/tun2socket-lwip v0.0.0-20210911023118-0b4947e2a9c1 // indirect
+	github.com/kr328/tun2socket-lwip v0.0.0-20211015022349-94b5374d46e5 // indirect
 	github.com/miekg/dns v1.1.43 // indirect
 	github.com/oschwald/geoip2-golang v1.5.0 // indirect
 	github.com/oschwald/maxminddb-golang v1.8.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/u-root/uio v0.0.0-20210528114334-82958018845c // indirect
+	go.etcd.io/bbolt v1.3.5 // indirect
 	go.starlark.net v0.0.0-20210901212718-87f333178d59 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go4.org/intern v0.0.0-20210108033219-3eb7198706b2 // indirect
