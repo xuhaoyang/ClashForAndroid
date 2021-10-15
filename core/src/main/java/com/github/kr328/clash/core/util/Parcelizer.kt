@@ -14,8 +14,7 @@ import kotlinx.serialization.modules.SerializersModule
 
 object Parcelizer {
     private class ParcelDecoder(private val parcel: Parcel) : Decoder, CompositeDecoder {
-        @ExperimentalSerializationApi
-        override val serializersModule: SerializersModule = EmptySerializersModule
+        override val serializersModule: SerializersModule = SerializersModule {}
 
         @ExperimentalSerializationApi
         override fun decodeSequentially(): Boolean = true
@@ -122,8 +121,7 @@ object Parcelizer {
     }
 
     private class ParcelEncoder(private val parcel: Parcel) : Encoder, CompositeEncoder {
-        @ExperimentalSerializationApi
-        override val serializersModule: SerializersModule = EmptySerializersModule
+        override val serializersModule: SerializersModule = SerializersModule {}
 
         override fun encodeBooleanElement(
             descriptor: SerialDescriptor,

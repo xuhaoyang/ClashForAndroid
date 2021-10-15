@@ -14,7 +14,7 @@ include(":hideapi")
 dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
-            val agp = "7.0.2"
+            val agp = "7.0.3"
             val ksp = "1.5.31-1.0.0"
             val kotlin = "1.5.31"
             val golang = "1.0.4"
@@ -28,7 +28,7 @@ dependencyResolutionManagement {
             val viewpager = "1.0.0"
             val material = "1.4.0"
             val appcenter = "4.3.1"
-            val serialization = "1.2.2"
+            val serialization = "1.3.0"
             val kaidl = "1.15"
             val room = "2.3.0"
             val multiprocess = "1.0.0"
