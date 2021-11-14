@@ -41,10 +41,10 @@ class NetworkObserveModule(service: Service) :
         private var network: Network? = null
 
         override fun onAvailable(network: Network) {
-            this.network = network
-
             if (this.network != network)
                 networks.trySend(network)
+
+            this.network = network
         }
 
         override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
