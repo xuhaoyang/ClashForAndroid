@@ -81,6 +81,7 @@ subprojects {
             flavorDimensions(defaultDimension)
 
             create("foss") {
+                isDefault = true
                 dimension = defaultDimension
                 versionNameSuffix = ".foss"
 
