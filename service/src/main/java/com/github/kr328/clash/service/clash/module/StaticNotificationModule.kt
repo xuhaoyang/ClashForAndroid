@@ -23,6 +23,7 @@ class StaticNotificationModule(service: Service) : Module<Unit>(service) {
         .setColor(service.getColorCompat(R.color.color_clash))
         .setOnlyAlertOnce(true)
         .setShowWhen(false)
+        .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
         .setContentIntent(
             PendingIntent.getActivity(
                 service,
