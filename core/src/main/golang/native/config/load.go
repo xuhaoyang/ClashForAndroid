@@ -98,7 +98,3 @@ func LoadDefault() {
 
 	executor.ApplyConfig(cfg, true)
 }
-
-func init() {
-	LoadDefault()
-}
