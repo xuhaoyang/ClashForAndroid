@@ -20,4 +20,5 @@ var (
 		// Nintendo Switch
 		"*.n.n.srv.nintendo.net",
 	}
+	defaultFakeIPRange = "28.0.0.0/8"
 )
