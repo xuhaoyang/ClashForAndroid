@@ -1,12 +1,10 @@
 package com.github.kr328.clash.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.kr328.clash.common.compat.getColorCompat
@@ -95,26 +93,20 @@ class ProfileWorker : BaseService() {
     }
 
     private fun createChannels() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            return
-
-        NotificationManagerCompat.from(this).createNotificationChannels(
+        NotificationManagerCompat.from(this).createNotificationChannelsCompat(
             listOf(
-                NotificationChannel(
+                NotificationChannelCompat.Builder(
                     SERVICE_CHANNEL,
-                    getString(R.string.profile_service_status),
-                    NotificationManager.IMPORTANCE_LOW
-                ),
-                NotificationChannel(
+                    NotificationManagerCompat.IMPORTANCE_LOW
+                ).setName(getString(R.string.profile_service_status)).build(),
+                NotificationChannelCompat.Builder(
                     STATUS_CHANNEL,
-                    getString(R.string.profile_process_status),
-                    NotificationManager.IMPORTANCE_LOW
-                ),
-                NotificationChannel(
+                    NotificationManagerCompat.IMPORTANCE_LOW
+                ).setName(getString(R.string.profile_process_status)).build(),
+                NotificationChannelCompat.Builder(
                     RESULT_CHANNEL,
-                    getString(R.string.profile_process_result),
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
+                    NotificationManagerCompat.IMPORTANCE_DEFAULT
+                ).setName(getString(R.string.profile_process_result)).build()
             )
         )
     }

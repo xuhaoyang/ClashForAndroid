@@ -8,7 +8,7 @@ import java.util.*
 
 val Configuration.preferredLocale: Locale
     get() {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        return if (Build.VERSION.SDK_INT >= 24) {
             locales[0]
         } else {
             locale

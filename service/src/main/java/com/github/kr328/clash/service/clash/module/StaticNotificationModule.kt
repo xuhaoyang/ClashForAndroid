@@ -1,11 +1,9 @@
 package com.github.kr328.clash.service.clash.module
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.os.Build
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.kr328.clash.common.compat.getColorCompat
@@ -57,14 +55,11 @@ class StaticNotificationModule(service: Service) : Module<Unit>(service) {
         const val CHANNEL_ID = "clash_status_channel"
 
         fun createNotificationChannel(service: Service) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-                return
             NotificationManagerCompat.from(service).createNotificationChannel(
-                NotificationChannel(
+                NotificationChannelCompat.Builder(
                     CHANNEL_ID,
-                    service.getText(R.string.clash_service_status_channel),
-                    NotificationManager.IMPORTANCE_LOW
-                )
+                    NotificationManagerCompat.IMPORTANCE_LOW
+                ).setName(service.getText(R.string.clash_service_status_channel)).build()
             )
         }
 
