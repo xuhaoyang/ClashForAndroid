@@ -1,5 +1,6 @@
 package com.github.kr328.clash.service
 
+import android.annotation.TargetApi
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.ProxyInfo
@@ -62,7 +63,7 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
                         true
                     }
                     network.onEvent { e ->
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                        if (Build.VERSION.SDK_INT in 22..28) @TargetApi(22) {
                             setUnderlyingNetworks(e.network?.let { arrayOf(it) })
                         }
 
@@ -182,12 +183,12 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
             )
 
             // Metered
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= 29) {
                 setMetered(false)
             }
 
             // System Proxy
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && store.systemProxy) {
+            if (Build.VERSION.SDK_INT >= 29 && store.systemProxy) {
                 listenHttp()?.let {
                     setHttpProxy(
                         ProxyInfo.buildDirectProxy(
