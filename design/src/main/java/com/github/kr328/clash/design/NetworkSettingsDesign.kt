@@ -71,9 +71,9 @@ class NetworkSettingsDesign(
             )
 
             switch(
-                value = srvStore::blockLoopback,
-                title = R.string.block_loopback,
-                summary = R.string.block_loopback_summary,
+                value = srvStore::allowBypass,
+                title = R.string.allow_bypass,
+                summary = R.string.allow_bypass_summary,
                 configure = vpnDependencies::add,
             )
 

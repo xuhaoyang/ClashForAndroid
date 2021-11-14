@@ -122,6 +122,8 @@
     <string name="dns_hijacking_summary">Handle all dns packet</string>
     <string name="block_loopback">Block Loopback</string>
     <string name="block_loopback_summary">Block loopback connections</string>
+    <string name="allow_bypass">Allow Bypass</string>
+    <string name="allow_bypass_summary">Allows all apps to bypass this VPN connection</string>
     <string name="system_proxy">System Proxy</string>
     <string name="system_proxy_summary">Attach http proxy to VpnService</string>
     <string name="access_control_mode">Access Control Mode</string>

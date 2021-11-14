@@ -200,9 +200,8 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
                 }
             }
 
-            val blocking = mutableListOf("$TUN_GATEWAY/$TUN_SUBNET_PREFIX")
-            if (store.blockLoopback) {
-                blocking.add(NET_SUBNET_LOOPBACK)
+            if (store.allowBypass) {
+                allowBypass()
             }
 
             TunModule.TunDevice(

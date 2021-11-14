@@ -46,8 +46,8 @@ class ServiceStore(context: Context) {
         defaultValue = true
     )
 
-    var blockLoopback by store.boolean(
-        key = "block_loopback",
+    var allowBypass by store.boolean(
+        key = "allow_bypass",
         defaultValue = true
     )
 
