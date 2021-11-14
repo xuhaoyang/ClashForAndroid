@@ -10,6 +10,7 @@ import (
 	"github.com/dlclark/regexp2"
 
 	"cfa/native/common"
+	C "github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/log"
 
 	"github.com/Dreamacro/clash/config"
@@ -54,6 +55,7 @@ func patchGeneral(cfg *config.RawConfig, _ string) error {
 
 func patchProfile(cfg *config.RawConfig, _ string) error {
 	cfg.Profile.StoreSelected = false
+	cfg.Profile.StoreFakeIP = true
 
 	return nil
 }
@@ -63,11 +65,8 @@ func patchDns(cfg *config.RawConfig, _ string) error {
 		cfg.DNS.Enable = true
 		cfg.DNS.IPv6 = false
 		cfg.DNS.NameServer = defaultNameServers
-		cfg.DNS.Fallback = defaultFallback
-		cfg.DNS.FallbackFilter.GeoIP = false
-		cfg.DNS.FallbackFilter.IPCIDR = localNetwork
-		cfg.DNS.EnhancedMode = dns.MAPPING
-		cfg.DNS.FakeIPRange = "198.18.0.0/16"
+		cfg.DNS.EnhancedMode = C.DNSFakeIP
+		cfg.DNS.FakeIPRange = "28.0.0.0/8"
 		cfg.DNS.DefaultNameserver = defaultNameServers
 		cfg.DNS.FakeIPFilter = defaultFakeIPFilter
 

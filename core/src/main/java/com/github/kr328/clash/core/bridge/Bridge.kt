@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import androidx.annotation.Keep
 import com.github.kr328.clash.common.Global
+import com.github.kr328.clash.common.log.Log
 import kotlinx.coroutines.CompletableDeferred
 import java.io.File
 
@@ -18,7 +19,7 @@ object Bridge {
     external fun nativeNotifyDnsChanged(dnsList: String)
     external fun nativeNotifyTimeZoneChanged(name: String, offset: Int)
     external fun nativeNotifyInstalledAppChanged(uidList: String)
-    external fun nativeStartTun(fd: Int, mtu: Int, dns: String, blocking: String, cb: TunInterface)
+    external fun nativeStartTun(fd: Int, gateway: String, portal: String, dns: String, cb: TunInterface)
     external fun nativeStopTun()
     external fun nativeStartHttp(listenAt: String): String?
     external fun nativeStopHttp()
@@ -62,6 +63,8 @@ object Bridge {
         val home = ctx.filesDir.resolve("clash").apply { mkdirs() }.absolutePath
         val versionName = ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName
         val sdkVersion = Build.VERSION.SDK_INT
+
+        Log.d("Home = $home")
 
         nativeInit(home, versionName, sdkVersion)
     }

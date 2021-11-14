@@ -64,13 +64,13 @@ object Clash {
 
     fun startTun(
         fd: Int,
-        mtu: Int,
+        gateway: String,
+        portal: String,
         dns: String,
-        blocking: String,
         markSocket: (Int) -> Boolean,
         querySocketUid: (protocol: Int, source: InetSocketAddress, target: InetSocketAddress) -> Int
     ) {
-        Bridge.nativeStartTun(fd, mtu, dns, blocking, object : TunInterface {
+        Bridge.nativeStartTun(fd, gateway, portal, dns, object : TunInterface {
             override fun markSocket(fd: Int) {
                 markSocket(fd)
             }

@@ -54,20 +54,27 @@ int jni_catch_exception(JNIEnv *env) {
     return result;
 }
 
-void jni_attach_thread(JNIEnv **penv) {
+void jni_attach_thread(struct _scoped_jni *jni) {
     JavaVM *vm = global_java_vm();
 
-    if ((*vm)->AttachCurrentThread(vm, penv, NULL) != JNI_OK) {
+    if ((*vm)->GetEnv(vm, (void **) &jni->env, JNI_VERSION_1_6) == JNI_OK) {
+        jni->require_release = 0;
+        return;
+    }
+
+    if ((*vm)->AttachCurrentThread(vm, &jni->env, NULL) != JNI_OK) {
         abort();
     }
+
+    jni->require_release = 1;
 }
 
-void jni_detach_thread(JNIEnv **env) {
-    (void) env;
-
+void jni_detach_thread(struct _scoped_jni *jni) {
     JavaVM *vm = global_java_vm();
 
-    (*vm)->DetachCurrentThread(vm);
+    if (jni->require_release) {
+        (*vm)->DetachCurrentThread(vm);
+    }
 }
 
 void release_string(char **str) {
