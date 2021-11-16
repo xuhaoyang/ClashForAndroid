@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/kr328/tun2socket"
+	"github.com/Kr328/tun2socket"
 
 	"github.com/Dreamacro/clash/adapter/inbound"
 	"github.com/Dreamacro/clash/common/pool"
