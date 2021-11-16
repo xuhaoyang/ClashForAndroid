@@ -27,7 +27,7 @@ var client = &http.Client{
 		DisableKeepAlives:     true,
 		TLSHandshakeTimeout:   10 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
-		DialContext:           dialer.DefaultTunnelDialer,
+		DialContext:           dialer.DialTunnelContext,
 	},
 	Timeout: 60 * time.Second,
 }
