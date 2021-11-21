@@ -41,26 +41,18 @@ class NetworkObserveModule(service: Service) :
         }
     }
 
-    private fun register(): Boolean {
-        return try {
+    private fun register(): Result<Unit> {
+        return runCatching {
             connectivity.registerNetworkCallback(request, callback)
-
-            true
-        } catch (e: Exception) {
-            Log.w("Observe network changed: $e", e)
-
-            false
+        }.onFailure {
+            Log.w("Observe network change: $it", it)
         }
     }
 
-    private fun unregister(): Boolean {
-        try {
+    private fun unregister(): Result<Unit> {
+        return runCatching {
             connectivity.unregisterNetworkCallback(callback)
-        } catch (e: Exception) {
-            // ignored
         }
-
-        return false
     }
 
     override suspend fun run() {
@@ -79,9 +71,9 @@ class NetworkObserveModule(service: Service) :
                     screenToggle.onReceive {
                         when (it.action) {
                             Intent.ACTION_SCREEN_ON ->
-                                register()
+                                register().isFailure
                             Intent.ACTION_SCREEN_OFF ->
-                                unregister()
+                                unregister().isFailure
                             else ->
                                 false
                         }
