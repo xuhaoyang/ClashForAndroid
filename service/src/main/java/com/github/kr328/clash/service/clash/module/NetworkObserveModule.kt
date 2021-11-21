@@ -6,7 +6,7 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import com.github.kr328.clash.common.log.Log
 import com.github.kr328.clash.core.Clash
-import com.github.kr328.clash.service.util.resolveDns
+import com.github.kr328.clash.service.util.resolvePrimaryDns
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
@@ -48,45 +48,46 @@ class NetworkObserveModule(service: Service) : Module<Network?>(service) {
         }
 
         try {
-            var current: Network? = null
             val networks = mutableSetOf<Network>()
 
             while (true) {
                 val action = actions.receive()
 
-                when (action.type) {
+                val resolveDefault = when (action.type) {
                     Action.Type.Available -> {
                         networks.add(action.network)
+
+                        true
                     }
                     Action.Type.Lost -> {
                         networks.remove(action.network)
+
+                        true
                     }
                     Action.Type.Changed -> {
-                        if (current == action.network) {
-                            val dns = connectivity.resolveDns(action.network)
-
-                            Clash.notifyDnsChanged(dns)
-
-                            Log.d("Current network changed: ${action.network}: $dns")
-                        }
-
-                        continue
+                        false
                     }
                 }
 
-                current = networks.maxByOrNull {
-                    connectivity.getNetworkCapabilities(it)?.let { cap ->
-                        TRANSPORT_PRIORITY.indexOfFirst { cap.hasTransport(it) }
-                    } ?: -1
+                val dns = networks.mapNotNull {
+                    connectivity.resolvePrimaryDns(it)
                 }
-
-                val dns = connectivity.resolveDns(current)
 
                 Clash.notifyDnsChanged(dns)
 
-                enqueueEvent(current)
+                Log.d("DNS: $dns")
 
-                Log.d("Available network changed: $current of $networks: $dns")
+                if (resolveDefault) {
+                    val network = networks.maxByOrNull { net ->
+                        connectivity.getNetworkCapabilities(net)?.let { cap ->
+                            TRANSPORT_PRIORITY.indexOfFirst { cap.hasTransport(it) }
+                        } ?: -1
+                    }
+
+                    enqueueEvent(network)
+
+                    Log.d("Network: $network of $networks")
+                }
             }
         } finally {
             withContext(NonCancellable) {
@@ -105,19 +106,19 @@ class NetworkObserveModule(service: Service) : Module<Network?>(service) {
         private val TRANSPORT_PRIORITY = sequence {
             yield(NetworkCapabilities.TRANSPORT_CELLULAR)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            if (Build.VERSION.SDK_INT >= 27) {
                 yield(NetworkCapabilities.TRANSPORT_LOWPAN)
             }
 
             yield(NetworkCapabilities.TRANSPORT_BLUETOOTH)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= 26) {
                 yield(NetworkCapabilities.TRANSPORT_WIFI_AWARE)
             }
 
             yield(NetworkCapabilities.TRANSPORT_WIFI)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (Build.VERSION.SDK_INT >= 31) {
                 yield(NetworkCapabilities.TRANSPORT_USB)
             }
 
