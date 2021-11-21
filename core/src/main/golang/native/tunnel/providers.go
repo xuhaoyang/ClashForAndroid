@@ -3,7 +3,6 @@
 package tunnel
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -11,8 +10,6 @@ import (
 	"github.com/Dreamacro/clash/constant/provider"
 	"github.com/Dreamacro/clash/tunnel"
 )
-
-var ErrInvalidType = errors.New("invalid type")
 
 type Provider struct {
 	Name        string `json:"name"`
