@@ -149,6 +149,11 @@ subprojects {
             }
         }
 
+        variantFilter {
+            ignore = name.startsWith("premium") && !project(":core")
+                .file("src/premium/golang/clash/go.mod").exists()
+        }
+
         if (isApp) {
             this as AppExtension
 
