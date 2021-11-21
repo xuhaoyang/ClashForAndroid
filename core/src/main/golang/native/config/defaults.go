@@ -8,17 +8,20 @@ var (
 		"1.1.1.1",
 	}
 	defaultFakeIPFilter = []string{
-		// stun services
+		// Stun Services
 		"+.stun.*.*",
 		"+.stun.*.*.*",
 		"+.stun.*.*.*.*",
+		"+.stun.*.*.*.*.*",
 
 		// Google Voices
 		"lens.l.google.com",
-		"stun.l.google.com",
 
 		// Nintendo Switch
 		"*.n.n.srv.nintendo.net",
+
+		// Bilibili CDN
+		"*.mcdn.bilivideo.cn",
 	}
 	defaultFakeIPRange = "28.0.0.0/8"
 )
