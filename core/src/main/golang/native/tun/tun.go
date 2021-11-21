@@ -46,7 +46,7 @@ func Start(fd int, gateway, portal, dns string) (io.Closer, error) {
 				continue
 			}
 
-			lAddr := conn.RemoteAddr().(*net.TCPAddr)
+			lAddr := conn.LocalAddr().(*net.TCPAddr)
 			rAddr := conn.RemoteAddr().(*net.TCPAddr)
 
 			if ipv4LoopBack.Contains(rAddr.IP) {
