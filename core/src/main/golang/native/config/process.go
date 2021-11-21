@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/dlclark/regexp2"
 
@@ -17,18 +16,12 @@ import (
 	"github.com/Dreamacro/clash/dns"
 )
 
-const (
-	defaultHealthCheckUrl      = "https://www.gstatic.com/generate_204"
-	defaultHealthCheckInterval = time.Hour
-)
-
 var processors = []processor{
 	patchOverride,
 	patchGeneral,
 	patchProfile,
 	patchDns,
 	patchProviders,
-	patchProxyGroup,
 	validConfig,
 }
 
@@ -91,20 +84,6 @@ func patchProviders(cfg *config.RawConfig, profileDir string) error {
 			provider["path"] = profileDir + "/providers/" + common.ResolveAsRoot(path)
 		}
 	})
-
-	return nil
-}
-
-func patchProxyGroup(cfg *config.RawConfig, _ string) error {
-	for _, g := range cfg.ProxyGroup {
-		if _, exist := g["url"]; !exist {
-			g["url"] = defaultHealthCheckUrl
-		}
-
-		if _, exist := g["interval"]; !exist {
-			g["interval"] = int(defaultHealthCheckInterval.Seconds())
-		}
-	}
 
 	return nil
 }
