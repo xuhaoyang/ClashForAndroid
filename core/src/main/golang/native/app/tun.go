@@ -2,7 +2,6 @@ package app
 
 import (
 	"net"
-	"strings"
 	"syscall"
 
 	"cfa/native/platform"
@@ -16,10 +15,15 @@ func MarkSocket(fd int) {
 }
 
 func QuerySocketUid(source, target net.Addr) int {
-	protocol := syscall.IPPROTO_TCP
+	var protocol int
 
-	if strings.HasPrefix(source.String(), "udp") {
+	switch source.Network() {
+	case "udp", "udp4", "udp6":
 		protocol = syscall.IPPROTO_UDP
+	case "tcp", "tcp4", "tcp6":
+		protocol = syscall.IPPROTO_TCP
+	default:
+		return -1
 	}
 
 	if PlatformVersion() < 29 {
