@@ -20,6 +20,17 @@ var (
 		// Nintendo Switch
 		"*.n.n.srv.nintendo.net",
 
+		// PlayStation
+		"+.stun.playstation.net",
+
+		// XBox
+		"xbox.*.*.microsoft.com",
+		"*.*.xboxlive.com",
+
+		// Microsoft
+		"*.msftncsi.com",
+		"*.msftconnecttest.com",
+
 		// Bilibili CDN
 		"*.mcdn.bilivideo.cn",
 	}
