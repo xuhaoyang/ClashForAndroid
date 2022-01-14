@@ -34,29 +34,19 @@ subprojects {
     apply(plugin = if (isApp) "com.android.application" else "com.android.library")
 
     extensions.configure<BaseExtension> {
-        val minSdkVersion = 21
-        val targetSdkVersion = 31
-        val buildVersionCode = 205003
-        val buildVersionName = "2.5.3"
-        val defaultDimension = "feature"
-
-        ndkVersion = "23.0.7599858"
-
-        compileSdkVersion(targetSdkVersion)
-
         defaultConfig {
             if (isApp) {
                 applicationId = "com.github.kr328.clash"
             }
 
-            minSdk = minSdkVersion
-            targetSdk = targetSdkVersion
+            minSdk = 21
+            targetSdk = 31
 
-            versionName = buildVersionName
-            versionCode = buildVersionCode
+            versionName = "2.5.3"
+            versionCode = 205003
 
-            resValue("string", "release_name", "v$buildVersionName")
-            resValue("integer", "release_code", "$buildVersionCode")
+            resValue("string", "release_name", "v$versionName")
+            resValue("integer", "release_code", "$versionCode")
 
             externalNativeBuild {
                 cmake {
@@ -71,6 +61,10 @@ subprojects {
             }
         }
 
+        ndkVersion = "23.0.7599858"
+
+        compileSdkVersion(defaultConfig.targetSdk!!)
+
         if (isApp) {
             packagingOptions {
                 excludes.add("DebugProbesKt.bin")
@@ -78,11 +72,11 @@ subprojects {
         }
 
         productFlavors {
-            flavorDimensions(defaultDimension)
+            flavorDimensions("feature")
 
             create("foss") {
                 isDefault = true
-                dimension = defaultDimension
+                dimension = flavorDimensionList[0]
                 versionNameSuffix = ".foss"
 
                 buildConfigField("boolean", "PREMIUM", "Boolean.parseBoolean(\"false\")")
@@ -92,7 +86,7 @@ subprojects {
                 }
             }
             create("premium") {
-                dimension = defaultDimension
+                dimension = flavorDimensionList[0]
                 versionNameSuffix = ".premium"
 
                 buildConfigField("boolean", "PREMIUM", "Boolean.parseBoolean(\"true\")")
