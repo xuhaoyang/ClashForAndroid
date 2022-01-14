@@ -6,10 +6,11 @@ import (
 
 	"cfa/blob"
 
-	"cfa/native/app"
-	"cfa/native/platform"
 	"github.com/Dreamacro/clash/component/process"
 	"github.com/Dreamacro/clash/log"
+
+	"cfa/native/app"
+	"cfa/native/platform"
 
 	"github.com/Dreamacro/clash/component/dialer"
 	"github.com/Dreamacro/clash/component/mmdb"
