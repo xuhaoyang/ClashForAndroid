@@ -4,8 +4,8 @@ go 1.17
 
 require (
 	github.com/Dreamacro/clash v1.7.1
+	github.com/Kr328/tun2socket v0.0.0-20211231120722-962f339492e8
 	github.com/dlclark/regexp2 v1.4.0
-	github.com/kr328/tun2socket v0.0.0-20211114060954-370f53a7d3d7
 	github.com/miekg/dns v1.1.43
 	github.com/oschwald/geoip2-golang v1.5.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
@@ -23,6 +23,6 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/net v0.0.0-20210903162142-ad29c8ab022f // indirect
-	golang.org/x/sys v0.0.0-20211110154304-99a53858aa08 // indirect
+	golang.org/x/sys v0.0.0-20211116061358-0a5406a5449c // indirect
 	golang.org/x/text v0.3.6 // indirect
 )
