@@ -7,6 +7,8 @@ body:
       value: |
         Thanks for taking the time to fill out this bug report!
 
+        NOTE: Be sure to put a clear and concise title **AFTER** [BUG] in the text box above
+
         NOTE: We do not provide any services such as proxies, DO NOT feedback any problems not caused by this application here.
 
         <!-- template -->
@@ -35,9 +37,11 @@ body:
       label: "Device Info"
       description: |
         Input your device information according to the following format:
+        ```
         - Device: [e.g Pixel 4]
         - ROM: [e.g AOSP]
         - Android Version: [e.g 10]
+        ```
       placeholder: |
         - Device: [e.g Pixel 4]
         - ROM: [e.g AOSP]
@@ -50,9 +54,11 @@ body:
       label: "Application Info"
       description: |
         Input application you are using information according to the following format:
+        ```
         - Version: [e.g 2.5.4-premium]
         - APK filename: [e.g cfa-2.5.4-premium-arm64-v8a-release.apk]
         - Distribution Channel: [e.g. Google Play]
+        ```
       placeholder: |
         - Version: [e.g 2.5.4-premium]
         - APK filename: [e.g cfa-2.5.4-premium-arm64-v8a-release.apk]
@@ -65,11 +71,10 @@ body:
       label: "Configure File"
       description: |
         Please paste or upload the configuration file here.
+
         TIPS: If you only have a subscription link, please use your browser to download it.
+
         NOTE: Please remove proxies from the configuration file before uploading it.
-      placeholder: |
-        port: 1080
-      render: YAML
     validations:
       required: true
   - type: textarea
