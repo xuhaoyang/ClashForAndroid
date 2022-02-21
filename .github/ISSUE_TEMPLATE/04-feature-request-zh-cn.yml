@@ -8,6 +8,8 @@ body:
         感谢您在百忙之中填写此功能请求报告。
 
         注意: 请务必在上方文本框的 `[Feature Request]` **之后**填写清晰明了的标题。
+
+        <!-- template -->
   - type: textarea
     id: "description"
     attributes:

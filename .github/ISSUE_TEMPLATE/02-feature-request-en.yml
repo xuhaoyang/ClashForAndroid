@@ -8,6 +8,8 @@ body:
         Thanks for taking the time to fill out this feature request!
 
         NOTE: Be sure to put a clear and concise title **AFTER** `[Feature Request]` in the text box above.
+
+        <!-- template -->
   - type: textarea
     id: "description"
     attributes:
