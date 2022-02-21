@@ -7,7 +7,7 @@ body:
       value: |
         Thanks for taking the time to fill out this bug report!
 
-        NOTE: Be sure to put a clear and concise title **AFTER** [BUG] in the text box above
+        NOTE: Be sure to put a clear and concise title **AFTER** `[BUG]` in the text box above.
 
         NOTE: We do not provide any services such as proxies, DO NOT feedback any problems not caused by this application here.
 
@@ -36,16 +36,16 @@ body:
     attributes:
       label: "Device Info"
       description: |
-        Input your device information according to the following format:
-        ```
-        - Device: [e.g Pixel 4]
-        - ROM: [e.g AOSP]
-        - Android Version: [e.g 10]
-        ```
-      placeholder: |
-        - Device: [e.g Pixel 4]
-        - ROM: [e.g AOSP]
-        - Android Version: [e.g 10]
+        Input your device information.
+
+        Example:
+        - Device: Pixel 4
+        - ROM: AOSP
+        - Android Version: 10
+      value: |
+        - Device:
+        - ROM:
+        - Android Version:
     validations:
       required: true
   - type: textarea
@@ -53,16 +53,18 @@ body:
     attributes:
       label: "Application Info"
       description: |
-        Input application you are using information according to the following format:
+        Input application you are using information.
+
+        Example:
         ```
-        - Version: [e.g 2.5.4-premium]
-        - APK filename: [e.g cfa-2.5.4-premium-arm64-v8a-release.apk]
-        - Distribution Channel: [e.g. Google Play]
+        - Version: 2.5.4-premium
+        - APK filename: cfa-2.5.4-premium-arm64-v8a-release.apk
+        - Distribution Channel: Google Play
         ```
-      placeholder: |
-        - Version: [e.g 2.5.4-premium]
-        - APK filename: [e.g cfa-2.5.4-premium-arm64-v8a-release.apk]
-        - Distribution Channel: [e.g. Google Play]
+      value: |
+        - Version:
+        - APK filename:
+        - Distribution Channel:
     validations:
       required: true
   - type: textarea
@@ -74,7 +76,9 @@ body:
 
         TIPS: If you only have a subscription link, please use your browser to download it.
 
-        NOTE: Please remove proxies from the configuration file before uploading it.
+        **NOTE: Please remove proxies from the configuration file before uploading it.**
+        **NOTE: Please remove proxies from the configuration file before uploading it.**
+        **NOTE: Please remove proxies from the configuration file before uploading it.**
     validations:
       required: true
   - type: textarea
@@ -83,6 +87,7 @@ body:
       label: "Logs"
       description: |
         Please paste or upload the log file here.
+
         TIPS: Please use the `Logcat` in application or `adb logcat`. `adb logcat` would be better.
     validations:
       required: true
