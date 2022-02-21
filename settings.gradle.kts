@@ -14,14 +14,14 @@ include(":hideapi")
 dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
-            val agp = "7.0.4"
+            val agp = "7.1.1"
             val ksp = "1.6.10-1.0.2"
             val kotlin = "1.6.10"
             val golang = "1.0.4"
             val coroutine = "1.6.0"
             val coreKtx = "1.7.0"
             val activity = "1.4.0"
-            val fragment = "1.4.0"
+            val fragment = "1.4.1"
             val appcompat = "1.4.1"
             val coordinator = "1.2.0"
             val recyclerview = "1.2.1"
