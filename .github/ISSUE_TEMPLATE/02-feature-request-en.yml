@@ -9,6 +9,7 @@ body:
 
         NOTE: Be sure to put a clear and concise title **AFTER** `[Feature Request]` in the text box above.
   - type: textarea
+    id: "description"
     attributes:
       label: "Feature Description"
       description: |
@@ -16,6 +17,7 @@ body:
     validations:
       required: true
   - type: textarea
+    id: "additional"
     attributes:
       label: "Additional"
       description: |

@@ -9,6 +9,7 @@ body:
 
         注意: 请务必在上方文本框的 `[Feature Request]` **之后**填写清晰明了的标题。
   - type: textarea
+    id: "description"
     attributes:
       label: "功能描述"
       description: |
@@ -16,6 +17,7 @@ body:
     validations:
       required: true
   - type: textarea
+    id: "additional"
     attributes:
       label: "附加信息"
       description: |
