@@ -22,27 +22,25 @@ on:
       - '**.md'
       - 'LICENSE'
       - 'NOTICE'
+
 jobs:
   BuildUnsigned:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
-          java-version: 11
-      - name: Gradle cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle/wrapper/gradle-wrapper.properties', '**/buildSrc/src/main/kotlin/**.kt') }}
+          distribution: 'zulu'
+          java-version: 17
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17
+          go-version: 1.18
       - name: Build
-        run: ./gradlew --no-daemon app:assembleFossRelease
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: --no-daemon app:assembleFossRelease
