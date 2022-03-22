@@ -79,7 +79,7 @@ func patchDns(cfg *config.RawConfig, _ string) error {
 }
 
 func patchProviders(cfg *config.RawConfig, profileDir string) error {
-	forEachProviders(cfg, func(index int, total int, key string, provider map[string]interface{}) {
+	forEachProviders(cfg, func(index int, total int, key string, provider map[string]any) {
 		if path, ok := provider["path"].(string); ok {
 			provider["path"] = profileDir + "/providers/" + common.ResolveAsRoot(path)
 		}

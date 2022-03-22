@@ -1,4 +1,4 @@
-// +build !premium
+//go:build !premium
 
 package tunnel
 

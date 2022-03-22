@@ -27,7 +27,7 @@ func init() {
 		metadata := &C.Metadata{
 			NetWork:    C.TCP,
 			Type:       C.HTTPCONNECT,
-			SrcIP:      net.ParseIP("127.0.0.1"),
+			SrcIP:      loopback,
 			SrcPort:    "65535",
 			DstPort:    port,
 			AddrType:   C.AtypDomainName,

@@ -1,4 +1,4 @@
-// +build !premium
+//go:build !premium
 
 package config
 
@@ -8,7 +8,7 @@ import (
 	"github.com/Dreamacro/clash/config"
 )
 
-func forEachProviders(rawCfg *config.RawConfig, fun func(index int, total int, key string, provider map[string]interface{})) {
+func forEachProviders(rawCfg *config.RawConfig, fun func(index int, total int, key string, provider map[string]any)) {
 	total := len(rawCfg.ProxyProvider)
 	index := 0
 

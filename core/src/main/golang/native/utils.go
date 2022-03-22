@@ -7,7 +7,7 @@ import (
 	"reflect"
 )
 
-func marshalJson(obj interface{}) *C.char {
+func marshalJson(obj any) *C.char {
 	res, err := json.Marshal(obj)
 	if err != nil {
 		panic(err.Error())
@@ -16,7 +16,7 @@ func marshalJson(obj interface{}) *C.char {
 	return C.CString(string(res))
 }
 
-func marshalString(obj interface{}) *C.char {
+func marshalString(obj any) *C.char {
 	if obj == nil {
 		return nil
 	}

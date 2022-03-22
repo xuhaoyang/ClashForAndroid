@@ -124,7 +124,7 @@ func FetchAndValid(
 		return err
 	}
 
-	forEachProviders(rawCfg, func(index int, total int, name string, provider map[string]interface{}) {
+	forEachProviders(rawCfg, func(index int, total int, name string, provider map[string]any) {
 		bytes, _ := json.Marshal(&Status{
 			Action:      "FetchProviders",
 			Args:        []string{name},

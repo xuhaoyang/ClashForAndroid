@@ -1,4 +1,4 @@
-// +build premium
+//go:build premium
 
 package tunnel
 
@@ -49,7 +49,7 @@ func QueryProviders() []*Provider {
 	for _, p := range providers {
 		updatedAt := time.Time{}
 
-		if s, ok := p.(P.UpdatableProvider); ok {
+		if s, ok := p.(P.UpdatableProvider[any]); ok {
 			updatedAt = s.UpdatedAt()
 		}
 

@@ -5,7 +5,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/Kr328/tun2socket"
@@ -25,7 +24,15 @@ func Start(fd int, gateway, portal, dns string) (io.Closer, error) {
 	log.Debugln("TUN: fd = %d, gateway = %s, portal = %s, dns = %s", fd, gateway, portal, dns)
 
 	device := os.NewFile(uintptr(fd), "/dev/tun")
-	stack, err := tun2socket.StartTun2Socket(device, net.ParseIP(gateway), net.ParseIP(portal))
+
+	ip, network, err := net.ParseCIDR(gateway)
+	if err != nil {
+		panic(err.Error())
+	} else {
+		network.IP = ip
+	}
+
+	stack, err := tun2socket.StartTun2Socket(device, network, net.ParseIP(portal))
 	if err != nil {
 		_ = device.Close()
 
@@ -91,20 +98,7 @@ func Start(fd int, gateway, portal, dns string) (io.Closer, error) {
 				continue
 			}
 
-			metadata := &C.Metadata{
-				NetWork:    C.TCP,
-				Type:       C.SOCKS5,
-				SrcIP:      lAddr.IP,
-				DstIP:      rAddr.IP,
-				SrcPort:    strconv.Itoa(lAddr.Port),
-				DstPort:    strconv.Itoa(rAddr.Port),
-				AddrType:   C.AtypIPv4,
-				Host:       "",
-				RawSrcAddr: lAddr,
-				RawDstAddr: rAddr,
-			}
-
-			tunnel.TCPIn() <- context.NewConnContext(conn, metadata)
+			tunnel.TCPIn() <- context.NewConnContext(conn, createMetadata(lAddr, rAddr))
 		}
 	}
 
