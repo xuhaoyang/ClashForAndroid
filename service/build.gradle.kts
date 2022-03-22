@@ -10,16 +10,16 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":common"))
 
-    ksp(deps.kaidl.compiler)
-    kapt(deps.androidx.room.compiler)
+    ksp(libs.kaidl.compiler)
+    kapt(libs.androidx.room.compiler)
 
-    implementation(deps.kotlin.coroutine)
-    implementation(deps.kotlin.serialization.json)
-    implementation(deps.androidx.core)
-    implementation(deps.androidx.room.runtime)
-    implementation(deps.androidx.room.ktx)
-    implementation(deps.kaidl.runtime)
-    implementation(deps.rikkax.multiprocess)
+    implementation(libs.kotlin.coroutine)
+    implementation(libs.kotlin.serialization.json)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.kaidl.runtime)
+    implementation(libs.rikkax.multiprocess)
 }
 
 afterEvaluate {

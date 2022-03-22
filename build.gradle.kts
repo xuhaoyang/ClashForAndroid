@@ -12,23 +12,21 @@ buildscript {
         maven("https://maven.kr328.app/releases")
     }
     dependencies {
-        classpath(deps.build.android)
-        classpath(deps.build.kotlin.common)
-        classpath(deps.build.kotlin.serialization)
-        classpath(deps.build.ksp)
-        classpath(deps.build.golang)
+        classpath(libs.build.android)
+        classpath(libs.build.kotlin.common)
+        classpath(libs.build.kotlin.serialization)
+        classpath(libs.build.ksp)
+        classpath(libs.build.golang)
     }
 }
 
-allprojects {
+subprojects {
     repositories {
         mavenCentral()
         google()
         maven("https://maven.kr328.app/releases")
     }
-}
 
-subprojects {
     val isApp = name == "app"
 
     apply(plugin = if (isApp) "com.android.application" else "com.android.library")
@@ -42,8 +40,8 @@ subprojects {
             minSdk = 21
             targetSdk = 31
 
-            versionName = "2.5.4"
-            versionCode = 205004
+            versionName = "2.5.5"
+            versionCode = 205005
 
             resValue("string", "release_name", "v$versionName")
             resValue("integer", "release_code", "$versionCode")

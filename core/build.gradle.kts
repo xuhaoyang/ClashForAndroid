@@ -57,9 +57,9 @@ android {
 dependencies {
     implementation(project(":common"))
 
-    implementation(deps.androidx.core)
-    implementation(deps.kotlin.coroutine)
-    implementation(deps.kotlin.serialization.json)
+    implementation(libs.androidx.core)
+    implementation(libs.kotlin.coroutine)
+    implementation(libs.kotlin.serialization.json)
 }
 
 afterEvaluate {
