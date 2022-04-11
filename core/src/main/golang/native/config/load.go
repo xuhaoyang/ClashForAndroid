@@ -9,7 +9,6 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"cfa/native/app"
-	"github.com/Dreamacro/clash/constant"
 	"github.com/Dreamacro/clash/log"
 
 	"github.com/Dreamacro/clash/config"
@@ -87,11 +86,7 @@ func Load(path string) error {
 }
 
 func LoadDefault() {
-	rawConfig, _ := config.UnmarshalRawConfig([]byte{})
-
-	_ = patchDns(rawConfig, constant.Path.HomeDir())
-
-	cfg, err := config.ParseRawConfig(rawConfig)
+	cfg, err := config.Parse([]byte{})
 	if err != nil {
 		panic(err.Error())
 	}
