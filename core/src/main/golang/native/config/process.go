@@ -63,9 +63,6 @@ func patchDns(cfg *config.RawConfig, _ string) error {
 			EnhancedMode:      C.DNSFakeIP,
 			FakeIPRange:       defaultFakeIPRange,
 			FakeIPFilter:      defaultFakeIPFilter,
-			FallbackFilter: config.RawFallbackFilter{
-				GeoIP: false,
-			},
 		}
 
 		cfg.ClashForAndroid.AppendSystemDNS = true
