@@ -6,6 +6,8 @@ github.com/Kr328/tun2socket v0.0.0-20211231120722-962f339492e8 h1:4Ceb/pU/u7fKGM
 github.com/Kr328/tun2socket v0.0.0-20211231120722-962f339492e8/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
 github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd h1:rNOyFw+I4VjTtMvONd+OgG9Z/++C7NnomvL5mFGjznk=
 github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
+github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34 h1:USCTqih5d1bUXUxWNS9ZD5Tx/lb0jXHEtRIIx/F9dMc=
+github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

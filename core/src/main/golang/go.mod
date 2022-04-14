@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Dreamacro/clash v1.7.1
-	github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd
+	github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34
 	github.com/dlclark/regexp2 v1.4.0
 	github.com/miekg/dns v1.1.43
 	github.com/oschwald/geoip2-golang v1.5.0

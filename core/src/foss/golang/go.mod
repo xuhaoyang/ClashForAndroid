@@ -8,7 +8,7 @@ require (
 	cfa/blob v0.0.0 // indirect
 	github.com/Dreamacro/clash v1.7.1 // indirect
 	github.com/Dreamacro/go-shadowsocks2 v0.1.7 // indirect
-	github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd // indirect
+	github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34 // indirect
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
@@ -25,7 +25,7 @@ require (
 	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 // indirect
+	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.6-0.20210726203631-07bc1bf47fb2 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

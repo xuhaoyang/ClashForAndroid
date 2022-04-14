@@ -2,8 +2,8 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/Dreamacro/go-shadowsocks2 v0.1.8 h1:Ixejp5JscEc866gAvm/l6TFd7BOBvDviKgwb1quWw3g=
 github.com/Dreamacro/go-shadowsocks2 v0.1.8/go.mod h1:51y4Q6tJoCE7e8TmYXcQRqfoxPfE9Cvn79V6pB6Df7Y=
-github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd h1:rNOyFw+I4VjTtMvONd+OgG9Z/++C7NnomvL5mFGjznk=
-github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
+github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34 h1:USCTqih5d1bUXUxWNS9ZD5Tx/lb0jXHEtRIIx/F9dMc=
+github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
 github.com/avast/apkparser v0.0.0-20190516101250-3b8c5efcb6a9/go.mod h1:c0733VBXm1we9M1zCtoOspplSwOYebS3hpDkJyMORRU=
 github.com/avast/apkparser v0.0.0-20200102113521-69bcdd9c2403/go.mod h1:eZzHNfZWA1eeKPQE3LVmfRw32lhrH351jDCsma9qxOc=
 github.com/avast/apkparser v0.0.0-20200402131724-9fd46d5c4749/go.mod h1:CSBdDZNEsGRYPiDt9QcGrIy8iWQ9YzB1rcuxn44+0jc=
