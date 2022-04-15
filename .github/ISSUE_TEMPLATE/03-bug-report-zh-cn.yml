@@ -70,6 +70,7 @@ body:
   - type: textarea
     id: configure
     attributes:
+      render: yml
       label: "配置文件"
       description: |
         请在此粘贴和上传配置文件。
@@ -84,6 +85,7 @@ body:
   - type: textarea
     id: logs
     attributes:
+      render: raw
       label: "日志"
       description: |
         请在此粘贴或上传日志。
