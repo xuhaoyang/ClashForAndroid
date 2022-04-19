@@ -36,6 +36,7 @@ func coreInit(home, versionName C.c_string, sdkVersion C.int) {
 func reset() {
 	config.LoadDefault()
 	tunnel.ResetStatistic()
+	tunnel.CloseAllConnections()
 
 	runtime.GC()
 }
