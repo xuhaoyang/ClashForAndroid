@@ -11,12 +11,18 @@ require (
 	github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34 // indirect
 	github.com/avast/apkparser v0.0.0-20210223100516-186f320f9bfc // indirect
 	github.com/avast/apkverifier v0.0.0-20210916093748-2146ff7c4b7f // indirect
+	github.com/cilium/ebpf v0.8.1 // indirect
 	github.com/dlclark/regexp2 v1.4.0 // indirect
+	github.com/florianl/go-tc v0.4.0 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/google/btree v1.0.1 // indirect
+	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/insomniacslk/dhcp v0.0.0-20220405050111-12fbdcb11b41 // indirect
+	github.com/josharian/native v1.0.0 // indirect
 	github.com/klauspost/compress v1.11.13 // indirect
+	github.com/mdlayher/netlink v1.6.0 // indirect
+	github.com/mdlayher/socket v0.1.1 // indirect
 	github.com/miekg/dns v1.1.48 // indirect
 	github.com/openacid/low v0.1.21 // indirect
 	github.com/oschwald/geoip2-golang v1.7.0 // indirect
@@ -24,8 +30,6 @@ require (
 	github.com/samber/lo v1.11.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/u-root/uio v0.0.0-20210528114334-82958018845c // indirect
-	github.com/vishvananda/netlink v1.2.0-beta.0.20220404152918-5e915e014938 // indirect
-	github.com/vishvananda/netns v0.0.0-20211101163701-50045581ed74 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.starlark.net v0.0.0-20220328144851-d1966c6b9fcd // indirect
 	go.uber.org/atomic v1.9.0 // indirect
