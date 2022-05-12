@@ -15,7 +15,19 @@ class AppListCacheModule(service: Service) : Module<Unit>(service) {
 
     private fun reload() {
         val packages = service.packageManager.getInstalledPackages(0)
-            .map { it.applicationInfo.uid to it.uniqueUidName() }
+            .groupBy { it.uniqueUidName() }
+            .map { (_, v) ->
+                val info = v[0]
+
+                if (v.size == 1) {
+                    // Force use package name if only one app in a single sharedUid group
+                    // Example: firefox
+
+                    info.applicationInfo.uid to info.packageName
+                } else {
+                    info.applicationInfo.uid to info.uniqueUidName()
+                }
+            }
 
         Clash.notifyInstalledAppsChanged(packages)
 
