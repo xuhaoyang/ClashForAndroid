@@ -25,7 +25,7 @@ func init() {
 		defer log.UnSubscribe(sub)
 
 		for item := range sub {
-			msg := item.(*log.Event)
+			msg := item.(log.Event)
 
 			cPayload := C.CString(msg.Payload)
 
@@ -52,7 +52,7 @@ func subscribeLogcat(remote unsafe.Pointer) {
 		defer log.UnSubscribe(sub)
 
 		for i := range sub {
-			msg, ok := i.(*log.Event)
+			msg, ok := i.(log.Event)
 			if !ok {
 				continue
 			}
