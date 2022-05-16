@@ -17,22 +17,25 @@ var (
 		// Google Voices
 		"lens.l.google.com",
 
-		// Nintendo Switch
+		// Nintendo Switch STUN
 		"*.n.n.srv.nintendo.net",
 
-		// PlayStation
+		// PlayStation STUN
 		"+.stun.playstation.net",
 
 		// XBox
 		"xbox.*.*.microsoft.com",
 		"*.*.xboxlive.com",
 
-		// Microsoft
+		// Microsoft Captive Portal
 		"*.msftncsi.com",
 		"*.msftconnecttest.com",
 
 		// Bilibili CDN
 		"*.mcdn.bilivideo.cn",
+
+		// Windows Default LAN WorkGroup
+		"WORKGROUP",
 	}
 	defaultFakeIPRange = "28.0.0.0/8"
 )
