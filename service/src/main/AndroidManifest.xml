@@ -12,12 +12,14 @@
 
     <application>
         <service
-            android:name="ClashService"
+            android:name=".ClashService"
             android:exported="false"
+            android:label="@string/clash_for_android"
             android:process=":background" />
         <service
-            android:name="TunService"
+            android:name=".TunService"
             android:exported="false"
+            android:label="@string/clash_for_android"
             android:permission="android.permission.BIND_VPN_SERVICE"
             android:process=":background">
             <intent-filter>
