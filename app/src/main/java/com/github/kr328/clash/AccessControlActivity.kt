@@ -76,11 +76,8 @@ class AccessControlActivity : BaseActivity<AccessControlDesign>() {
                             val data = clipboard?.primaryClip
 
                             if (data != null && data.itemCount > 0) {
-                                val all = withContext(Dispatchers.IO) {
-                                    val packages = data.getItemAt(0).text.split("\n").toSet()
-
-                                    design.apps.map(AppInfo::packageName).intersect(packages)
-                                }
+                                val packages = data.getItemAt(0).text.split("\n").toSet()
+                                val all = design.apps.map(AppInfo::packageName).intersect(packages)
 
                                 selected.clear()
                                 selected.addAll(all)
@@ -91,14 +88,12 @@ class AccessControlActivity : BaseActivity<AccessControlDesign>() {
                         AccessControlDesign.Request.Export -> {
                             val clipboard = getSystemService<ClipboardManager>()
 
-                            withContext(Dispatchers.IO) {
-                                val data = ClipData.newPlainText(
-                                    "packages",
-                                    selected.joinToString("\n")
-                                )
+                            val data = ClipData.newPlainText(
+                                "packages",
+                                selected.joinToString("\n")
+                            )
 
-                                clipboard?.setPrimaryClip(data)
-                            }
+                            clipboard?.setPrimaryClip(data)
                         }
                     }
                 }

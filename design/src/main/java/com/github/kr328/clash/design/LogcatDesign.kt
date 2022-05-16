@@ -26,7 +26,7 @@ class LogcatDesign(
     private val binding = DesignLogcatBinding
         .inflate(context.layoutInflater, context.root, false)
     private val adapter = LogMessageAdapter(context) {
-        launch(Dispatchers.IO) {
+        launch {
             val data = ClipData.newPlainText("log_message", it.message)
 
             context.getSystemService<ClipboardManager>()?.setPrimaryClip(data)
