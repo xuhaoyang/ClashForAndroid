@@ -116,7 +116,7 @@ class FilesActivity : BaseActivity<FilesDesign>() {
                             }
                             is FilesDesign.Request.ExportFile -> {
                                 val uri: Uri? = startActivityForResult(
-                                    ActivityResultContracts.CreateDocument(),
+                                    ActivityResultContracts.CreateDocument("text/plain"),
                                     it.file.name
                                 )
 

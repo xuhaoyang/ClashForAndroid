@@ -65,7 +65,9 @@ subprojects {
 
         if (isApp) {
             packagingOptions {
-                excludes.add("DebugProbesKt.bin")
+                resources {
+                    excludes.add("DebugProbesKt.bin")
+                }
             }
         }
 
@@ -88,19 +90,6 @@ subprojects {
                 versionNameSuffix = ".premium"
 
                 buildConfigField("boolean", "PREMIUM", "Boolean.parseBoolean(\"true\")")
-
-                val tracker = rootProject.file("tracker.properties")
-                if (tracker.exists()) {
-                    val prop = Properties().apply {
-                        tracker.inputStream().use(this::load)
-                    }
-
-                    buildConfigField(
-                        "String",
-                        "APP_CENTER_KEY",
-                        "\"${prop.getProperty("appcenter.key")!!}\""
-                    )
-                }
             }
         }
 

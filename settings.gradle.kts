@@ -18,21 +18,20 @@ pluginManagement {
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            val agp = "7.2.0"
-            val kotlin = "1.6.21"
-            val ksp = "$kotlin-1.0.5"
+            val agp = "7.2.1"
+            val kotlin = "1.7.0"
+            val ksp = "$kotlin-1.0.6"
             val golang = "1.0.4"
-            val coroutine = "1.6.1"
-            val coreKtx = "1.7.0"
-            val activity = "1.4.0"
-            val fragment = "1.4.1"
-            val appcompat = "1.4.1"
+            val coroutine = "1.6.3"
+            val coreKtx = "1.8.0"
+            val activity = "1.5.0"
+            val fragment = "1.5.0"
+            val appcompat = "1.4.2"
             val coordinator = "1.2.0"
             val recyclerview = "1.2.1"
             val viewpager = "1.0.0"
-            val material = "1.6.0"
-            val appcenter = "4.4.3"
-            val serialization = "1.3.2"
+            val material = "1.6.1"
+            val serialization = "1.3.3"
             val kaidl = "1.15"
             val room = "2.4.2"
             val multiprocess = "1.0.0"
@@ -55,8 +54,6 @@ dependencyResolutionManagement {
             library("androidx-room-runtime", "androidx.room:room-runtime:$room")
             library("androidx-room-ktx", "androidx.room:room-ktx:$room")
             library("google-material", "com.google.android.material:material:$material")
-            library("appcenter-analytics", "com.microsoft.appcenter:appcenter-analytics:$appcenter")
-            library("appcenter-crashes", "com.microsoft.appcenter:appcenter-crashes:$appcenter")
             library("kaidl-compiler", "com.github.kr328.kaidl:kaidl:$kaidl")
             library("kaidl-runtime", "com.github.kr328.kaidl:kaidl-runtime:$kaidl")
             library("rikkax-multiprocess", "dev.rikka.rikkax.preference:multiprocess:$multiprocess")

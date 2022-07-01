@@ -19,9 +19,6 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize AppCenter
-        Tracker.initialize(this)
-
         val processName = currentProcessName
 
         Log.d("Process $processName started")
