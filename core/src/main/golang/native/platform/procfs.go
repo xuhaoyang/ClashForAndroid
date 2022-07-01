@@ -26,7 +26,7 @@ func QuerySocketUidFromProcFs(source, _ net.Addr) int {
 
 	network := source.Network()
 
-	if strings.HasSuffix(network, "4") {
+	if strings.HasSuffix(network, "4") || strings.HasSuffix(network, "6") {
 		network = network[:len(network)-1]
 	}
 
@@ -46,16 +46,24 @@ func QuerySocketUidFromProcFs(source, _ net.Addr) int {
 		return -1
 	}
 
-	if strings.HasSuffix(source.Network(), "6") {
-		sIP = sIP.To16()
-	} else {
-		sIP = sIP.To4()
-	}
-
+	sIP = sIP.To16()
 	if sIP == nil {
 		return -1
 	}
 
+	uid := doQuery(path+"6", sIP, sPort)
+	if uid == -1 {
+		sIP = sIP.To4()
+		if sIP == nil {
+			return -1
+		}
+		uid = doQuery(path, sIP, sPort)
+	}
+
+	return uid
+}
+
+func doQuery(path string, sIP net.IP, sPort int) int {
 	file, err := os.Open(path)
 	if err != nil {
 		return -1
