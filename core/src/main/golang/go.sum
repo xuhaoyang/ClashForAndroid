@@ -2,10 +2,6 @@ github.com/Dreamacro/clash v1.7.1 h1:8iYYiyVf7ZAztwoFeTFihs5rI9Jjic0ZKmf05vQxzFU
 github.com/Dreamacro/clash v1.7.1/go.mod h1:C9eLMAlDZSLrkdzGQdOHyeldwRjDbcGR2kaL80KdzGw=
 github.com/Dreamacro/go-shadowsocks2 v0.1.7 h1:8CtbE1HoPPMfrQZGXmlluq6dO2lL31W6WRRE8fabc4Q=
 github.com/Dreamacro/go-shadowsocks2 v0.1.7/go.mod h1:8p5G4cAj5ZlXwUR+Ww63gfSikr8kvw8uw3TDwLAJpUc=
-github.com/Kr328/tun2socket v0.0.0-20211231120722-962f339492e8 h1:4Ceb/pU/u7fKGMCE2DNrWIEHkoR1ELRlYJXzbFOR+E0=
-github.com/Kr328/tun2socket v0.0.0-20211231120722-962f339492e8/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
-github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd h1:rNOyFw+I4VjTtMvONd+OgG9Z/++C7NnomvL5mFGjznk=
-github.com/Kr328/tun2socket v0.0.0-20220317122653-4050a94cb4dd/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
 github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34 h1:USCTqih5d1bUXUxWNS9ZD5Tx/lb0jXHEtRIIx/F9dMc=
 github.com/Kr328/tun2socket v0.0.0-20220414050025-d07c78d06d34/go.mod h1:YR9wK13TgI5ww8iKWm91MHiSoHC7Oz0U4beCCmtXqLw=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -97,8 +93,6 @@ golang.org/x/sys v0.0.0-20201101102859-da207088b7d1/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210303074136-134d130e1a04/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210525143221-35b2ab0089ea/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20211116061358-0a5406a5449c h1:DHcbWVXeY+0Y8HHKR+rbLwnoh2F4tNCY7rTiHJ30RmA=
-golang.org/x/sys v0.0.0-20211116061358-0a5406a5449c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 h1:OH54vjqzRWmbJ62fjuhxy7AxFFgoHN0/DPc/UrL8cAs=
 golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
