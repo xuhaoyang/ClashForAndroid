@@ -105,7 +105,5 @@ func process(cfg *config.RawConfig, profileDir string) error {
 		}
 	}
 
-	log.Debugln("sni-tls: %t", cfg.Experimental.SniffTLSSNI)
-
 	return nil
 }
