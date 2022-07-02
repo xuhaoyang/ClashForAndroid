@@ -145,6 +145,7 @@
     <string name="bind_address">Bind Address</string>
     <string name="mode">Mode</string>
     <string name="log_level">Log Level</string>
+    <string name="sniff_tls_sni">Sniff TLS SNI</string>
     <string name="ipv6">IPv6</string>
     <string name="hosts">Hosts</string>
     <string name="sideload_geoip">Sideload GEOIP</string>

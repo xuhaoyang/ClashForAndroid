@@ -23,7 +23,6 @@ var processors = []processor{
 	patchDns,
 	patchProviders,
 	patchTun,
-	patchSniff,
 	validConfig,
 }
 
@@ -105,6 +104,8 @@ func process(cfg *config.RawConfig, profileDir string) error {
 			return err
 		}
 	}
+
+	log.Debugln("sni-tls: %t", cfg.Experimental.SniffTLSSNI)
 
 	return nil
 }

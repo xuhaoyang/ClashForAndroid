@@ -223,6 +223,15 @@ class OverrideSettingsDesign(
                 )
             }
 
+            if (BuildConfig.PREMIUM) {
+                selectableList(
+                    value = configuration.experimental::sniffTLSSNI,
+                    values = booleanValues,
+                    valuesText = booleanValuesText,
+                    title = R.string.sniff_tls_sni,
+                )
+            }
+
             selectableList(
                 value = configuration::logLevel,
                 values = arrayOf(

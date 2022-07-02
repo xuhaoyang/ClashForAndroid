@@ -216,4 +216,5 @@
     <string name="geoip_fallback_code">GeoIP Fallback 区域代码</string>
     <string name="allow_bypass">允许应用绕过</string>
     <string name="allow_bypass_summary">允许其他应用绕过 VPN</string>
+    <string name="sniff_tls_sni">嗅探 TLS 的 SNI</string>
 </resources>

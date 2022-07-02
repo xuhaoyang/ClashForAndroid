@@ -49,6 +49,9 @@ data class ConfigurationOverride(
 
     @SerialName("clash-for-android")
     val app: App = App(),
+
+    @SerialName("experimental")
+    val experimental: Experimental = Experimental()
 ) : Parcelable {
     @Serializable
     data class Dns(
@@ -105,6 +108,12 @@ data class ConfigurationOverride(
     data class App(
         @SerialName("append-system-dns")
         var appendSystemDns: Boolean? = null
+    )
+
+    @Serializable
+    data class Experimental(
+        @SerialName("sniff-tls-sni")
+        var sniffTLSSNI: Boolean? = null,
     )
 
     @Serializable
