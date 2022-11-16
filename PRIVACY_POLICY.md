@@ -4,24 +4,19 @@ The Clash for Android is built as an Open Source software. This app is provided 
 
 This page is used to inform visitors regarding our policies with the collection, use, and disclosure of Personal Information if anyone decided to use our app.
 
-If you choose to use our app, then you agree to the collection and use of information in relation to this policy. The Personal Information that we collect is used for providing and improving the app. We will not use or share your information with anyone except as described in this Privacy Policy.
-
-The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at Clash for Android unless otherwise defined in this Privacy Policy.
-
 **Information Collection and Use**
 
-For a better experience, while using our app, we may require you to provide us with certain personally identifiable information. The information that we request will be retained by us and used as described in this privacy policy.
+We will not upload any of your personally information and that will be stored in the internal storage or memory.
 
-The app does use third party services that may collect information used to identify you.
+We collect the following information and store it in memory, and such information will be destroyed when the application is fully exited.
 
-Link to privacy policy of third party service providers used by the app
+- Installed Applications
 
-*   [Google Play Services](https://www.google.com/policies/privacy/)
-*   [AppCenter](https://docs.microsoft.com/en-us/appcenter/gdpr/)
+  This data is used for the PROCESS-NAME rule.
 
 **Log Data**
 
-We want to inform you that whenever you use our app, in a case of an error in the app we collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing our App, the time and date of your use of the app, and other statistics.
+We do not collect log data unless you use log collector.
 
 **Cookies**
 
@@ -36,10 +31,6 @@ We value your trust in providing us your Personal Information, thus we are striv
 **Links to Other Sites**
 
 This app may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by us. Therefore, we strongly advise you to review the Privacy Policy of these websites. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
-
-**Children’s Privacy**
-
-These Services do not address anyone under the age of 13\. We do not knowingly collect personally identifiable information from children under 13\. In the case we discover that a child under 13 has provided us with personal information, we immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us so that we will be able to do necessary actions.
 
 **Changes to This Privacy Policy**
 
